@@ -7,6 +7,7 @@ type: playground
 ---
 
 import { KnnVisualizer } from "@/components/viz/knn-visualizer";
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
 
 ## Overview
 
@@ -47,6 +48,35 @@ introduces core ML concepts that reappear throughout this course:
 - **Feature scaling** — since KNN is purely distance-based, a feature measured
   in the thousands (e.g. income) will dominate one measured in single digits
   (e.g. age) unless you standardize your features first.
+
+## In real code
+
+The visualization above is a from-scratch implementation. In practice you'd
+use a library like scikit-learn. Run this in the browser (no server, no
+install — it's a real Python interpreter compiled to WebAssembly):
+
+<PyodidePlayground initialCode={`import numpy as np
+from sklearn.neighbors import KNeighborsClassifier
+
+# Same two-blob shape as the visualizer above, just as real feature vectors.
+X = np.array([
+    [1.0, 1.5], [1.2, 1.8], [0.8, 1.2], [1.5, 1.6],
+    [4.0, 4.2], [4.3, 3.9], [3.8, 4.5], [4.1, 4.0],
+])
+y = np.array([0, 0, 0, 0, 1, 1, 1, 1])
+
+clf = KNeighborsClassifier(n_neighbors=3)
+clf.fit(X, y)
+
+query = np.array([[2.5, 2.7]])
+print("Predicted class:", clf.predict(query)[0])
+print("Class probabilities:", clf.predict_proba(query)[0])
+`}
+/>
+
+Try changing `n_neighbors`, adding more points, or moving `query` closer to
+one cluster — same algorithm as above, real library, running entirely in
+your browser tab.
 
 ## Choosing k
 
