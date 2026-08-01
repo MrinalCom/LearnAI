@@ -1,0 +1,41 @@
+{
+  "title": "Decision Trees Check",
+  "questions": [
+    {
+      "questionText": "What does a Gini impurity of 0 at a node mean?",
+      "questionType": "mcq",
+      "options": [
+        "The node has no training examples",
+        "All examples at that node belong to a single class — it's perfectly pure",
+        "The split failed",
+        "The tree has reached max_depth"
+      ],
+      "correctAnswer": "All examples at that node belong to a single class — it's perfectly pure",
+      "explanation": "Gini impurity measures class mixing; 0 means every example in that group shares the same label."
+    },
+    {
+      "questionText": "An unconstrained decision tree grown to full depth typically:",
+      "questionType": "mcq",
+      "options": [
+        "Underfits the training data",
+        "Achieves near-perfect training accuracy but generalizes poorly (overfits)",
+        "Cannot be trained on numeric features",
+        "Always outperforms a random forest"
+      ],
+      "correctAnswer": "Achieves near-perfect training accuracy but generalizes poorly (overfits)",
+      "explanation": "Without limits like max_depth or min_samples_leaf, the tree keeps splitting until it memorizes the training set, including its noise."
+    },
+    {
+      "questionText": "What kind of decision boundary can a decision tree learn that linear/logistic regression cannot?",
+      "questionType": "mcq",
+      "options": [
+        "None — trees are also restricted to straight-line boundaries",
+        "Arbitrary, non-linear, axis-aligned boundaries made of rectangular regions",
+        "Only circular boundaries",
+        "Only boundaries with exactly two splits"
+      ],
+      "correctAnswer": "Arbitrary, non-linear, axis-aligned boundaries made of rectangular regions",
+      "explanation": "Because each split is an independent if/else threshold on one feature, a tree can carve up feature space into non-linear, rectangular regions that a single linear boundary can't represent."
+    }
+  ]
+}

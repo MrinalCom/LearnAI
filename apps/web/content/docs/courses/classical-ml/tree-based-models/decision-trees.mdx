@@ -1,0 +1,97 @@
+---
+title: Decision Trees
+description: Classifying data by learning a sequence of if/else splits.
+order: 1
+estimatedMinutes: 20
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="classical-ml" moduleSlug="tree-based-models" lessonSlug="decision-trees" />
+
+## Overview
+
+A decision tree classifies examples by asking a sequence of yes/no
+questions about the features, arriving at a prediction by the time it
+reaches a leaf:
+
+```
+Is age > 30?
+├── No  -> Is income > $50k? -> ...
+└── Yes -> Is credit score > 700? -> ...
+```
+
+Unlike KNN or linear/logistic regression, a decision tree's boundary can be
+arbitrarily nonlinear and axis-aligned — it carves feature space into
+rectangular regions rather than fitting a single line or curve.
+
+## How splits are chosen
+
+At each node, the algorithm considers every feature and every possible
+threshold, and picks the split that makes the resulting two groups as
+**pure** as possible — i.e., each group is dominated by a single class.
+Purity is usually measured with **Gini impurity**:
+
+```
+Gini = 1 − Σ (pᵢ)²
+```
+
+where `pᵢ` is the fraction of examples in the group belonging to class `i`.
+A perfectly pure group (all one class) has Gini = 0; a 50/50 split of two
+classes has the maximum Gini = 0.5. The tree greedily picks whichever split
+reduces Gini impurity the most, then repeats recursively on each resulting
+group.
+
+## The overfitting problem
+
+Left unchecked, a tree keeps splitting until every leaf is perfectly pure —
+often a leaf per training example. That tree gets 100% training accuracy and
+generalizes terribly: it has memorized noise, not learned patterns. This is
+controlled with stopping criteria (hyperparameters):
+
+- **`max_depth`** — cap how many splits deep the tree can go.
+- **`min_samples_leaf`** — require at least N examples per leaf.
+- **`min_samples_split`** — require at least N examples to consider
+  splitting a node further.
+
+Tuning these is the same bias-variance tradeoff you saw with `k` in KNN:
+a shallow tree underfits (high bias), an unconstrained tree overfits (high
+variance).
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+from sklearn.tree import DecisionTreeClassifier, export_text
+
+# Two features, two classes, deliberately non-linearly separable.
+X = np.array([
+    [2, 2], [2, 8], [8, 2], [8, 8],   # corners: class 0
+    [5, 5], [4, 6], [6, 4],           # center: class 1
+])
+y = np.array([0, 0, 0, 0, 1, 1, 1])
+
+clf = DecisionTreeClassifier(max_depth=3, random_state=0)
+clf.fit(X, y)
+
+print(export_text(clf, feature_names=["x1", "x2"]))
+print("Prediction for [5, 5]:", clf.predict([[5, 5]])[0])
+`}
+/>
+
+`export_text` prints the actual learned splits — try lowering `max_depth`
+to 1 and see how much the tree's structure (and accuracy) degrades.
+
+## Why this matters beyond trees
+
+Decision trees are rarely used alone in production — a single tree is
+unstable (small data changes can produce a very different tree) and prone
+to overfitting. But they're the building block for **random forests** and
+gradient-boosted trees (the next lesson), which are among the most reliable,
+widely used models for structured/tabular data in practice.
+
+## Check your understanding
+
+<Quiz courseSlug="classical-ml" moduleSlug="tree-based-models" lessonSlug="decision-trees" />

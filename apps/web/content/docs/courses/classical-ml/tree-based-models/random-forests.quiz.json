@@ -1,0 +1,41 @@
+{
+  "title": "Random Forests Check",
+  "questions": [
+    {
+      "questionText": "Random forests introduce randomness in two places. What are they?",
+      "questionType": "mcq",
+      "options": [
+        "Random learning rate and random depth",
+        "Bootstrap-sampled training data per tree, and a random subset of features considered at each split",
+        "Random initial weights and random Gini thresholds",
+        "Random train/test split only"
+      ],
+      "correctAnswer": "Bootstrap-sampled training data per tree, and a random subset of features considered at each split",
+      "explanation": "Bagging randomizes which rows each tree sees; feature randomness at each split randomizes which columns each tree can use — both are needed to decorrelate the trees."
+    },
+    {
+      "questionText": "Why does averaging many decorrelated trees reduce variance compared to a single tree?",
+      "questionType": "mcq",
+      "options": [
+        "It doesn't — a forest has the same variance as one tree",
+        "Each tree overfits to different noise, so their errors are largely uncorrelated and cancel out when averaged",
+        "Averaging removes bias entirely",
+        "Because forests always use fewer features than a single tree"
+      ],
+      "correctAnswer": "Each tree overfits to different noise, so their errors are largely uncorrelated and cancel out when averaged",
+      "explanation": "If every tree made the exact same mistakes, averaging wouldn't help. Because bagging and feature randomness make each tree's mistakes different, voting/averaging cancels much of that noise."
+    },
+    {
+      "questionText": "How do gradient-boosted trees differ fundamentally from random forests?",
+      "questionType": "mcq",
+      "options": [
+        "Boosted trees don't use decision trees at all",
+        "Boosted trees are built sequentially, each one correcting the previous trees' errors, rather than independently in parallel",
+        "Boosted trees can't be used for classification",
+        "There is no real difference"
+      ],
+      "correctAnswer": "Boosted trees are built sequentially, each one correcting the previous trees' errors, rather than independently in parallel",
+      "explanation": "Random forest trees are trained independently and averaged; boosting trains trees one after another, each specifically targeting the residual errors of the ensemble so far."
+    }
+  ]
+}

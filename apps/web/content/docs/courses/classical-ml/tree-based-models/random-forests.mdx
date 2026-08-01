@@ -1,0 +1,98 @@
+---
+title: Random Forests & Ensemble Methods
+description: Combining many weak, decorrelated decision trees into a strong, stable predictor.
+order: 2
+estimatedMinutes: 18
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="classical-ml" moduleSlug="tree-based-models" lessonSlug="random-forests" />
+
+## Overview
+
+A single decision tree is unstable — change the training data slightly and
+you often get a very different tree. **Random forests** fix this with a
+simple but powerful idea: train many trees on randomized variations of the
+data, and let them vote.
+
+```
+prediction = majority_vote(tree_1(x), tree_2(x), ..., tree_n(x))
+```
+
+This is an instance of **ensemble learning**: combining multiple "weak"
+models into a stronger one. The forest is almost always more accurate and
+far more stable than any individual tree in it.
+
+## Where the randomness comes from
+
+Random forests introduce randomness in two independent places, both
+necessary — using only one gives a much weaker forest:
+
+1. **Bagging (bootstrap aggregating)** — each tree is trained on a random
+   sample of the training data, drawn *with replacement* (so some examples
+   appear multiple times, others not at all).
+2. **Feature randomness** — at each split, the tree only considers a random
+   subset of features (not all of them), forcing different trees to
+   discover different, less-correlated patterns.
+
+If every tree saw the same data and considered every feature, they'd all
+tend to make the same splits and the same mistakes — averaging correlated
+models doesn't help much. Decorrelating the trees is the whole point.
+
+## Why averaging reduces variance
+
+Each individual tree overfits differently — tree A might latch onto one
+spurious pattern in its bootstrap sample, tree B onto a different one. Since
+these errors are largely uncorrelated across trees, averaging (or voting)
+cancels much of that noise out while preserving the real signal every tree
+independently picked up. This is the bias-variance tradeoff again: a single
+deep tree has low bias but high variance; a forest keeps the low bias while
+sharply cutting the variance.
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
+
+X = np.array([
+    [2, 2], [2, 8], [8, 2], [8, 8],
+    [5, 5], [4, 6], [6, 4], [5.5, 4.5],
+])
+y = np.array([0, 0, 0, 0, 1, 1, 1, 1])
+
+tree = DecisionTreeClassifier(random_state=0).fit(X, y)
+forest = RandomForestClassifier(n_estimators=100, random_state=0).fit(X, y)
+
+query = [[5, 6]]
+print("Single tree prediction:", tree.predict(query)[0])
+print("Forest prediction:", forest.predict(query)[0])
+print("Forest vote confidence:", forest.predict_proba(query)[0])
+
+# Feature importance: how much each feature contributed across all trees.
+print("Feature importances:", forest.feature_importances_)
+`}
+/>
+
+`feature_importances_` is a genuinely useful byproduct of forests — it tells
+you, on average across every tree and every split, how much each feature
+reduced impurity. It's a fast, practical way to see which inputs the model
+actually relies on.
+
+## Beyond random forests
+
+Random forests build trees **independently and in parallel**, then average.
+A different family — **gradient-boosted trees** (XGBoost, LightGBM) — builds
+trees **sequentially**, where each new tree specifically targets the errors
+the previous trees made. Boosted trees often edge out random forests in
+accuracy on tabular data, at the cost of being more sensitive to
+hyperparameters and slower to train. Both remain, alongside deep learning,
+among the strongest tools for structured/tabular prediction problems.
+
+## Check your understanding
+
+<Quiz courseSlug="classical-ml" moduleSlug="tree-based-models" lessonSlug="random-forests" />

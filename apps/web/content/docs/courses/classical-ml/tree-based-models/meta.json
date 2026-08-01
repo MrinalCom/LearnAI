@@ -1,0 +1,6 @@
+{
+  "title": "Tree-Based Models",
+  "description": "Decision trees, random forests, and ensemble methods.",
+  "order": 2,
+  "pages": ["decision-trees", "random-forests"]
+}
