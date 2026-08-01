@@ -3,21 +3,57 @@ title: K-Nearest Neighbors
 description: An introduction to the KNN algorithm for classification and regression.
 order: 1
 estimatedMinutes: 15
-type: article
+type: playground
 ---
+
+import { KnnVisualizer } from "@/components/viz/knn-visualizer";
 
 ## Overview
 
 K-Nearest Neighbors (KNN) is one of the simplest supervised learning algorithms.
 To classify a new point, it looks at the `k` closest labeled points in the
-training set and takes a majority vote (or averages, for regression).
+training set and takes a majority vote (for regression, it averages their
+values instead).
 
-> This is a placeholder lesson from the Phase 0 scaffold. The full Classical ML
-> track — including an interactive KNN visualizer and a Pyodide-backed
-> scikit-learn playground — ships in the MVP phase.
+There's no training phase — KNN just memorizes the training data and does all
+the work at prediction time. That makes it easy to reason about, but expensive
+to query as the dataset grows.
+
+## Try it
+
+Drag the point below around the canvas. It's classified by majority vote among
+its `k` nearest neighbors (the training points, in indigo and amber). The
+shaded background shows the full decision boundary for the current `k`.
+
+<KnnVisualizer />
+
+Notice what happens as you move the slider:
+
+- **Small `k` (e.g. 1)** — the boundary is jagged and closely tracks individual
+  points. Low bias, high variance: sensitive to noise and outliers.
+- **Large `k` (e.g. 15)** — the boundary smooths out, ignoring local structure
+  in favor of the global class balance. Higher bias, lower variance.
+
+This is the bias-variance tradeoff, and `k` is the knob that controls it.
 
 ## Why start here?
 
 KNN requires no training step, is easy to visualize in 2D, and cleanly
-introduces core ML concepts: distance metrics, the bias-variance tradeoff
-(via choice of `k`), and the importance of feature scaling.
+introduces core ML concepts that reappear throughout this course:
+
+- **Distance metrics** — KNN typically uses Euclidean distance, but Manhattan,
+  cosine, and other metrics matter a lot for high-dimensional or sparse data.
+- **The bias-variance tradeoff** — via the choice of `k`, as shown above.
+- **Feature scaling** — since KNN is purely distance-based, a feature measured
+  in the thousands (e.g. income) will dominate one measured in single digits
+  (e.g. age) unless you standardize your features first.
+
+## Choosing k
+
+There's no universally correct `k`. In practice you pick it with
+cross-validation (covered later in [Model Evaluation](/docs/courses/classical-ml)):
+try a range of values, measure validation accuracy for each, and pick the `k`
+that generalizes best — not just the one that fits the training set closest.
+
+A common starting heuristic is `k ≈ √n`, where `n` is the number of training
+examples, adjusted up or down based on how noisy the data is.
