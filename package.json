@@ -1,0 +1,18 @@
+{
+  "name": "learning-project",
+  "private": true,
+  "packageManager": "pnpm@11.18.0",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "dev:web": "pnpm --filter @learning/web dev",
+    "dev:api": "pnpm --filter @learning/api dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint",
+    "db:generate": "pnpm --filter @learning/api db:generate",
+    "db:migrate": "pnpm --filter @learning/api db:migrate",
+    "sync-content": "pnpm --filter @learning/api sync-content"
+  }
+}
