@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { QuizForLesson, QuizAttemptResult } from "@learning/shared";
 import { apiFetch, authFetch, ApiError } from "@/lib/api";
-import { getToken } from "@/lib/auth-client";
+import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -21,7 +21,7 @@ export function Quiz({ courseSlug, moduleSlug, lessonSlug }: QuizProps) {
   const [result, setResult] = useState<QuizAttemptResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const isLoggedIn = typeof window !== "undefined" && Boolean(getToken());
+  const { user } = useAuth();
 
   useEffect(() => {
     apiFetch<QuizForLesson>(`/api/quizzes/by-path/${courseSlug}/${moduleSlug}/${lessonSlug}`)
@@ -101,7 +101,7 @@ export function Quiz({ courseSlug, moduleSlug, lessonSlug }: QuizProps) {
 
         {!result && (
           <>
-            {!isLoggedIn ? (
+            {!user ? (
               <p className="text-sm text-fd-muted-foreground">
                 <Link href="/login" className="underline">
                   Log in

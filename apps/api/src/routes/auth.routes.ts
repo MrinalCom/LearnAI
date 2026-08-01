@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { registerSchema, loginSchema } from "@learning/shared";
 import { db } from "../db/client.js";
 import { users } from "../db/schema/index.js";
+import { requireAuth, AuthedRequest } from "../middleware/auth.js";
 
 export const authRouter = Router();
 
@@ -51,4 +52,15 @@ authRouter.post("/login", async (req, res) => {
     user: { id: user.id, name: user.name, email: user.email, role: user.role },
     token,
   });
+});
+
+authRouter.get("/me", requireAuth, async (req: AuthedRequest, res) => {
+  const [user] = await db
+    .select({ id: users.id, name: users.name, email: users.email, role: users.role })
+    .from(users)
+    .where(eq(users.id, req.user!.id));
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+  res.json(user);
 });

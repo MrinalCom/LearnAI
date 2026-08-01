@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { AuthUser } from "@learning/shared";
 import { apiFetch, ApiError } from "@/lib/api";
-import { setToken } from "@/lib/auth-client";
+import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -22,12 +23,12 @@ export default function LoginPage() {
     setError(null);
     setSubmitting(true);
     try {
-      const { token } = await apiFetch<{ user: AuthUser; token: string }>("/api/auth/login", {
+      const { user, token } = await apiFetch<{ user: AuthUser; token: string }>("/api/auth/login", {
         method: "POST",
         body: JSON.stringify({ email, password }),
       });
-      setToken(token);
-      router.push("/docs");
+      login(user, token);
+      router.push("/dashboard");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Something went wrong");
     } finally {
