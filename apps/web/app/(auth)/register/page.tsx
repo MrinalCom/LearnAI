@@ -6,6 +6,9 @@ import Link from "next/link";
 import type { AuthUser } from "@learning/shared";
 import { apiFetch, ApiError } from "@/lib/api";
 import { setToken } from "@/lib/auth-client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -35,41 +38,35 @@ export default function RegisterPage() {
 
   return (
     <main className="mx-auto flex max-w-sm flex-col gap-4 px-4 py-16">
-      <h1 className="text-2xl font-semibold">Create an account</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input
-          className="rounded-md border px-3 py-2"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          className="rounded-md border px-3 py-2"
-          placeholder="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          className="rounded-md border px-3 py-2"
-          placeholder="Password"
-          type="password"
-          minLength={8}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        {error && <p className="text-sm text-red-500">{error}</p>}
-        <button
-          type="submit"
-          disabled={submitting}
-          className="rounded-md bg-fd-primary px-3 py-2 text-fd-primary-foreground disabled:opacity-50"
-        >
-          {submitting ? "Creating account…" : "Sign up"}
-        </button>
-      </form>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Create an account</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <Input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
+            <Input
+              placeholder="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <Input
+              placeholder="Password"
+              type="password"
+              minLength={8}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            {error && <p className="text-sm text-fd-error">{error}</p>}
+            <Button type="submit" disabled={submitting}>
+              {submitting ? "Creating account…" : "Sign up"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
       <p className="text-sm text-fd-muted-foreground">
         Already have an account? <Link href="/login">Log in</Link>
       </p>

@@ -6,6 +6,9 @@ import Link from "next/link";
 import type { AuthUser } from "@learning/shared";
 import { apiFetch, ApiError } from "@/lib/api";
 import { setToken } from "@/lib/auth-client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -34,33 +37,33 @@ export default function LoginPage() {
 
   return (
     <main className="mx-auto flex max-w-sm flex-col gap-4 px-4 py-16">
-      <h1 className="text-2xl font-semibold">Log in</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input
-          className="rounded-md border px-3 py-2"
-          placeholder="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          className="rounded-md border px-3 py-2"
-          placeholder="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        {error && <p className="text-sm text-red-500">{error}</p>}
-        <button
-          type="submit"
-          disabled={submitting}
-          className="rounded-md bg-fd-primary px-3 py-2 text-fd-primary-foreground disabled:opacity-50"
-        >
-          {submitting ? "Logging in…" : "Log in"}
-        </button>
-      </form>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Log in</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <Input
+              placeholder="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <Input
+              placeholder="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            {error && <p className="text-sm text-fd-error">{error}</p>}
+            <Button type="submit" disabled={submitting}>
+              {submitting ? "Logging in…" : "Log in"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
       <p className="text-sm text-fd-muted-foreground">
         Need an account? <Link href="/register">Sign up</Link>
       </p>
