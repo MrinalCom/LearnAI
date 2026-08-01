@@ -3,9 +3,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
-import { lessonFrontmatterSchema } from "@learning/shared";
+import { eq } from "drizzle-orm";
+import { lessonFrontmatterSchema, quizFileSchema } from "@learning/shared";
 import { db, pool } from "../src/db/client.js";
-import { courses, modules, lessons } from "../src/db/schema/index.js";
+import { courses, modules, lessons, quizzes, quizQuestions } from "../src/db/schema/index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CONTENT_ROOT = path.resolve(__dirname, "../../web/content/docs/courses");
@@ -82,7 +83,7 @@ async function main() {
         const raw = fs.readFileSync(path.join(modulePath, file), "utf-8");
         const fm = lessonFrontmatterSchema.parse(matter(raw).data);
 
-        await db
+        const [lesson] = await db
           .insert(lessons)
           .values({
             moduleId: mod.id,
@@ -102,9 +103,37 @@ async function main() {
               orderIndex: fm.order,
               published: true,
             },
-          });
+          })
+          .returning();
 
         console.log(`    lesson ${lessonSlug}`);
+
+        const quizPath = path.join(modulePath, `${lessonSlug}.quiz.json`);
+        if (fs.existsSync(quizPath)) {
+          const quizFile = quizFileSchema.parse(JSON.parse(fs.readFileSync(quizPath, "utf-8")));
+
+          const [quiz] = await db
+            .insert(quizzes)
+            .values({ lessonId: lesson.id, title: quizFile.title })
+            .onConflictDoUpdate({ target: quizzes.lessonId, set: { title: quizFile.title } })
+            .returning();
+
+          // Authored quiz content, not user data — safe to fully replace on each sync.
+          await db.delete(quizQuestions).where(eq(quizQuestions.quizId, quiz.id));
+          await db.insert(quizQuestions).values(
+            quizFile.questions.map((q, i) => ({
+              quizId: quiz.id,
+              questionText: q.questionText,
+              questionType: q.questionType,
+              options: q.options ?? null,
+              correctAnswer: q.correctAnswer,
+              explanation: q.explanation,
+              orderIndex: i,
+            })),
+          );
+
+          console.log(`      quiz (${quizFile.questions.length} questions)`);
+        }
       }
     }
   }

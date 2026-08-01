@@ -1,0 +1,41 @@
+{
+  "title": "K-Nearest Neighbors Check",
+  "questions": [
+    {
+      "questionText": "What happens during KNN's \"training\" phase?",
+      "questionType": "mcq",
+      "options": [
+        "The model learns a set of weights via gradient descent",
+        "The model just stores the training data — there's no real training step",
+        "The model builds a decision tree from the data",
+        "The model computes and stores cluster centroids"
+      ],
+      "correctAnswer": "The model just stores the training data — there's no real training step",
+      "explanation": "KNN is a lazy learner: it does no work until prediction time, when it searches the stored training set for the k nearest neighbors."
+    },
+    {
+      "questionText": "You set k=1 and the model performs great on training data but poorly on new data. What's the most likely explanation?",
+      "questionType": "mcq",
+      "options": [
+        "k is too large, causing high bias",
+        "k is too small, causing high variance / overfitting to noise",
+        "The distance metric must be wrong",
+        "KNN cannot overfit"
+      ],
+      "correctAnswer": "k is too small, causing high variance / overfitting to noise",
+      "explanation": "With k=1, each prediction depends on a single nearest neighbor, so the model is extremely sensitive to noise and outliers — classic high-variance overfitting."
+    },
+    {
+      "questionText": "Why does feature scaling matter for KNN specifically?",
+      "questionType": "mcq",
+      "options": [
+        "It doesn't — KNN is scale-invariant",
+        "It speeds up the (nonexistent) training phase",
+        "KNN is purely distance-based, so a large-magnitude feature can dominate the distance calculation",
+        "It's only needed for categorical features"
+      ],
+      "correctAnswer": "KNN is purely distance-based, so a large-magnitude feature can dominate the distance calculation",
+      "explanation": "Since KNN classifies by distance, an unscaled feature with a much larger numeric range will dominate the distance calculation regardless of its actual predictive relevance."
+    }
+  ]
+}

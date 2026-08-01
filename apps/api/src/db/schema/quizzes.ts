@@ -8,6 +8,7 @@ export const quizzes = pgTable("quizzes", {
   id: uuid("id").primaryKey().defaultRandom(),
   lessonId: uuid("lesson_id")
     .notNull()
+    .unique()
     .references(() => lessons.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
 });

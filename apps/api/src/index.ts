@@ -4,6 +4,7 @@ import cors from "cors";
 import { authRouter } from "./routes/auth.routes.js";
 import { coursesRouter } from "./routes/courses.routes.js";
 import { progressRouter } from "./routes/progress.routes.js";
+import { quizRouter } from "./routes/quiz.routes.js";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.get("/health", (_req, res) => res.json({ ok: true }));
 app.use("/api/auth", authRouter);
 app.use("/api/courses", coursesRouter);
 app.use("/api/progress", progressRouter);
+app.use("/api/quizzes", quizRouter);
 
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error(err);

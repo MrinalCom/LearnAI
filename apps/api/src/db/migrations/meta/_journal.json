@@ -22,6 +22,13 @@
       "when": 1785583221016,
       "tag": "0002_glamorous_rocket_raccoon",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1785584994634,
+      "tag": "0003_friendly_mantis",
+      "breakpoints": true
     }
   ]
 }
