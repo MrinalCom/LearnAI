@@ -1,0 +1,41 @@
+{
+  "title": "Logistic Regression Check",
+  "questions": [
+    {
+      "questionText": "What does the sigmoid function do in logistic regression?",
+      "questionType": "mcq",
+      "options": [
+        "It removes outliers from the training data",
+        "It squashes the linear combination z into a probability between 0 and 1",
+        "It computes the gradient for training",
+        "It converts categorical features into numbers"
+      ],
+      "correctAnswer": "It squashes the linear combination z into a probability between 0 and 1",
+      "explanation": "z = w·x + b can be any real number; sigmoid maps it smoothly onto (0, 1) so it can be interpreted as a probability."
+    },
+    {
+      "questionText": "Why does logistic regression use log loss instead of mean squared error?",
+      "questionType": "mcq",
+      "options": [
+        "Log loss is simpler to compute",
+        "MSE only works with integers",
+        "Log loss penalizes confident-but-wrong predictions much more sharply, which suits probability estimates",
+        "There's no real difference between them"
+      ],
+      "correctAnswer": "Log loss penalizes confident-but-wrong predictions much more sharply, which suits probability estimates",
+      "explanation": "A confidently wrong prediction (e.g. predicting 0.99 for a true negative) incurs a very large log loss, giving the optimizer a strong signal to fix egregious mistakes."
+    },
+    {
+      "questionText": "The decision boundary that separates two classes in plain logistic regression is:",
+      "questionType": "mcq",
+      "options": [
+        "Always circular",
+        "A straight line or hyperplane",
+        "A random curve fit by the model",
+        "Determined by k, like KNN"
+      ],
+      "correctAnswer": "A straight line or hyperplane",
+      "explanation": "Since the boundary is defined by z = 0, and z is a linear combination of the features, the boundary is inherently linear — the same geometric limitation as linear regression."
+    }
+  ]
+}

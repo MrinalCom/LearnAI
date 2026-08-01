@@ -1,0 +1,91 @@
+---
+title: Logistic Regression
+description: Turning a linear model into a probabilistic classifier with the sigmoid function.
+order: 3
+estimatedMinutes: 18
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="classical-ml" moduleSlug="instance-based-and-linear-models" lessonSlug="logistic-regression" />
+
+## Overview
+
+Despite the name, logistic regression is a **classification** algorithm, not
+a regression one. It answers questions like "is this email spam?" or "will
+this customer churn?" by predicting a *probability* between 0 and 1.
+
+## From a line to a probability
+
+Start the same way as linear regression — a weighted sum of features:
+
+```
+z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b
+```
+
+`z` can be any real number, but a probability needs to be squashed into
+`[0, 1]`. That's what the **sigmoid function** does:
+
+```
+σ(z) = 1 / (1 + e⁻ᶻ)
+```
+
+Large positive `z` pushes `σ(z)` toward 1, large negative `z` pushes it
+toward 0, and `z = 0` gives exactly 0.5. The model predicts class 1 when
+`σ(z) ≥ 0.5` (equivalently, when `z ≥ 0`) — geometrically, this makes the
+decision boundary a straight line (or hyperplane), just like linear
+regression's fitted line, only now it separates classes instead of tracing
+a trend.
+
+## The cost function: log loss
+
+Squared error doesn't work well for probabilities — it's not sensitive
+enough near 0 and 1, where mistakes matter most. Logistic regression instead
+minimizes **log loss** (cross-entropy):
+
+```
+Loss = −[y·log(ŷ) + (1−y)·log(1−ŷ)]
+```
+
+This penalizes confident wrong answers extremely heavily: predicting 0.99
+for an example that's actually class 0 incurs a huge loss, far worse than
+predicting 0.6. That sharp penalty is exactly what you want from a
+probability estimator, and this same log loss reappears as the standard
+loss function for neural network classifiers later in this course.
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+from sklearn.linear_model import LogisticRegression
+
+# Hours studied -> pass (1) / fail (0)
+X = np.array([[0.5], [1.0], [1.5], [3.0], [4.0], [5.5], [6.0], [7.0]])
+y = np.array([0, 0, 0, 0, 1, 1, 1, 1])
+
+model = LogisticRegression()
+model.fit(X, y)
+
+for hours in [0.5, 2.0, 3.5, 5.0]:
+    proba = model.predict_proba([[hours]])[0][1]
+    print(f"{hours} hours studied -> P(pass) = {proba:.2f}")
+`}
+/>
+
+Try adding a borderline example (say, 4 hours studied) to the training set
+with a "pass" label and see how it shifts the decision boundary.
+
+## When it breaks down
+
+Logistic regression, like linear regression, assumes the decision boundary
+between classes is (roughly) linear. If classes are separated by a curved or
+circular boundary in feature space, a plain logistic regression model will
+underfit — you'd need engineered polynomial features, or a model that
+learns nonlinear boundaries natively (decision trees, SVMs with a kernel, or
+neural networks, all covered later in this course).
+
+## Check your understanding
+
+<Quiz courseSlug="classical-ml" moduleSlug="instance-based-and-linear-models" lessonSlug="logistic-regression" />

@@ -1,5 +1,6 @@
 {
   "title": "Instance-Based & Linear Models",
   "description": "KNN, linear regression, and logistic regression.",
-  "order": 1
+  "order": 1,
+  "pages": ["knn", "linear-regression", "logistic-regression"]
 }

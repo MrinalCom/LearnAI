@@ -1,0 +1,101 @@
+---
+title: Linear Regression
+description: Fitting a line (or hyperplane) to predict continuous values, and how gradient descent finds it.
+order: 2
+estimatedMinutes: 20
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="classical-ml" moduleSlug="instance-based-and-linear-models" lessonSlug="linear-regression" />
+
+## Overview
+
+Linear regression predicts a continuous number — a house price, a temperature,
+a demand forecast — as a **weighted sum of input features** plus a bias term:
+
+```
+ŷ = w₁x₁ + w₂x₂ + ... + wₙxₙ + b
+```
+
+"Fitting" the model means finding the weights `w` and bias `b` that make the
+predictions `ŷ` as close as possible to the true values `y` across the
+training set.
+
+## The cost function
+
+"As close as possible" needs a precise definition. Linear regression
+typically minimizes **mean squared error (MSE)**:
+
+```
+MSE = (1/n) * Σ (ŷᵢ − yᵢ)²
+```
+
+Squaring the error does two things: it makes all errors positive (so they
+don't cancel out), and it penalizes large errors much more than small ones —
+a prediction that's off by 10 contributes 100x more to the cost than one
+that's off by 1.
+
+## How the weights are found: gradient descent
+
+For simple cases, there's a closed-form solution (the "normal equation").
+But most real models — including logistic regression and neural networks
+later in this course — are fit with **gradient descent** instead, because it
+scales to problems with no closed-form solution:
+
+1. Start with random (or zero) weights.
+2. Compute the gradient of the cost function with respect to each weight —
+   the direction that increases the cost fastest.
+3. Step the weights in the *opposite* direction, scaled by a **learning
+   rate** `α`: `w := w − α · ∂MSE/∂w`.
+4. Repeat until the cost stops decreasing meaningfully.
+
+The learning rate matters a lot: too small and training crawls; too large
+and it can overshoot the minimum and diverge entirely. This exact loop —
+compute gradient, step against it, repeat — is how you'll train every model
+in the Deep Learning section too.
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+from sklearn.linear_model import LinearRegression
+
+# Square footage -> price (in $1000s), roughly linear with noise.
+X = np.array([[650], [800], [1200], [1500], [1850], [2200]])
+y = np.array([140, 175, 240, 300, 355, 410])
+
+model = LinearRegression()
+model.fit(X, y)
+
+print("Weight (price per sqft):", model.coef_[0])
+print("Bias (intercept):", model.intercept_)
+print("Predicted price for 1000 sqft:", model.predict([[1000]])[0])
+print("R^2 score on training data:", model.score(X, y))
+`}
+/>
+
+`coef_` is the learned weight, `intercept_` is the bias, and `.score()`
+reports R², the fraction of variance in `y` explained by the model (1.0 is a
+perfect fit).
+
+## Assumptions and limitations
+
+Linear regression assumes the relationship between features and target is
+genuinely linear. It's a poor fit when:
+
+- The true relationship is curved (though you can engineer polynomial
+  features to partially work around this).
+- Features are highly correlated with each other (**multicollinearity**),
+  which makes individual weight estimates unstable.
+- A few extreme outliers dominate the squared-error cost.
+
+Despite these limits, it remains one of the most widely used models in
+practice — it's fast, interpretable (each weight has a direct meaning), and
+a strong baseline to beat before reaching for something more complex.
+
+## Check your understanding
+
+<Quiz courseSlug="classical-ml" moduleSlug="instance-based-and-linear-models" lessonSlug="linear-regression" />

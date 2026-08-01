@@ -1,0 +1,41 @@
+{
+  "title": "Linear Regression Check",
+  "questions": [
+    {
+      "questionText": "Why does linear regression minimize squared error rather than, say, the raw (signed) error?",
+      "questionType": "mcq",
+      "options": [
+        "Squared error is faster to compute",
+        "Raw error can't be negative",
+        "Squaring makes all errors positive (so they don't cancel) and penalizes large errors more heavily",
+        "Squared error is only used for classification"
+      ],
+      "correctAnswer": "Squaring makes all errors positive (so they don't cancel) and penalizes large errors more heavily",
+      "explanation": "If you summed signed errors, a +10 and a -10 error would cancel out to look like a perfect fit. Squaring fixes that and disproportionately punishes large misses."
+    },
+    {
+      "questionText": "You set the gradient descent learning rate way too high. What's the most likely symptom?",
+      "questionType": "mcq",
+      "options": [
+        "Training converges faster than usual",
+        "The cost oscillates wildly or increases — the model diverges",
+        "Nothing changes, learning rate only affects speed",
+        "The model becomes immune to outliers"
+      ],
+      "correctAnswer": "The cost oscillates wildly or increases — the model diverges",
+      "explanation": "A learning rate that's too large causes each update to overshoot the minimum, and the cost can bounce around or blow up instead of settling."
+    },
+    {
+      "questionText": "What does a learned weight (coefficient) in linear regression represent?",
+      "questionType": "mcq",
+      "options": [
+        "The probability that the feature matters",
+        "How much the prediction changes for a one-unit increase in that feature, holding others fixed",
+        "The correlation between the feature and every other feature",
+        "The order in which features were added to the model"
+      ],
+      "correctAnswer": "How much the prediction changes for a one-unit increase in that feature, holding others fixed",
+      "explanation": "This direct interpretability — each weight is a concrete \"units of y per unit of x\" — is one of linear regression's biggest practical advantages over black-box models."
+    }
+  ]
+}
