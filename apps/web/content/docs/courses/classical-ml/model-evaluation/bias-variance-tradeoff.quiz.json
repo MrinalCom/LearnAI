@@ -1,0 +1,41 @@
+{
+  "title": "Bias-Variance Tradeoff Check",
+  "questions": [
+    {
+      "questionText": "A model gets 55% accuracy on training data and 54% on test data. What does this suggest?",
+      "questionType": "mcq",
+      "options": [
+        "High variance (overfitting)",
+        "High bias (underfitting) — the model is too simple to capture the pattern even on data it trained on",
+        "The model is perfectly tuned",
+        "The test set is too small to draw any conclusion"
+      ],
+      "correctAnswer": "High bias (underfitting) — the model is too simple to capture the pattern even on data it trained on",
+      "explanation": "Similar (and both low) train and test accuracy indicates the model isn't even fitting the training data well — a hallmark of underfitting, not overfitting."
+    },
+    {
+      "questionText": "Why is it invalid to evaluate a model's performance using the same data it was trained on?",
+      "questionType": "mcq",
+      "options": [
+        "It's not invalid, training accuracy is the best measure of quality",
+        "The model may have memorized that specific data, so training accuracy doesn't reflect how well it generalizes to new data",
+        "Training accuracy is always lower than test accuracy",
+        "Because scikit-learn doesn't allow it"
+      ],
+      "correctAnswer": "The model may have memorized that specific data, so training accuracy doesn't reflect how well it generalizes to new data",
+      "explanation": "A model can achieve perfect training accuracy purely by memorizing noise, which tells you nothing about how it will perform on data it hasn't seen — hence the need for a held-out test set."
+    },
+    {
+      "questionText": "According to the bias-variance tradeoff, what typically happens when you increase a model's complexity (e.g. deeper trees, smaller k)?",
+      "questionType": "mcq",
+      "options": [
+        "Both bias and variance decrease together",
+        "Bias tends to decrease while variance tends to increase",
+        "Neither bias nor variance is affected by complexity",
+        "Bias tends to increase while variance tends to decrease"
+      ],
+      "correctAnswer": "Bias tends to decrease while variance tends to increase",
+      "explanation": "A more complex model can fit more intricate patterns (lower bias) but also becomes more sensitive to noise in the specific training set it saw (higher variance) — you can't minimize both simultaneously by complexity alone."
+    }
+  ]
+}

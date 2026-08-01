@@ -1,0 +1,90 @@
+---
+title: Regularization
+description: Penalizing model complexity directly in the cost function to fight overfitting.
+order: 4
+estimatedMinutes: 18
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="classical-ml" moduleSlug="model-evaluation" lessonSlug="regularization" />
+
+## Overview
+
+Earlier lessons fought overfitting structurally — limiting a tree's depth,
+capping `k` in KNN. **Regularization** takes a different approach for
+models fit by minimizing a cost function (linear and logistic regression,
+neural networks later on): add a penalty for large weights directly into
+the cost function being optimized.
+
+```
+Regularized cost = original loss + λ · penalty(weights)
+```
+
+The optimizer now has to balance two goals: fit the data well, *and* keep
+the weights small. `λ` (lambda) controls how much the penalty matters — the
+same complexity knob you've now seen in nearly every form throughout this
+course.
+
+## Why small weights generalize better
+
+A model with very large weights is extremely sensitive to small changes in
+its inputs — a tiny shift in one feature can swing the prediction wildly.
+That sensitivity is exactly what overfitting looks like: the model has
+learned to react to noise-level details in the training data. Penalizing
+weight magnitude directly discourages the model from relying too heavily on
+any single feature, producing smoother, more stable predictions.
+
+## L1 vs. L2 regularization
+
+- **L2 (Ridge)** — penalty is the sum of squared weights: `Σ wᵢ²`. Shrinks
+  all weights toward zero smoothly, but rarely to *exactly* zero.
+- **L1 (Lasso)** — penalty is the sum of absolute weights: `Σ |wᵢ|`. Tends
+  to push many weights to *exactly* zero, effectively performing automatic
+  feature selection — the model ends up ignoring irrelevant features
+  entirely rather than just downweighting them.
+- **Elastic Net** — a weighted combination of both, useful when you want
+  some feature selection without L1's occasional instability when features
+  are highly correlated.
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+from sklearn.linear_model import LinearRegression, Ridge, Lasso
+
+rng = np.random.RandomState(0)
+n_samples = 30
+# 10 features, but only the first 2 actually affect y -- the rest are pure noise.
+X = rng.normal(0, 1, size=(n_samples, 10))
+y = 3 * X[:, 0] - 2 * X[:, 1] + rng.normal(0, 0.5, n_samples)
+
+for name, model in [
+    ("Plain LinearRegression", LinearRegression()),
+    ("Ridge (L2, alpha=1.0)", Ridge(alpha=1.0)),
+    ("Lasso (L1, alpha=0.1)", Lasso(alpha=0.1)),
+]:
+    model.fit(X, y)
+    print(f"{name}:")
+    print("  coefficients:", np.round(model.coef_, 2))
+`}
+/>
+
+Watch how Lasso pushes many of the 8 irrelevant features' coefficients to
+exactly `0.0`, while plain linear regression assigns them small but nonzero
+values purely from noise, and Ridge shrinks them without zeroing them out.
+
+## Choosing the regularization strength
+
+Like every other hyperparameter in this course, `λ` (often called `alpha`
+in scikit-learn) should be chosen with cross-validation, not guessed —
+`RidgeCV` and `LassoCV` automate exactly this search. Too little
+regularization and you're back to overfitting; too much, and the penalty
+dominates the actual loss, pushing every weight toward zero regardless of
+whether the data supports it (underfitting again).
+
+## Check your understanding
+
+<Quiz courseSlug="classical-ml" moduleSlug="model-evaluation" lessonSlug="regularization" />

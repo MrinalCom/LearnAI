@@ -1,0 +1,74 @@
+---
+title: Cross-Validation
+description: Getting a reliable performance estimate — and tuning hyperparameters — without a single lucky (or unlucky) train/test split.
+order: 2
+estimatedMinutes: 15
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="classical-ml" moduleSlug="model-evaluation" lessonSlug="cross-validation" />
+
+## Overview
+
+A single train/test split has a problem: the result depends on which
+examples happened to land in the test set. Get an unusually easy test split
+and your model looks better than it is; get a hard one and it looks worse.
+**Cross-validation** fixes this by testing on *every* example exactly once,
+while still never training and testing on the same data at the same time.
+
+## K-fold cross-validation
+
+1. Split the data into `k` equal-sized folds (5 and 10 are common choices).
+2. For each fold: train on the other `k − 1` folds, test on that fold.
+3. Average the `k` resulting scores.
+
+Every example gets used for testing exactly once, and for training in
+`k − 1` of the `k` rounds. The result is both a more reliable performance
+estimate and a measure of *how much* that estimate varies (the standard
+deviation across folds) — a single train/test split gives you neither.
+
+## Using it to choose hyperparameters, correctly
+
+Cross-validation is also how you should tune hyperparameters like KNN's `k`
+or a tree's `max_depth` — **without touching your final test set**. The
+correct procedure:
+
+1. Split off a final test set and don't touch it again until the very end.
+2. On the remaining data, use k-fold cross-validation to compare
+   hyperparameter choices.
+3. Pick the hyperparameter with the best average cross-validation score.
+4. Retrain on all the remaining data with that hyperparameter, and evaluate
+   *once* on the untouched test set.
+
+If you instead tune hyperparameters by repeatedly checking test set
+performance, you're effectively fitting to the test set itself — the same
+overfitting risk from the previous lesson, just at the hyperparameter level
+instead of the model-weights level.
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+from sklearn.model_selection import cross_val_score
+from sklearn.neighbors import KNeighborsClassifier
+
+rng = np.random.RandomState(0)
+X = rng.uniform(0, 10, size=(150, 2))
+y = ((X[:, 0] + X[:, 1]) > 10).astype(int)
+
+for k in [1, 5, 15, 40]:
+    scores = cross_val_score(KNeighborsClassifier(n_neighbors=k), X, y, cv=5)
+    print(f"k={k}: mean accuracy={scores.mean():.3f}, std={scores.std():.3f}")
+`}
+/>
+
+Compare the mean *and* the standard deviation across folds — a hyperparameter
+with a slightly lower mean but much lower variance across folds is often the
+more trustworthy, stable choice.
+
+## Check your understanding
+
+<Quiz courseSlug="classical-ml" moduleSlug="model-evaluation" lessonSlug="cross-validation" />

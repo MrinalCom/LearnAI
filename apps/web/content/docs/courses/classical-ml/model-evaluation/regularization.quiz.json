@@ -1,0 +1,41 @@
+{
+  "title": "Regularization Check",
+  "questions": [
+    {
+      "questionText": "What does regularization add to a model's cost function?",
+      "questionType": "mcq",
+      "options": [
+        "A penalty for large weight values, discouraging the model from relying too heavily on any one feature",
+        "A bonus for using more features",
+        "A penalty for using too little training data",
+        "A term that speeds up gradient descent"
+      ],
+      "correctAnswer": "A penalty for large weight values, discouraging the model from relying too heavily on any one feature",
+      "explanation": "Regularization directly penalizes weight magnitude in the cost function, trading a little training fit for smaller, more stable weights that generalize better."
+    },
+    {
+      "questionText": "What's the key practical difference between L1 (Lasso) and L2 (Ridge) regularization?",
+      "questionType": "mcq",
+      "options": [
+        "L1 tends to push irrelevant weights to exactly zero (feature selection); L2 shrinks weights smoothly but rarely to exactly zero",
+        "L2 always performs better than L1",
+        "L1 can only be used with decision trees",
+        "There is no practical difference"
+      ],
+      "correctAnswer": "L1 tends to push irrelevant weights to exactly zero (feature selection); L2 shrinks weights smoothly but rarely to exactly zero",
+      "explanation": "L1's absolute-value penalty has a geometry that tends to zero out weights entirely, effectively performing automatic feature selection, while L2's squared penalty shrinks weights smoothly without eliminating them."
+    },
+    {
+      "questionText": "What happens if the regularization strength (lambda / alpha) is set far too high?",
+      "questionType": "mcq",
+      "options": [
+        "The model perfectly fits the training data",
+        "The penalty dominates the loss, pushing weights toward zero regardless of the data — the model underfits",
+        "Regularization strength has no effect on model behavior",
+        "The model automatically switches from L1 to L2"
+      ],
+      "correctAnswer": "The penalty dominates the loss, pushing weights toward zero regardless of the data — the model underfits",
+      "explanation": "Too much regularization overwhelms the actual data-fitting term, forcing weights toward zero even when the data supports larger values — the same underfitting failure mode as an overly simple model."
+    }
+  ]
+}

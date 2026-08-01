@@ -1,0 +1,41 @@
+{
+  "title": "Classification Metrics Check",
+  "questions": [
+    {
+      "questionText": "A dataset is 99.5% \"not fraud\" and 0.5% \"fraud\". A model that always predicts \"not fraud\" scores 99.5% accuracy. What does this demonstrate?",
+      "questionType": "mcq",
+      "options": [
+        "The model is excellent and should be deployed",
+        "Accuracy can be highly misleading on imbalanced datasets, since a trivial/useless model can still score very high",
+        "99.5% accuracy is impossible to achieve any other way",
+        "Fraud detection doesn't need any evaluation metric"
+      ],
+      "correctAnswer": "Accuracy can be highly misleading on imbalanced datasets, since a trivial/useless model can still score very high",
+      "explanation": "On imbalanced data, a model that never predicts the rare class can still post a very high accuracy while being completely useless — precision/recall expose this immediately."
+    },
+    {
+      "questionText": "What does recall specifically measure?",
+      "questionType": "mcq",
+      "options": [
+        "Of everything predicted positive, what fraction actually was positive",
+        "Of everything that was actually positive, what fraction the model correctly caught",
+        "The overall accuracy of the model",
+        "How fast the model makes predictions"
+      ],
+      "correctAnswer": "Of everything that was actually positive, what fraction the model correctly caught",
+      "explanation": "Recall = TP / (TP + FN) — it's about not missing real positive cases, regardless of how many false alarms that costs."
+    },
+    {
+      "questionText": "Why does F1 use the harmonic mean of precision and recall instead of a simple average?",
+      "questionType": "mcq",
+      "options": [
+        "The harmonic mean is easier to compute",
+        "The harmonic mean sharply penalizes cases where one of precision or recall is very low, even if the other is very high",
+        "There's no meaningful difference between the two",
+        "F1 doesn't actually use precision or recall"
+      ],
+      "correctAnswer": "The harmonic mean sharply penalizes cases where one of precision or recall is very low, even if the other is very high",
+      "explanation": "A simple average of 100% precision and 1% recall would look like 50.5%, hiding how bad the recall is. The harmonic mean drags the F1 score down toward the smaller value instead."
+    }
+  ]
+}

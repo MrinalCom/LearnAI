@@ -1,0 +1,41 @@
+{
+  "title": "Cross-Validation Check",
+  "questions": [
+    {
+      "questionText": "What problem does k-fold cross-validation solve compared to a single train/test split?",
+      "questionType": "mcq",
+      "options": [
+        "It makes training faster",
+        "It removes the dependency on which specific examples happened to land in the test set, by testing on every example exactly once",
+        "It eliminates the need for a test set entirely, forever",
+        "It automatically picks the best model architecture"
+      ],
+      "correctAnswer": "It removes the dependency on which specific examples happened to land in the test set, by testing on every example exactly once",
+      "explanation": "A single split can be lucky or unlucky; averaging performance across k folds, where every example is tested on exactly once, gives a more reliable estimate."
+    },
+    {
+      "questionText": "What's wrong with tuning a hyperparameter by repeatedly checking performance on your final test set?",
+      "questionType": "mcq",
+      "options": [
+        "Nothing is wrong with this approach",
+        "It effectively overfits to the test set itself, since you keep selecting whatever choice happens to score best on it",
+        "It's technically impossible to do",
+        "It only works for classification, not regression"
+      ],
+      "correctAnswer": "It effectively overfits to the test set itself, since you keep selecting whatever choice happens to score best on it",
+      "explanation": "Repeatedly peeking at test performance to make decisions turns the test set into a de facto training signal, defeating its purpose as an unbiased final check."
+    },
+    {
+      "questionText": "In 5-fold cross-validation, how many times is each individual example used for training?",
+      "questionType": "mcq",
+      "options": [
+        "0 times",
+        "1 time",
+        "4 times",
+        "5 times"
+      ],
+      "correctAnswer": "4 times",
+      "explanation": "Each example is held out for testing in exactly 1 of the 5 folds, and used for training in the other 4."
+    }
+  ]
+}
