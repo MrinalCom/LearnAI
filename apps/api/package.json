@@ -7,10 +7,11 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc -p .",
     "start": "node dist/index.js",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
     "lint": "echo \"(no linter configured yet)\"",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx src/db/migrate.ts"
+    "db:migrate": "tsx src/db/migrate.ts",
+    "sync-content": "tsx scripts/sync-content.ts"
   },
   "dependencies": {
     "@learning/shared": "workspace:*",
@@ -19,6 +20,7 @@
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.45.2",
     "express": "^4.19.2",
+    "gray-matter": "^4.0.3",
     "ioredis": "^5.4.1",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.12.0",

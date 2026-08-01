@@ -1,0 +1,6 @@
+{
+  "title": "Classical ML",
+  "description": "Supervised and unsupervised learning with classical algorithms: KNN, linear models, trees, and clustering.",
+  "order": 1,
+  "pages": ["instance-based-and-linear-models"]
+}
