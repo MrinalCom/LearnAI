@@ -1,0 +1,41 @@
+{
+  "title": "Naive Bayes Check",
+  "questions": [
+    {
+      "questionText": "What does \"naive\" refer to in Naive Bayes?",
+      "questionType": "mcq",
+      "options": [
+        "The algorithm is too simple to be used in production",
+        "It assumes all features are conditionally independent given the class, which is rarely exactly true",
+        "It ignores the training labels",
+        "It only works on numeric data"
+      ],
+      "correctAnswer": "It assumes all features are conditionally independent given the class, which is rarely exactly true",
+      "explanation": "This simplifying (and technically inaccurate) independence assumption is what makes the probability calculation tractable, even though real features are usually correlated."
+    },
+    {
+      "questionText": "Why is Naive Bayes a popular choice for text classification specifically?",
+      "questionType": "mcq",
+      "options": [
+        "It can only be used on text data",
+        "It handles high-dimensional, sparse feature spaces (like word counts) efficiently and needs relatively little data",
+        "It requires GPU acceleration",
+        "Text data violates the independence assumption less than other data"
+      ],
+      "correctAnswer": "It handles high-dimensional, sparse feature spaces (like word counts) efficiently and needs relatively little data",
+      "explanation": "Text turns into thousands of sparse word-count features; Naive Bayes' simple frequency-counting approach scales to this well and trains fast."
+    },
+    {
+      "questionText": "What's a known weakness of Naive Bayes' predicted probabilities?",
+      "questionType": "mcq",
+      "options": [
+        "They are always exactly 0 or 1",
+        "They tend to be poorly calibrated / overconfident, even when the final class prediction is correct",
+        "They can't be computed at all",
+        "They ignore the prior class frequencies"
+      ],
+      "correctAnswer": "They tend to be poorly calibrated / overconfident, even when the final class prediction is correct",
+      "explanation": "Because the independence assumption is violated in practice, the multiplied probabilities tend to be pushed toward extremes — the ranking of classes is often right, but the actual probability values are less trustworthy."
+    }
+  ]
+}

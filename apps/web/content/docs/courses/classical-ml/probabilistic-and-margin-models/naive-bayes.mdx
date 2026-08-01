@@ -1,0 +1,100 @@
+---
+title: Naive Bayes
+description: A fast, surprisingly effective classifier built directly from Bayes' theorem.
+order: 1
+estimatedMinutes: 18
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="classical-ml" moduleSlug="probabilistic-and-margin-models" lessonSlug="naive-bayes" />
+
+## Overview
+
+Naive Bayes is a classifier built directly from **Bayes' theorem** — instead
+of learning a decision boundary geometrically (like KNN or logistic
+regression), it estimates probabilities from how often things co-occur in
+the training data, then picks whichever class is most probable.
+
+## Bayes' theorem, applied to classification
+
+```
+P(class | features) = P(features | class) · P(class) / P(features)
+```
+
+In words: the probability of a class *given* what we observed is
+proportional to how likely those features are *under* that class, times how
+common the class is overall. To classify a new example, compute this for
+every class and pick the largest.
+
+## Where "naive" comes in
+
+Computing `P(features | class)` exactly requires modeling how every feature
+interacts with every other feature — expensive, and it needs huge amounts of
+data. Naive Bayes sidesteps this with a deliberately simplifying (and
+usually false) assumption: **every feature is independent of every other
+feature, given the class.**
+
+```
+P(features | class) ≈ P(x₁|class) · P(x₂|class) · ... · P(xₙ|class)
+```
+
+This is almost never literally true — in a spam filter, the words "free" and
+"prize" are correlated, not independent — but the approximation works
+remarkably well in practice anyway, especially for text classification. It's
+"naive" in name, not typically in results.
+
+## Why it's still widely used
+
+- **Fast** — training is just counting frequencies, no iterative
+  optimization like gradient descent.
+- **Works well with very high-dimensional, sparse data** — exactly the
+  shape of text data (one feature per vocabulary word), which is why it's a
+  classic baseline for spam filtering and sentiment analysis.
+- **Needs relatively little training data** to produce sane probability
+  estimates, since it's just counting.
+
+## In real code
+
+<PyodidePlayground initialCode={`from sklearn.naive_bayes import MultinomialNB
+from sklearn.feature_extraction.text import CountVectorizer
+
+texts = [
+    "free prize money now",
+    "win a free vacation now",
+    "meeting scheduled for tomorrow",
+    "please review the attached report",
+    "your invoice is attached",
+]
+labels = [1, 1, 0, 0, 0]  # 1 = spam, 0 = not spam
+
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(texts)
+
+clf = MultinomialNB()
+clf.fit(X, labels)
+
+test = ["free money for you", "attached is the tomorrow schedule"]
+predictions = clf.predict(vectorizer.transform(test))
+for text, pred in zip(test, predictions):
+    print(f"{text!r} -> {'spam' if pred == 1 else 'not spam'}")
+`}
+/>
+
+`CountVectorizer` turns each text into a vector of word counts — exactly the
+high-dimensional, sparse representation Naive Bayes handles well.
+
+## Limitations
+
+Because the independence assumption is often wrong, Naive Bayes' predicted
+*probabilities* tend to be poorly calibrated (overconfident), even when its
+final classification decision is correct. If you need well-calibrated
+probabilities rather than just the right class label, logistic regression or
+a calibrated model is usually a better choice.
+
+## Check your understanding
+
+<Quiz courseSlug="classical-ml" moduleSlug="probabilistic-and-margin-models" lessonSlug="naive-bayes" />

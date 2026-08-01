@@ -1,0 +1,6 @@
+{
+  "title": "Probabilistic & Margin-Based Models",
+  "description": "Naive Bayes and support vector machines.",
+  "order": 3,
+  "pages": ["naive-bayes", "svm"]
+}

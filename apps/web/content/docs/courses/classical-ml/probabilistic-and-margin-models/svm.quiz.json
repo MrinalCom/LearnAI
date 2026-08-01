@@ -1,0 +1,41 @@
+{
+  "title": "Support Vector Machines Check",
+  "questions": [
+    {
+      "questionText": "What is an SVM trying to maximize when finding its decision boundary?",
+      "questionType": "mcq",
+      "options": [
+        "The number of support vectors",
+        "The margin — the distance between the boundary and the closest points of each class",
+        "The training accuracy only",
+        "The number of features used"
+      ],
+      "correctAnswer": "The margin — the distance between the boundary and the closest points of each class",
+      "explanation": "A wide margin makes the boundary more robust to noise and new data; the SVM is specifically the maximum-margin classifier."
+    },
+    {
+      "questionText": "What does the kernel trick let an SVM do?",
+      "questionType": "mcq",
+      "options": [
+        "Train faster on any dataset size",
+        "Separate classes that aren't linearly separable in the original feature space, without explicitly computing higher-dimensional features",
+        "Avoid needing a margin parameter",
+        "Convert the problem into a decision tree"
+      ],
+      "correctAnswer": "Separate classes that aren't linearly separable in the original feature space, without explicitly computing higher-dimensional features",
+      "explanation": "Kernels implicitly compute what a linear boundary would look like in a higher-dimensional mapped space, letting the SVM handle non-linear boundaries efficiently."
+    },
+    {
+      "questionText": "What does a very large value of the regularization parameter C tend to cause?",
+      "questionType": "mcq",
+      "options": [
+        "A wider margin and more tolerance for misclassified points",
+        "A narrower margin that fits the training data closely, risking overfitting",
+        "The kernel trick to stop working",
+        "C has no effect on the margin"
+      ],
+      "correctAnswer": "A narrower margin that fits the training data closely, risking overfitting",
+      "explanation": "Large C heavily penalizes margin violations, pushing the SVM toward a tighter fit around the training data — the same overfitting risk seen with other models' complexity knobs."
+    }
+  ]
+}

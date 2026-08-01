@@ -1,0 +1,98 @@
+---
+title: Support Vector Machines
+description: Finding the widest possible margin between classes, and using kernels to handle non-linear data.
+order: 2
+estimatedMinutes: 20
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="classical-ml" moduleSlug="probabilistic-and-margin-models" lessonSlug="svm" />
+
+## Overview
+
+Logistic regression finds *a* line that separates two classes. A **support
+vector machine (SVM)** finds the line that separates them with the **widest
+possible margin** — the largest possible buffer zone before hitting a
+training point from either class.
+
+## Why maximize the margin?
+
+Imagine many different lines could separate two classes perfectly on the
+training data. A line that barely squeezes between the closest points is
+fragile — a slightly different sample, or a new test point, could easily
+land on the wrong side. A line with a wide margin on both sides is more
+robust: it has more room for error before misclassifying something.
+
+The training points closest to the boundary — the ones that actually
+"support" (define) where the maximum-margin line sits — are called the
+**support vectors**. Every other training point could be removed without
+changing the boundary at all; only the support vectors matter.
+
+## Soft margins: allowing some mistakes
+
+Real data is rarely perfectly separable. SVMs handle this with a **soft
+margin**: a regularization parameter `C` controls how much the model is
+allowed to tolerate misclassified or margin-violating points.
+
+- **Large `C`** — heavily penalize margin violations → narrower margin,
+  fits training data closely (risk of overfitting).
+- **Small `C`** — tolerate more violations → wider margin, smoother boundary
+  (risk of underfitting).
+
+This is the same bias-variance knob you've now seen as `k` in KNN and
+`max_depth` in decision trees — nearly every model has one.
+
+## The kernel trick
+
+So far this describes a *linear* boundary. SVMs become dramatically more
+powerful with the **kernel trick**: instead of computing a linear boundary
+in the original feature space, a kernel function implicitly maps the data
+into a higher-dimensional space where a linear boundary *can* separate
+classes that weren't linearly separable in the original space — without
+ever explicitly computing those extra dimensions (which is what makes it
+computationally efficient). The RBF (Gaussian) kernel is the most common
+choice for nonlinear boundaries.
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+from sklearn.svm import SVC
+
+# A ring of class 1 surrounding a cluster of class 0 -- not linearly separable.
+rng = np.random.RandomState(0)
+inner = rng.normal(0, 0.5, size=(20, 2))
+outer_angle = rng.uniform(0, 2 * np.pi, size=20)
+outer = np.column_stack([3 * np.cos(outer_angle), 3 * np.sin(outer_angle)])
+
+X = np.vstack([inner, outer])
+y = np.array([0] * 20 + [1] * 20)
+
+linear_svm = SVC(kernel="linear").fit(X, y)
+rbf_svm = SVC(kernel="rbf", C=1.0).fit(X, y)
+
+print("Linear kernel training accuracy:", linear_svm.score(X, y))
+print("RBF kernel training accuracy:", rbf_svm.score(X, y))
+`}
+/>
+
+The linear kernel should perform close to chance (it physically can't
+separate a ring from its center with a straight line), while the RBF kernel
+handles it easily — a direct demonstration of what the kernel trick buys
+you.
+
+## When to reach for an SVM
+
+SVMs tend to work well on small-to-medium datasets with high-dimensional
+feature spaces, and were the go-to choice for many classification problems
+before gradient-boosted trees and deep learning became dominant. They scale
+poorly to very large datasets (training time grows faster than linearly with
+the number of examples), which is the main reason they're used less often
+today for large-scale problems.
+
+## Check your understanding
+
+<Quiz courseSlug="classical-ml" moduleSlug="probabilistic-and-margin-models" lessonSlug="svm" />
