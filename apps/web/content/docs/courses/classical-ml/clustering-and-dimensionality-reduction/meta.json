@@ -1,0 +1,6 @@
+{
+  "title": "Clustering & Dimensionality Reduction",
+  "description": "Unsupervised learning: finding structure in unlabeled data.",
+  "order": 4,
+  "pages": ["k-means", "hierarchical-clustering", "dbscan", "pca"]
+}

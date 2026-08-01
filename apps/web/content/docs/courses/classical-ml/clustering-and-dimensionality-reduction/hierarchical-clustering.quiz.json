@@ -1,0 +1,41 @@
+{
+  "title": "Hierarchical Clustering Check",
+  "questions": [
+    {
+      "questionText": "What is the key advantage hierarchical clustering has over k-means?",
+      "questionType": "mcq",
+      "options": [
+        "It's always faster",
+        "You don't need to choose the number of clusters before running it — you can cut the resulting dendrogram at any level afterward",
+        "It never requires a distance metric",
+        "It always produces spherical clusters"
+      ],
+      "correctAnswer": "You don't need to choose the number of clusters before running it — you can cut the resulting dendrogram at any level afterward",
+      "explanation": "Agglomerative clustering builds the entire merge tree first; the number of clusters is decided by where you cut that tree, after the fact."
+    },
+    {
+      "questionText": "What does the \"linkage\" method control in agglomerative clustering?",
+      "questionType": "mcq",
+      "options": [
+        "How many clusters are produced",
+        "How the distance between two clusters (not individual points) is defined when deciding what to merge next",
+        "Which programming language is used",
+        "The random seed for initialization"
+      ],
+      "correctAnswer": "How the distance between two clusters (not individual points) is defined when deciding what to merge next",
+      "explanation": "Since clusters (not just points) need to be compared once merging starts, linkage (single, complete, average, Ward's) defines what \"distance between two clusters\" even means."
+    },
+    {
+      "questionText": "What's the main practical drawback of hierarchical clustering compared to k-means?",
+      "questionType": "mcq",
+      "options": [
+        "It can't be used for numeric data",
+        "It's typically much more computationally expensive (roughly O(n^3)), making it impractical on very large datasets",
+        "It cannot produce more than 2 clusters",
+        "It requires labeled data"
+      ],
+      "correctAnswer": "It's typically much more computationally expensive (roughly O(n^3)), making it impractical on very large datasets",
+      "explanation": "Naive agglomerative clustering scales cubically with the number of points, far worse than k-means' near-linear per-iteration cost."
+    }
+  ]
+}

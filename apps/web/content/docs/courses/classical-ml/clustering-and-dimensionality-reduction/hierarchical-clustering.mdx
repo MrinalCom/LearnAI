@@ -1,0 +1,84 @@
+---
+title: Hierarchical Clustering
+description: Building a full tree of nested clusters instead of committing to one value of k upfront.
+order: 2
+estimatedMinutes: 15
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="classical-ml" moduleSlug="clustering-and-dimensionality-reduction" lessonSlug="hierarchical-clustering" />
+
+## Overview
+
+K-means forces you to choose `k` before you see any results. **Hierarchical
+clustering** (specifically, the agglomerative variant) takes a different
+approach: it builds an entire tree of nested clusters, and you decide how
+many clusters you want *afterward*, by "cutting" the tree at whatever level
+makes sense.
+
+## Agglomerative clustering, step by step
+
+1. Start with every point as its own cluster.
+2. Find the two closest clusters and merge them into one.
+3. Repeat step 2 until every point has been merged into a single cluster.
+
+The result is a **dendrogram** — a tree recording every merge, in order,
+along with how far apart the merged clusters were. Cutting the dendrogram at
+a given height yields a specific number of clusters: cut near the top and
+you get few, broad clusters; cut near the bottom and you get many, tight
+ones.
+
+## How "closest clusters" is defined: linkage
+
+For single points, "distance" is unambiguous. For *clusters* of points, it
+isn't — this is where the **linkage** method matters:
+
+- **Single linkage** — distance between the closest pair of points across
+  the two clusters. Can produce long, straggly "chained" clusters.
+- **Complete linkage** — distance between the farthest pair of points.
+  Tends to produce compact, evenly-sized clusters.
+- **Average linkage** — average distance between all cross-cluster pairs.
+- **Ward's method** — merges whichever pair minimizes the increase in
+  total within-cluster variance. Usually the best default for roughly
+  spherical clusters.
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+from sklearn.cluster import AgglomerativeClustering
+
+rng = np.random.RandomState(0)
+blob_a = rng.normal([2, 2], 0.4, size=(10, 2))
+blob_b = rng.normal([8, 3], 0.4, size=(10, 2))
+blob_c = rng.normal([5, 8], 0.4, size=(10, 2))
+X = np.vstack([blob_a, blob_b, blob_c])
+
+model = AgglomerativeClustering(n_clusters=3, linkage="ward")
+labels = model.fit_predict(X)
+
+print("Cluster sizes:", np.bincount(labels))
+print("First 10 assignments:", labels[:10])
+`}
+/>
+
+Even though `AgglomerativeClustering` still takes `n_clusters` as an
+argument here (so scikit-learn knows where to cut), the underlying algorithm
+computed the *entire* merge tree — you could re-cut it at any other level
+without re-running the clustering from scratch.
+
+## Tradeoffs vs. k-means
+
+Hierarchical clustering doesn't require picking `k` upfront and gives you
+the full dendrogram to explore different granularities — genuinely useful
+for exploratory analysis. The cost is speed: naive implementations are
+`O(n³)` in the number of points, versus k-means' much cheaper `O(n·k)` per
+iteration, which makes hierarchical clustering impractical on very large
+datasets.
+
+## Check your understanding
+
+<Quiz courseSlug="classical-ml" moduleSlug="clustering-and-dimensionality-reduction" lessonSlug="hierarchical-clustering" />

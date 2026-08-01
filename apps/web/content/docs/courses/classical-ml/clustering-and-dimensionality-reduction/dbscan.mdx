@@ -1,0 +1,90 @@
+---
+title: DBSCAN
+description: Clustering by density instead of distance to a centroid — handles irregular shapes and finds outliers for free.
+order: 3
+estimatedMinutes: 15
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="classical-ml" moduleSlug="clustering-and-dimensionality-reduction" lessonSlug="dbscan" />
+
+## Overview
+
+K-means and hierarchical clustering both rely fundamentally on **distance to
+a center point**. **DBSCAN** (Density-Based Spatial Clustering of
+Applications with Noise) takes a completely different approach: it groups
+together points that are packed closely, and marks points in low-density
+regions as **noise** rather than forcing them into a cluster.
+
+This directly solves two problems from the previous two lessons: irregular
+(non-spherical) cluster shapes, and datasets that genuinely contain
+outliers that shouldn't belong to any cluster at all.
+
+## How it works
+
+DBSCAN has two parameters: `eps` (a distance radius) and `min_samples` (a
+count). It classifies every point as one of three types:
+
+- **Core point** — has at least `min_samples` other points within `eps` of
+  it.
+- **Border point** — within `eps` of a core point, but doesn't itself have
+  enough neighbors to be core.
+- **Noise point** — neither. Not assigned to any cluster.
+
+A cluster is formed by taking a core point, absorbing every point reachable
+from it through a chain of neighboring core points ("density-reachability"),
+plus their border points. This is why DBSCAN can trace out clusters of
+arbitrary shape — like the ring-around-a-center-cluster case from the SVM
+lesson — that k-means, which only understands "distance to one center,"
+cannot.
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+from sklearn.cluster import DBSCAN
+
+# A dense ring surrounding a dense center cluster, plus a couple of far-flung outliers.
+rng = np.random.RandomState(0)
+angle = rng.uniform(0, 2 * np.pi, size=30)
+ring = np.column_stack([4 * np.cos(angle), 4 * np.sin(angle)]) + rng.normal(0, 0.2, size=(30, 2))
+center = rng.normal(0, 0.4, size=(20, 2))
+outliers = np.array([[10, 10], [-10, -8]])
+
+X = np.vstack([ring, center, outliers])
+
+model = DBSCAN(eps=0.8, min_samples=4)
+labels = model.fit_predict(X)
+
+n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+n_noise = list(labels).count(-1)
+print(f"Found {n_clusters} clusters and {n_noise} noise points")
+print("Labels for the two outliers:", labels[-2:])
+`}
+/>
+
+Noise points are labeled `-1`. Notice you never told DBSCAN how many
+clusters to look for — unlike k-means and (in practice) hierarchical
+clustering, the number of clusters is discovered automatically from the
+density structure of the data.
+
+## Choosing eps and min_samples
+
+There's no `k` to pick, but `eps` and `min_samples` matter just as much:
+
+- **`eps` too small** — most points become their own noise cluster.
+- **`eps` too large** — everything merges into one giant cluster.
+- **`min_samples`** — higher values make the algorithm more conservative
+  about calling something a core point, which is more robust to noise but
+  can miss small, genuine clusters.
+
+A common approach is to plot the distance to each point's k-th nearest
+neighbor (sorted) and look for a similar "elbow" to the one used for
+choosing `k` in k-means.
+
+## Check your understanding
+
+<Quiz courseSlug="classical-ml" moduleSlug="clustering-and-dimensionality-reduction" lessonSlug="dbscan" />

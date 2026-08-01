@@ -1,0 +1,41 @@
+{
+  "title": "K-Means Check",
+  "questions": [
+    {
+      "questionText": "What are the two steps k-means alternates between until convergence?",
+      "questionType": "mcq",
+      "options": [
+        "Split and merge clusters",
+        "Assign each point to its nearest centroid, then move each centroid to the mean of its assigned points",
+        "Compute gradients and update weights",
+        "Sort points and pick the top k"
+      ],
+      "correctAnswer": "Assign each point to its nearest centroid, then move each centroid to the mean of its assigned points",
+      "explanation": "This assign-then-update loop (Lloyd's algorithm) is the entire k-means procedure, repeated until assignments stop changing."
+    },
+    {
+      "questionText": "Why does scikit-learn's KMeans commonly run with n_init > 1 (multiple random restarts)?",
+      "questionType": "mcq",
+      "options": [
+        "It's required for the math to work at all",
+        "Different random centroid initializations can converge to different (sometimes worse) results, so running multiple times and keeping the best avoids bad local convergence",
+        "It makes the algorithm supervised",
+        "It automatically picks the best k"
+      ],
+      "correctAnswer": "Different random centroid initializations can converge to different (sometimes worse) results, so running multiple times and keeping the best avoids bad local convergence",
+      "explanation": "K-means is sensitive to its starting centroids; multiple restarts with different initializations, keeping the lowest-inertia result, reduces the chance of settling on a poor clustering."
+    },
+    {
+      "questionText": "What kind of cluster shapes does k-means struggle with?",
+      "questionType": "mcq",
+      "options": [
+        "Perfectly spherical, evenly sized clusters",
+        "Non-convex shapes and clusters of very different densities (e.g. a ring around a center cluster)",
+        "Clusters with fewer than 10 points",
+        "K-means has no shape limitations"
+      ],
+      "correctAnswer": "Non-convex shapes and clusters of very different densities (e.g. a ring around a center cluster)",
+      "explanation": "Because k-means assigns points purely by distance to a centroid, it assumes roughly spherical, similarly-sized clusters — density-based methods like DBSCAN handle irregular shapes much better."
+    }
+  ]
+}

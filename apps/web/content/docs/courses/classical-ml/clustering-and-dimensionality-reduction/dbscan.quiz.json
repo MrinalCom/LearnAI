@@ -1,0 +1,41 @@
+{
+  "title": "DBSCAN Check",
+  "questions": [
+    {
+      "questionText": "How does DBSCAN fundamentally differ from k-means in how it forms clusters?",
+      "questionType": "mcq",
+      "options": [
+        "DBSCAN also uses centroids, just computed differently",
+        "DBSCAN groups points by local density and connectivity, rather than distance to a single center point",
+        "DBSCAN requires labeled data",
+        "There is no real difference"
+      ],
+      "correctAnswer": "DBSCAN groups points by local density and connectivity, rather than distance to a single center point",
+      "explanation": "DBSCAN chains together densely-packed core points, letting it trace clusters of arbitrary shape that a centroid-based method like k-means can't represent."
+    },
+    {
+      "questionText": "What happens to points in low-density regions in DBSCAN?",
+      "questionType": "mcq",
+      "options": [
+        "They're forced into the nearest cluster anyway",
+        "They're labeled as noise (-1) and not assigned to any cluster",
+        "They automatically form their own single-point clusters that count toward n_clusters",
+        "DBSCAN cannot handle this case and errors out"
+      ],
+      "correctAnswer": "They're labeled as noise (-1) and not assigned to any cluster",
+      "explanation": "Points that aren't within eps of enough neighbors to be core or border points are explicitly marked as noise — a built-in way to detect outliers."
+    },
+    {
+      "questionText": "Unlike k-means, DBSCAN does not require you to specify:",
+      "questionType": "mcq",
+      "options": [
+        "eps",
+        "min_samples",
+        "The number of clusters",
+        "The dataset"
+      ],
+      "correctAnswer": "The number of clusters",
+      "explanation": "DBSCAN discovers the number of clusters automatically from the density structure of the data — you tune eps and min_samples instead of k."
+    }
+  ]
+}

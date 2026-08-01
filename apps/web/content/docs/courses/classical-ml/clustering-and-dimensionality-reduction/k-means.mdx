@@ -1,0 +1,92 @@
+---
+title: K-Means Clustering
+description: Grouping unlabeled data into k clusters by iteratively moving centroids.
+order: 1
+estimatedMinutes: 18
+type: playground
+---
+
+import { KMeansVisualizer } from "@/components/viz/kmeans-visualizer";
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="classical-ml" moduleSlug="clustering-and-dimensionality-reduction" lessonSlug="k-means" />
+
+## Overview
+
+Every algorithm so far has been **supervised** — trained on labeled examples
+(`x`, `y`). K-means is your first **unsupervised** algorithm: it finds
+structure in data that has *no* labels at all. Given a pile of points and a
+number `k`, it groups them into `k` clusters based purely on how close
+points are to each other.
+
+## The algorithm: Lloyd's algorithm
+
+K-means alternates between two steps until nothing changes:
+
+1. **Assign** — put each point in the cluster of its nearest centroid
+   (initially placed randomly, or from a smarter init like k-means++).
+2. **Update** — move each centroid to the mean position of all points
+   currently assigned to it.
+
+Repeat until the assignments stop changing (convergence). This simple
+loop reliably finds *a* good clustering, though — like gradient descent —
+it can converge to a different result depending on where the centroids
+started.
+
+## Try it
+
+<KMeansVisualizer />
+
+Click "Step" repeatedly and watch how few iterations it usually takes to
+stabilize. Try different values of `k`: with too few clusters, distinct
+groups get merged together; with too many, a single real cluster gets
+needlessly split in two.
+
+## Choosing k: the elbow method
+
+Unlike supervised learning, there's no ground truth to check accuracy
+against — you have to decide `k` yourself. A common heuristic is the
+**elbow method**: run k-means for a range of `k` values, plot the total
+within-cluster distance (inertia) for each, and look for the point where
+adding more clusters stops meaningfully reducing that distance — the "elbow"
+of the curve.
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+from sklearn.cluster import KMeans
+
+# Three loosely separated blobs.
+rng = np.random.RandomState(0)
+blob_a = rng.normal([2, 2], 0.5, size=(20, 2))
+blob_b = rng.normal([8, 3], 0.5, size=(20, 2))
+blob_c = rng.normal([5, 8], 0.5, size=(20, 2))
+X = np.vstack([blob_a, blob_b, blob_c])
+
+kmeans = KMeans(n_clusters=3, n_init=10, random_state=0)
+labels = kmeans.fit_predict(X)
+
+print("Cluster centers:")
+print(kmeans.cluster_centers_)
+print("Inertia (total within-cluster distance):", kmeans.inertia_)
+print("First 10 point assignments:", labels[:10])
+`}
+/>
+
+`n_init=10` runs the whole algorithm 10 times with different random starting
+centroids and keeps the best result — a practical way to avoid getting stuck
+in a poor local convergence from an unlucky initialization.
+
+## Limitations
+
+K-means assumes clusters are roughly spherical and similarly sized, and it
+requires choosing `k` in advance. It struggles with clusters of very
+different densities or non-convex shapes (like the ring/center example from
+the SVM lesson) — for those, density-based methods like DBSCAN, covered
+next, are a better fit.
+
+## Check your understanding
+
+<Quiz courseSlug="classical-ml" moduleSlug="clustering-and-dimensionality-reduction" lessonSlug="k-means" />

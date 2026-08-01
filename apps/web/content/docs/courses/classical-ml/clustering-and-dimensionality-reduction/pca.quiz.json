@@ -1,0 +1,41 @@
+{
+  "title": "PCA Check",
+  "questions": [
+    {
+      "questionText": "What direction does the first principal component (PC1) point in?",
+      "questionType": "mcq",
+      "options": [
+        "The direction with the least variance in the data",
+        "The direction of maximum variance in the data",
+        "Always the same direction as the first original feature",
+        "A random direction chosen for initialization"
+      ],
+      "correctAnswer": "The direction of maximum variance in the data",
+      "explanation": "PC1 is defined as the axis along which the data is most spread out; each subsequent component captures the next-most variance while staying orthogonal to the previous ones."
+    },
+    {
+      "questionText": "Why should features typically be standardized (scaled) before applying PCA?",
+      "questionType": "mcq",
+      "options": [
+        "PCA doesn't work on unscaled data at all",
+        "A feature with a much larger numeric range would dominate the variance calculation regardless of its actual importance",
+        "Standardization is only needed for classification, not PCA",
+        "It has no effect on PCA's results"
+      ],
+      "correctAnswer": "A feature with a much larger numeric range would dominate the variance calculation regardless of its actual importance",
+      "explanation": "Since PCA operates on variance, an unscaled feature measured in large numbers would swamp the calculation, just like the feature-scaling issue with KNN's distance calculation."
+    },
+    {
+      "questionText": "What does a principal component's \"explained variance ratio\" tell you?",
+      "questionType": "mcq",
+      "options": [
+        "How accurate a downstream model will be",
+        "What fraction of the total variance in the dataset that single component accounts for",
+        "How many original features were dropped",
+        "The correlation between two specific original features"
+      ],
+      "correctAnswer": "What fraction of the total variance in the dataset that single component accounts for",
+      "explanation": "Summing explained variance ratios across the components you keep tells you how much of the original information survived the dimensionality reduction."
+    }
+  ]
+}

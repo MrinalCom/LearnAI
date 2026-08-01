@@ -1,0 +1,94 @@
+---
+title: Principal Component Analysis (PCA)
+description: Compressing many correlated features into a few axes that capture most of the variance.
+order: 4
+estimatedMinutes: 18
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="classical-ml" moduleSlug="clustering-and-dimensionality-reduction" lessonSlug="pca" />
+
+## Overview
+
+Real datasets often have dozens or hundreds of features, many of them
+correlated with each other (house size correlates with number of rooms,
+which correlates with price). **PCA** compresses this into a much smaller
+set of new features — **principal components** — that capture most of the
+original variance, while discarding redundant information.
+
+This matters for three practical reasons: it speeds up downstream models,
+it lets you visualize high-dimensional data in 2D or 3D, and it can reduce
+overfitting by removing noisy, redundant dimensions before training.
+
+## What a principal component actually is
+
+Each principal component is a new axis — a specific linear combination of
+the original features — chosen so that:
+
+1. **PC1** points in the direction of maximum variance in the data (the
+   direction the data is most "spread out" along).
+2. **PC2** is the direction of the next-most variance, subject to being
+   perpendicular (orthogonal) to PC1.
+3. This continues for as many components as there are original features.
+
+Because each component captures progressively less variance, you can often
+keep just the first few — say, 2 out of 50 features — and still retain the
+large majority of the meaningful structure in the data.
+
+## Explained variance
+
+Every component comes with an **explained variance ratio**: what fraction
+of the total variance in the data that single component accounts for.
+Summing these ratios across the components you keep tells you how much
+information survived the compression — a common rule of thumb is to keep
+enough components to explain 90-95% of the total variance.
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+from sklearn.decomposition import PCA
+
+# 4 features, but feature 2 is just feature 1 * 2 + noise (heavily correlated),
+# and feature 4 is mostly noise -- there's really only ~2 independent dimensions here.
+rng = np.random.RandomState(0)
+f1 = rng.normal(0, 1, 100)
+f2 = f1 * 2 + rng.normal(0, 0.1, 100)
+f3 = rng.normal(0, 1, 100)
+f4 = rng.normal(0, 0.05, 100)
+X = np.column_stack([f1, f2, f3, f4])
+
+pca = PCA(n_components=4)
+pca.fit(X)
+
+print("Explained variance ratio per component:", np.round(pca.explained_variance_ratio_, 3))
+print("Cumulative variance explained by first 2 components:",
+      round(pca.explained_variance_ratio_[:2].sum(), 3))
+
+# Compress to 2 dimensions.
+X_reduced = PCA(n_components=2).fit_transform(X)
+print("Original shape:", X.shape, "-> Reduced shape:", X_reduced.shape)
+`}
+/>
+
+Because feature 2 was almost entirely redundant with feature 1, you should
+see the first one or two components already explaining the vast majority of
+the variance — PCA automatically discovered that redundancy without being
+told about it explicitly.
+
+## Important caveats
+
+PCA is sensitive to feature scale — a feature measured in the thousands
+will dominate the variance calculation over one measured in single digits,
+so features should typically be standardized before applying PCA (the same
+scaling concern from the KNN lesson). It's also worth remembering that
+principal components are linear combinations of the *original* features —
+they usually aren't directly interpretable the way "square footage" or
+"age" are, which is the tradeoff for the compression.
+
+## Check your understanding
+
+<Quiz courseSlug="classical-ml" moduleSlug="clustering-and-dimensionality-reduction" lessonSlug="pca" />
