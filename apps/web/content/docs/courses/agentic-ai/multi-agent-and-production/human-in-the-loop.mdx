@@ -1,0 +1,75 @@
+---
+title: Human-in-the-Loop
+description: Pausing an agent for approval before it takes an action you can't easily undo.
+order: 2
+estimatedMinutes: 15
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="agentic-ai" moduleSlug="multi-agent-and-production" lessonSlug="human-in-the-loop" />
+
+## Overview
+
+Not every action an agent might take is safe to run unattended. Sending an
+email, executing a financial transaction, deleting a file, merging a pull
+request — for actions like these, you generally want a human to approve the
+specific step before it actually happens, not just review the outcome
+afterward. LangGraph supports this natively through **interrupts**, built
+directly on the checkpointing mechanism from two lessons ago.
+
+## How an interrupt works
+
+Because a checkpointer already saves state after every node, LangGraph can
+simply *pause* execution before a specific node runs, persist that paused
+state, and wait — potentially for a long time, across server restarts —
+until something explicitly resumes it:
+
+```ts
+const graph = builder.compile({
+  checkpointer,
+  interruptBefore: ["execute_action"], // pause right before this node runs
+});
+
+// First call: runs until just before "execute_action", then stops.
+await graph.invoke(
+  { messages: [{ role: "user", content: "Send the refund email to the customer." }] },
+  { configurable: { thread_id: "task-17" } }
+);
+
+// ...time passes. A human reviews the pending action in your UI...
+
+// Resuming with no new input continues from exactly where it paused.
+await graph.invoke(null, { configurable: { thread_id: "task-17" } });
+```
+
+Between those two calls, your application can inspect the paused state
+(what action is about to run, with what arguments), show it to a human in a
+UI, and only call `.invoke(null, ...)` again once they've approved it. If
+they reject it instead, you can resume with modified state that skips the
+action entirely, or route to a different node.
+
+## Where to put the interrupt
+
+The design decision that matters most is *which* node to interrupt before.
+Interrupting too early (e.g., before every tool call, including harmless
+read-only ones) creates approval fatigue — users start rubber-stamping
+everything without really checking, which defeats the purpose. A better
+default: reserve interrupts specifically for actions with real-world side
+effects (sending something, spending something, deleting something), and
+let read-only actions (searching, looking something up) run automatically.
+
+## This is the same idea as this project's own permission model
+
+If this feels familiar, it should — it's structurally the same distinction
+this project's own operating guidelines draw between actions that can
+happen automatically and ones that require your explicit go-ahead first
+(like sending a message, or pushing to a shared branch). Human-in-the-loop
+agent design is that same principle, implemented as actual code instead of
+a written policy.
+
+## Check your understanding
+
+<Quiz courseSlug="agentic-ai" moduleSlug="multi-agent-and-production" lessonSlug="human-in-the-loop" />

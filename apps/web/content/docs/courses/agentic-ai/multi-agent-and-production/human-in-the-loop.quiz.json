@@ -1,0 +1,41 @@
+{
+  "title": "Human-in-the-Loop Check",
+  "questions": [
+    {
+      "questionText": "What mechanism does LangGraph's human-in-the-loop interrupt rely on?",
+      "questionType": "mcq",
+      "options": [
+        "A completely separate system unrelated to anything else in LangGraph",
+        "The same checkpointing mechanism used for persistence — pausing before a node, saving state, and waiting to be explicitly resumed",
+        "A hardcoded delay before every tool call",
+        "A second LLM that approves or rejects actions automatically"
+      ],
+      "correctAnswer": "The same checkpointing mechanism used for persistence — pausing before a node, saving state, and waiting to be explicitly resumed",
+      "explanation": "Interrupts build directly on checkpointing: since state is already saved after every step, LangGraph can pause before a chosen node and wait indefinitely for a resume call."
+    },
+    {
+      "questionText": "Why is it a bad idea to interrupt before every single tool call, including harmless read-only ones?",
+      "questionType": "mcq",
+      "options": [
+        "It's technically impossible to do",
+        "It creates approval fatigue — users start rubber-stamping everything without really checking, defeating the purpose",
+        "LangGraph limits you to one interrupt per graph",
+        "Read-only actions cannot be interrupted"
+      ],
+      "correctAnswer": "It creates approval fatigue — users start rubber-stamping everything without really checking, defeating the purpose",
+      "explanation": "Interrupts are most valuable when reserved for actions with real consequences; overusing them trains users to approve without actually reviewing."
+    },
+    {
+      "questionText": "How do you resume a graph that's paused at an interrupt, without providing new input?",
+      "questionType": "mcq",
+      "options": [
+        "You must restart the entire graph from the beginning",
+        "Call .invoke(null, { configurable: { thread_id } }) with the same thread_id — it continues from exactly where it paused",
+        "Interrupts cannot be resumed once triggered",
+        "You need to recompile the graph with a new checkpointer"
+      ],
+      "correctAnswer": "Call .invoke(null, { configurable: { thread_id } }) with the same thread_id — it continues from exactly where it paused",
+      "explanation": "Passing null input with the matching thread_id tells LangGraph to continue the paused execution using its saved checkpoint state."
+    }
+  ]
+}

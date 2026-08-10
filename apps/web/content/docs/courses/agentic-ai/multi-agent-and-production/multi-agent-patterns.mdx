@@ -1,0 +1,92 @@
+---
+title: Multi-Agent Patterns
+description: When and how to split one agent into several specialized ones.
+order: 1
+estimatedMinutes: 18
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="agentic-ai" moduleSlug="multi-agent-and-production" lessonSlug="multi-agent-patterns" />
+
+## Overview
+
+A single agent with a dozen tools and a long, complicated system prompt
+tends to get worse at all of them — the model has to hold every
+instruction and every tool description in mind at once, and it's easy for
+instructions meant for one task to leak into and confuse another. **Multi-
+agent systems** split that one overloaded agent into several focused ones,
+each with a narrower job and a shorter, clearer prompt.
+
+## The supervisor pattern
+
+The most common structure is a **supervisor**: one agent whose only job is
+to read the request and decide which specialized worker agent should handle
+it (or handle it next), rather than doing the underlying work itself.
+
+```
+                    ┌─────────────┐
+        request --> │ Supervisor  │
+                    └──────┬──────┘
+              ┌────────────┼────────────┐
+              ▼             ▼            ▼
+        ┌──────────┐ ┌──────────┐ ┌──────────┐
+        │ Research │ │  Coding  │ │  Writing │
+        │  Agent   │ │  Agent   │ │  Agent   │
+        └──────────┘ └──────────┘ └──────────┘
+```
+
+In LangGraph, this is just the routing pattern from two lessons ago,
+applied at a coarser grain — instead of routing between tool calls, the
+supervisor's conditional edge routes between entire subgraphs, each of
+which is a complete agent (with its own nodes, tools, and possibly its own
+internal loop) in its own right.
+
+```ts
+function routeToWorker(state: State): string {
+  // The supervisor's own LLM call decides which worker is appropriate.
+  return state.nextWorker; // "research" | "coding" | "writing" | END
+}
+
+const graph = new StateGraph(State)
+  .addNode("supervisor", supervisorNode)
+  .addNode("research", researchAgentSubgraph)
+  .addNode("coding", codingAgentSubgraph)
+  .addNode("writing", writingAgentSubgraph)
+  .addConditionalEdges("supervisor", routeToWorker, {
+    research: "research",
+    coding: "coding",
+    writing: "writing",
+    [END]: END,
+  })
+  // Workers report back to the supervisor rather than ending directly,
+  // so it can decide whether more work is needed.
+  .addEdge("research", "supervisor")
+  .addEdge("coding", "supervisor")
+  .addEdge("writing", "supervisor");
+```
+
+## Handoffs: an alternative to a central supervisor
+
+Rather than every worker always reporting back to a central supervisor,
+some systems let workers **hand off** directly to each other — a research
+agent that decides the writing agent should take over next, without
+routing back through a supervisor first. This trades a bit of central
+visibility for less back-and-forth overhead, and tends to work well when
+the handoff sequence is fairly predictable (research always precedes
+writing, for instance).
+
+## Why split at all? The real tradeoff
+
+Multi-agent systems aren't free — more agents means more LLM calls (cost
+and latency), more surface area for something to go wrong, and a genuinely
+harder system to debug when it does. The case for splitting is strongest
+when a single agent's tools or instructions would otherwise conflict or
+overwhelm one prompt; if a single well-scoped agent handles the task fine,
+adding agents adds cost without adding capability.
+
+## Check your understanding
+
+<Quiz courseSlug="agentic-ai" moduleSlug="multi-agent-and-production" lessonSlug="multi-agent-patterns" />
