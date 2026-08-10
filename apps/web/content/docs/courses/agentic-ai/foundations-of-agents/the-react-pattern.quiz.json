@@ -1,0 +1,41 @@
+{
+  "title": "The ReAct Pattern Check",
+  "questions": [
+    {
+      "questionText": "What does the explicit \"Thought\" step in ReAct actually contribute?",
+      "questionType": "mcq",
+      "options": [
+        "It's purely for logging and has no effect on the model's behavior",
+        "It forces the model to commit to a plan in natural language before acting, which measurably improves reliability",
+        "It replaces the need for tools entirely",
+        "It makes the model respond faster"
+      ],
+      "correctAnswer": "It forces the model to commit to a plan in natural language before acting, which measurably improves reliability",
+      "explanation": "Similar to \"think step by step\" prompting, writing out reasoning before acting improves the quality and reliability of the resulting action."
+    },
+    {
+      "questionText": "What is \"infinite looping\" in a ReAct agent, and why does it happen?",
+      "questionType": "mcq",
+      "options": [
+        "The model repeatedly calls tools without ever concluding it has enough information, often due to unclear tool results",
+        "The user asks the same question twice",
+        "The model gets stuck because of a network timeout",
+        "It only happens when using LangGraph specifically"
+      ],
+      "correctAnswer": "The model repeatedly calls tools without ever concluding it has enough information, often due to unclear tool results",
+      "explanation": "If a tool's result doesn't clearly signal success, the model may keep trying more actions instead of recognizing it has what it needs — production frameworks add a max-step limit as a safety net."
+    },
+    {
+      "questionText": "What is the correct order of the ReAct loop?",
+      "questionType": "mcq",
+      "options": [
+        "Action, Thought, Observation",
+        "Observation, Action, Thought",
+        "Thought, Action, Observation",
+        "There is no fixed order"
+      ],
+      "correctAnswer": "Thought, Action, Observation",
+      "explanation": "The model reasons first (Thought), takes an action based on that reasoning (Action), then incorporates the result (Observation) before looping again or answering."
+    }
+  ]
+}

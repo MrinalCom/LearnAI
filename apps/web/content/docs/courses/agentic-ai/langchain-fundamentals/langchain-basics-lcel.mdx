@@ -1,0 +1,77 @@
+---
+title: LangChain Basics & LCEL
+description: Composing prompts, models, and parsers into pipelines with the LangChain Expression Language.
+order: 1
+estimatedMinutes: 18
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="agentic-ai" moduleSlug="langchain-fundamentals" lessonSlug="langchain-basics-lcel" />
+
+## Overview
+
+LangChain is a framework for composing the pieces every LLM application
+needs — prompt templates, model calls, output parsing, tool definitions —
+into reusable pipelines instead of writing bespoke glue code for each one.
+Its core composition mechanism is **LCEL**, the LangChain Expression
+Language: you build a pipeline by piping components together with `.pipe()`
+(or the `|` operator in Python), and the whole pipeline becomes runnable,
+streamable, and traceable as a single unit.
+
+> The snippets on this page are illustrative LangChain.js code — read them
+> for the concepts, not as a live playground. Running them for real needs
+> your own Anthropic API key, which this site doesn't ask you for.
+
+## The three basic building blocks
+
+```ts
+import { ChatAnthropic } from "@langchain/anthropic";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { StringOutputParser } from "@langchain/core/output_parsers";
+
+const prompt = ChatPromptTemplate.fromTemplate(
+  "Explain {topic} in exactly two sentences, for a beginner."
+);
+const model = new ChatAnthropic({ model: "claude-sonnet-5" });
+const outputParser = new StringOutputParser();
+
+// LCEL: pipe them together into one runnable chain.
+const chain = prompt.pipe(model).pipe(outputParser);
+
+const result = await chain.invoke({ topic: "gradient descent" });
+console.log(result);
+```
+
+- **Prompt templates** turn a plain object (`{ topic: "gradient descent" }`)
+  into a fully-formed message, keeping the prompt text separate from the
+  data that fills it in — the same separation-of-concerns idea as a SQL
+  query with parameters instead of string-concatenated SQL.
+- **Chat models** are a unified interface across providers — swapping
+  `ChatAnthropic` for a different provider's chat model normally requires no
+  other changes to the chain, because every model implements the same
+  `invoke`/`stream`/`batch` interface.
+- **Output parsers** turn the model's raw response into whatever shape your
+  application actually needs — a plain string here, but you'll see
+  structured (typed, validated) output in the next lesson.
+
+## Why piping matters: uniform behavior for free
+
+Because every LCEL component implements the same interface, a chain built
+by piping components together automatically supports:
+
+- **`.invoke()`** — run once, get the final result.
+- **`.stream()`** — get output incrementally as it's generated, without
+  changing the chain definition at all.
+- **`.batch()`** — run the same chain over many inputs concurrently.
+
+You define the pipeline once; LangChain handles making it work all three
+ways. This is the practical payoff of LCEL's composability — without it,
+supporting streaming for a multi-step pipeline (prompt → model → parser →
+another model) would mean hand-writing streaming logic through every stage.
+
+## Check your understanding
+
+<Quiz courseSlug="agentic-ai" moduleSlug="langchain-fundamentals" lessonSlug="langchain-basics-lcel" />

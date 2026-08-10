@@ -1,0 +1,41 @@
+{
+  "title": "Structured Output & Tools Check",
+  "questions": [
+    {
+      "questionText": "Why use withStructuredOutput with a Zod schema instead of just parsing the model's free-form text response yourself?",
+      "questionType": "mcq",
+      "options": [
+        "It's not actually different from manual text parsing",
+        "It constrains the model to produce arguments matching your schema and validates/parses the result, avoiding brittle regex-based text parsing",
+        "It makes the model respond faster",
+        "It only works with numeric data"
+      ],
+      "correctAnswer": "It constrains the model to produce arguments matching your schema and validates/parses the result, avoiding brittle regex-based text parsing",
+      "explanation": "Rather than hoping the model's free text follows a parseable format, structured output constrains generation to match a schema and gives you a validated, typed object back."
+    },
+    {
+      "questionText": "What is the single most important factor in whether an agent correctly decides to use a given tool?",
+      "questionType": "mcq",
+      "options": [
+        "The tool's function name in the source code",
+        "The tool's description, since that's the only signal the model has for deciding when the tool is relevant",
+        "How many arguments the tool's schema has",
+        "The order tools are defined in"
+      ],
+      "correctAnswer": "The tool's description, since that's the only signal the model has for deciding when the tool is relevant",
+      "explanation": "The model never sees your implementation code — only the tool's name, description, and schema — so a vague description directly causes unreliable tool selection."
+    },
+    {
+      "questionText": "What three things make up a LangChain tool definition?",
+      "questionType": "mcq",
+      "options": [
+        "A name, a description, and a schema plus the function to execute",
+        "Only a function, nothing else is needed",
+        "A prompt template and a chat model",
+        "A database connection and an API key"
+      ],
+      "correctAnswer": "A name, a description, and a schema plus the function to execute",
+      "explanation": "A tool bundles a name and description (for the model to decide when/how to call it), a schema (defining valid arguments), and the actual function that runs when called."
+    }
+  ]
+}

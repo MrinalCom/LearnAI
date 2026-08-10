@@ -1,0 +1,66 @@
+---
+title: The ReAct Pattern
+description: Reasoning and Acting — the loop almost every tool-using agent is built on.
+order: 2
+estimatedMinutes: 15
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="agentic-ai" moduleSlug="foundations-of-agents" lessonSlug="the-react-pattern" />
+
+## Overview
+
+**ReAct** (Reason + Act) is the pattern behind most tool-using agents you'll
+encounter, including LangChain's and LangGraph's default agent
+constructors. The idea: at every step, have the model explicitly *think*
+before it *acts*, and keep alternating between the two until it's confident
+enough to answer.
+
+## The loop, step by step
+
+```
+Thought: <the model reasons about what it knows and what it still needs>
+Action: <a tool call, if one is needed>
+Observation: <the tool's result, fed back to the model>
+... (repeat Thought/Action/Observation as many times as needed) ...
+Thought: I now have enough information to answer.
+Final Answer: <the response to the user>
+```
+
+The critical detail is the explicit **Thought** step. Rather than jumping
+straight to a tool call, the model first writes out *why* it's about to
+call a tool — this measurably improves reliability, because it forces the
+model to commit to a plan in natural language before acting on it, the same
+way "think step by step" prompting improves plain reasoning tasks.
+
+## Why the loop needs an exit condition
+
+An agent that never stops calling tools is useless — and expensive, since
+every loop iteration is another LLM call. Two failure modes to watch for
+when building or debugging a ReAct agent:
+
+- **Premature stopping** — the model answers confidently without actually
+  having the information it needed, because a badly-worded tool description
+  didn't make clear when the tool should be used.
+- **Infinite looping** — the model keeps calling tools without ever
+  concluding it has enough information, often because a tool's result
+  wasn't clear enough for the model to recognize it succeeded. Production
+  agent frameworks (including LangGraph, covered soon) enforce a maximum
+  step count as a safety net for exactly this case.
+
+## Why this generalizes beyond "agents"
+
+The Thought/Action/Observation loop is really just a structured version of
+how you'd solve a multi-step problem yourself: think about what you need,
+go find it, incorporate it, repeat. Once you recognize this pattern, you'll
+see it underneath LangChain's `AgentExecutor`, LangGraph's prebuilt
+`createReactAgent`, and most custom agent loops people write by hand — it's
+less a specific technology and more the default shape of "give an LLM tools
+and let it reason about how to use them."
+
+## Check your understanding
+
+<Quiz courseSlug="agentic-ai" moduleSlug="foundations-of-agents" lessonSlug="the-react-pattern" />

@@ -1,0 +1,6 @@
+{
+  "title": "Foundations of Agents",
+  "description": "What makes an LLM system an \"agent,\" and the ReAct pattern that most agents are built on.",
+  "order": 1,
+  "pages": ["what-is-an-agent", "the-react-pattern"]
+}

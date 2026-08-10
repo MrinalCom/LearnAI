@@ -1,0 +1,67 @@
+---
+title: What Is an Agent?
+description: The difference between calling an LLM once and building a system that can act.
+order: 1
+estimatedMinutes: 15
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="agentic-ai" moduleSlug="foundations-of-agents" lessonSlug="what-is-an-agent" />
+
+## Overview
+
+Everything in the Classical ML and (upcoming) Deep Learning material trains
+a model to produce one output from one input: a class label, a price, a
+cluster assignment. An **agent** is a different kind of system entirely —
+it's an LLM wired into a *loop*, given the ability to take actions in the
+world (search the web, run code, query a database, call another API), and
+left to decide *for itself*, step by step, what to do next until it decides
+the task is done.
+
+## A single LLM call vs. an agent
+
+Ask an LLM "What's the weather in Tokyo right now?" with no tools, and it
+can only guess or admit it doesn't know — its knowledge is frozen at
+training time and it has no way to check anything live. Give that same
+model:
+
+1. A **tool** — a `get_weather(city)` function it's allowed to call.
+2. A **loop** — the ability to see the tool's result and decide what to do
+   next, rather than being forced to answer immediately.
+
+...and it becomes an agent: it can recognize it needs current information,
+call the tool, read the result, and only then produce a grounded answer.
+Nothing about the underlying model changed — the same LLM that could only
+guess before can now act, purely because of the scaffolding wrapped around
+it.
+
+## The three ingredients of an agent
+
+Every agent framework — LangChain, LangGraph, or a framework you'd write by
+hand — is built from the same three pieces:
+
+- **A model** that can decide, at each step, whether it has enough
+  information to answer or needs to take an action first.
+- **Tools** — functions the model can choose to call, each with a
+  description the model uses to decide *when* it's relevant (search, a
+  calculator, a database query, sending an email).
+- **A control loop** that runs the model, executes whatever tool call it
+  requests, feeds the result back in, and repeats — until the model
+  produces a final answer instead of another tool call.
+
+## Why this matters more than it sounds
+
+This loop is deceptively simple to describe and is the foundation for
+essentially every "AI agent" product you've heard of — coding assistants,
+research agents, customer support bots that can actually look up your
+order. The rest of this course is about that loop in increasing depth: the
+specific pattern most agents use to reason about *when* to act (ReAct, next
+lesson), then two concrete frameworks for building it — LangChain and
+LangGraph.
+
+## Check your understanding
+
+<Quiz courseSlug="agentic-ai" moduleSlug="foundations-of-agents" lessonSlug="what-is-an-agent" />

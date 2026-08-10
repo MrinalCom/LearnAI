@@ -1,0 +1,11 @@
+{
+  "title": "Agentic AI",
+  "description": "From the ReAct pattern to LangChain and LangGraph: building LLM systems that reason, call tools, and act.",
+  "order": 2,
+  "pages": [
+    "foundations-of-agents",
+    "langchain-fundamentals",
+    "langgraph-fundamentals",
+    "multi-agent-and-production"
+  ]
+}

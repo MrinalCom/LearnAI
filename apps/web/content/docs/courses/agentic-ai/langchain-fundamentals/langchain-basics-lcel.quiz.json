@@ -1,0 +1,41 @@
+{
+  "title": "LangChain Basics & LCEL Check",
+  "questions": [
+    {
+      "questionText": "What does LCEL's .pipe() composition actually give you, beyond just running steps in sequence?",
+      "questionType": "mcq",
+      "options": [
+        "Nothing extra — it's purely a stylistic way to write sequential code",
+        "The whole pipeline automatically supports invoke, stream, and batch, without extra code for each",
+        "It automatically fine-tunes the model on your data",
+        "It removes the need for a prompt template"
+      ],
+      "correctAnswer": "The whole pipeline automatically supports invoke, stream, and batch, without extra code for each",
+      "explanation": "Because every LCEL component shares a common interface, composing them together yields a pipeline that supports invoke/stream/batch for free, without hand-writing that logic for each stage."
+    },
+    {
+      "questionText": "What is the purpose of a prompt template in LangChain?",
+      "questionType": "mcq",
+      "options": [
+        "It separates the fixed prompt text from the variable data that fills it in, similar to a parameterized query",
+        "It replaces the need for a chat model",
+        "It automatically translates the prompt into other languages",
+        "It only works with output parsers, not models"
+      ],
+      "correctAnswer": "It separates the fixed prompt text from the variable data that fills it in, similar to a parameterized query",
+      "explanation": "A prompt template takes a plain object of variables and produces a fully-formed message, keeping prompt structure separate from the specific data used to fill it."
+    },
+    {
+      "questionText": "Why can you typically swap one chat model provider for another in a LangChain pipeline with minimal changes?",
+      "questionType": "mcq",
+      "options": [
+        "You can't — every provider requires a completely different chain",
+        "All chat models implement the same invoke/stream/batch interface, so the rest of the chain doesn't need to change",
+        "LangChain automatically converts between providers' APIs behind the scenes with no shared interface",
+        "Only Anthropic models work with LCEL"
+      ],
+      "correctAnswer": "All chat models implement the same invoke/stream/batch interface, so the rest of the chain doesn't need to change",
+      "explanation": "LangChain's uniform chat model interface is what makes providers largely interchangeable within an existing chain."
+    }
+  ]
+}

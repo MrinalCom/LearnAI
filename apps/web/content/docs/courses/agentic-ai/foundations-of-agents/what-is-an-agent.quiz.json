@@ -1,0 +1,41 @@
+{
+  "title": "What Is an Agent? Check",
+  "questions": [
+    {
+      "questionText": "What fundamentally turns a plain LLM call into an \"agent\"?",
+      "questionType": "mcq",
+      "options": [
+        "Using a larger or more expensive model",
+        "Giving the model tools it can call plus a loop that lets it act, observe the result, and decide what to do next",
+        "Fine-tuning the model on more data",
+        "Running the model on a GPU instead of a CPU"
+      ],
+      "correctAnswer": "Giving the model tools it can call plus a loop that lets it act, observe the result, and decide what to do next",
+      "explanation": "The model itself doesn't change — what makes it an agent is the scaffolding: tools it can invoke and a control loop that lets it act and react to results before answering."
+    },
+    {
+      "questionText": "Why can't a plain, tool-less LLM reliably answer \"What's the weather in Tokyo right now?\"",
+      "questionType": "mcq",
+      "options": [
+        "LLMs cannot process questions about weather",
+        "Its knowledge is frozen at training time and it has no way to check live, current information",
+        "Weather questions require a different type of neural network",
+        "It's a trick question with no correct answer"
+      ],
+      "correctAnswer": "Its knowledge is frozen at training time and it has no way to check live, current information",
+      "explanation": "Without a tool to check current data, the model can only draw on what it learned during training — which has no way of reflecting real-time conditions."
+    },
+    {
+      "questionText": "What are the three core ingredients every agent is built from?",
+      "questionType": "mcq",
+      "options": [
+        "A database, a frontend, and an API",
+        "A model, tools it can call, and a control loop that executes those calls and feeds results back in",
+        "A GPU, a dataset, and a loss function",
+        "A prompt, a temperature setting, and a max token limit"
+      ],
+      "correctAnswer": "A model, tools it can call, and a control loop that executes those calls and feeds results back in",
+      "explanation": "Every agent framework, regardless of implementation details, is built from these three pieces working together."
+    }
+  ]
+}

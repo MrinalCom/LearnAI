@@ -1,0 +1,6 @@
+{
+  "title": "LangChain Fundamentals",
+  "description": "Chains, prompts, and structured output with LangChain's Expression Language (LCEL).",
+  "order": 2,
+  "pages": ["langchain-basics-lcel", "prompts-and-output-parsing"]
+}

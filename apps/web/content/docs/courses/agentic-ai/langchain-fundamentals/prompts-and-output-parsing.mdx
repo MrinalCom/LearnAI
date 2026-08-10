@@ -1,0 +1,94 @@
+---
+title: Structured Output & Tool Definitions
+description: Getting reliable, typed data out of an LLM instead of parsing free-form text.
+order: 2
+estimatedMinutes: 18
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="agentic-ai" moduleSlug="langchain-fundamentals" lessonSlug="prompts-and-output-parsing" />
+
+## Overview
+
+The previous lesson's chain returned a plain string. That's fine for a
+chat response, but most real applications need *structured* data back —
+a JSON object, a specific set of fields — not text you then have to parse
+yourself with regex and hope the model formatted consistently. LangChain
+solves this by asking the model to produce output matching a **schema**,
+usually defined with [Zod](https://zod.dev) (the same library this site's
+own API uses for request validation).
+
+## Structured output with a schema
+
+```ts
+import { z } from "zod";
+import { ChatAnthropic } from "@langchain/anthropic";
+
+const RecipeSchema = z.object({
+  name: z.string(),
+  ingredients: z.array(z.string()),
+  minutesToMake: z.number(),
+});
+
+const model = new ChatAnthropic({ model: "claude-sonnet-5" });
+const structuredModel = model.withStructuredOutput(RecipeSchema);
+
+const recipe = await structuredModel.invoke(
+  "Give me a simple recipe for scrambled eggs."
+);
+// recipe is typed: { name: string; ingredients: string[]; minutesToMake: number }
+console.log(recipe.ingredients);
+```
+
+`withStructuredOutput` isn't magic — under the hood, it typically defines a
+"tool" from your schema and forces the model to call it, which is why this
+lesson and the concept of **tools** are covered together. The model doesn't
+freely generate text; it's constrained to produce arguments matching your
+schema, and LangChain validates and parses the result before handing it
+back to you as a typed object.
+
+## Tools are just... schemas with a function attached
+
+A "tool" the model can call in an agent loop is built the same way: a
+description (so the model knows when to use it) plus a schema (so the model
+knows what arguments to provide) plus the actual function to run:
+
+```ts
+import { tool } from "@langchain/core/tools";
+import { z } from "zod";
+
+const getPopulation = tool(
+  async ({ country }) => {
+    // In a real tool, this would call an actual API or database.
+    const data: Record<string, number> = { France: 68_000_000, Japan: 123_000_000 };
+    return data[country] ?? "unknown";
+  },
+  {
+    name: "get_population",
+    description: "Look up the current population of a country.",
+    schema: z.object({ country: z.string() }),
+  }
+);
+```
+
+The `description` field matters more than it looks — it's the *only* thing
+the model sees to decide whether this tool is relevant to a given question.
+A vague description ("gets data") leads to a model that either never calls
+the tool or calls it for the wrong reasons; a precise one ("looks up the
+current population of a country by name") gives the model what it needs to
+route correctly.
+
+## Why this matters for agents specifically
+
+Every tool an agent can call — search, a calculator, a database query — is
+defined exactly this way: schema plus description plus function. When you
+get to LangGraph in the next module, the "tools" a graph node calls are the
+same `tool()` objects introduced here; nothing new to learn there, just a
+different orchestration layer around the same building block.
+
+## Check your understanding
+
+<Quiz courseSlug="agentic-ai" moduleSlug="langchain-fundamentals" lessonSlug="prompts-and-output-parsing" />
