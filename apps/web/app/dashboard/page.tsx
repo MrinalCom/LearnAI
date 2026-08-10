@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Trophy } from "lucide-react";
 import type { LessonStatus } from "@learning/shared";
 import { apiFetch, authFetch } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { getCourseMeta } from "@/lib/course-meta";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface CourseSummary {
   id: string;
@@ -75,24 +78,55 @@ export default function DashboardPage() {
   }
 
   const progressByLesson = new Map(progress.map((p) => [p.lessonId, p.status]));
+  const coursesCompleted = details.filter(
+    ({ lessons }) => lessons.length > 0 && lessons.every((l) => progressByLesson.get(l.id) === "completed"),
+  ).length;
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-16">
       <h1 className="mb-1 text-2xl font-semibold">My Progress</h1>
-      <p className="mb-8 text-sm text-fd-muted-foreground">Welcome back, {user.name}.</p>
+      <p className="mb-8 text-sm text-fd-muted-foreground">
+        Welcome back, {user.name}.
+        {coursesCompleted > 0 && (
+          <>
+            {" "}
+            You&apos;ve completed {coursesCompleted} course{coursesCompleted > 1 ? "s" : ""}. 🎉
+          </>
+        )}
+      </p>
 
       {loadingContent && <p className="text-sm text-fd-muted-foreground">Loading…</p>}
 
       <div className="flex flex-col gap-6">
         {details.map(({ course, modules, lessons }) => {
           const completed = lessons.filter((l) => progressByLesson.get(l.id) === "completed").length;
+          const percent = lessons.length ? Math.round((completed / lessons.length) * 100) : 0;
+          const isComplete = lessons.length > 0 && completed === lessons.length;
+          const { icon: Icon, bg, fg } = getCourseMeta(course.slug);
+
           return (
             <Card key={course.id}>
               <CardHeader>
+                <div className="mb-2 flex items-center justify-between">
+                  <div className={cn("flex size-10 items-center justify-center rounded-lg", bg)}>
+                    <Icon className={cn("size-5", fg)} />
+                  </div>
+                  {isComplete && (
+                    <span className="flex items-center gap-1.5 rounded-full bg-brand-amber/15 px-3 py-1 text-xs font-semibold text-brand-amber">
+                      <Trophy className="size-3.5" /> Course Complete
+                    </span>
+                  )}
+                </div>
                 <CardTitle>{course.title}</CardTitle>
                 <CardDescription>
                   {course.description} · {completed}/{lessons.length} lessons complete
                 </CardDescription>
+                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-fd-muted">
+                  <div
+                    className={cn("h-full rounded-full transition-all", isComplete ? "bg-brand-amber" : "bg-fd-primary")}
+                    style={{ width: `${percent}%` }}
+                  />
+                </div>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
                 {modules.map((mod) => (
