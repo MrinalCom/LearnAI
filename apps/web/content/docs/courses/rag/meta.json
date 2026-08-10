@@ -1,0 +1,6 @@
+{
+  "title": "Retrieval-Augmented Generation",
+  "description": "Grounding an LLM's answers in real, retrievable documents instead of relying on parametric memory alone.",
+  "order": 5,
+  "pages": ["rag-fundamentals", "building-a-rag-pipeline", "rag-patterns-in-practice"]
+}

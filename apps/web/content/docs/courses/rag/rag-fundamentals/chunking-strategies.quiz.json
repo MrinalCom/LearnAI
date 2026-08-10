@@ -1,0 +1,41 @@
+{
+  "title": "Chunking Strategies Check",
+  "questions": [
+    {
+      "questionText": "Why is a single embedding for an entire long document usually a poor retrieval unit?",
+      "questionType": "mcq",
+      "options": [
+        "Documents cannot be embedded at all",
+        "It blurs many different topics into one vector, making it a weak match for any specific query about just one of those topics",
+        "Long documents can only be embedded using RNNs",
+        "There's no real downside to embedding whole documents"
+      ],
+      "correctAnswer": "It blurs many different topics into one vector, making it a weak match for any specific query about just one of those topics",
+      "explanation": "An embedding for a whole multi-topic document averages together many different subjects, diluting its relevance to any single specific query."
+    },
+    {
+      "questionText": "What's the tradeoff between chunks that are too small versus too large?",
+      "questionType": "mcq",
+      "options": [
+        "There is no tradeoff, larger is always better",
+        "Too-small chunks lose surrounding context; too-large chunks dilute relevance and waste context window budget once retrieved",
+        "Chunk size only affects storage cost, never retrieval quality",
+        "Small chunks always retrieve better regardless of content"
+      ],
+      "correctAnswer": "Too-small chunks lose surrounding context; too-large chunks dilute relevance and waste context window budget once retrieved",
+      "explanation": "Chunk size is a genuine design tradeoff — too small loses meaning-carrying context, too large hurts precision and burns context budget on irrelevant surrounding material."
+    },
+    {
+      "questionText": "What advantage does structure-aware chunking (splitting at headings/paragraphs) have over fixed-size chunking?",
+      "questionType": "mcq",
+      "options": [
+        "It always produces exactly equal-sized chunks",
+        "It splits at natural content boundaries, keeping each chunk a coherent unit instead of arbitrarily slicing through sentences or code blocks",
+        "It's faster to compute than fixed-size chunking",
+        "It removes the need for embeddings"
+      ],
+      "correctAnswer": "It splits at natural content boundaries, keeping each chunk a coherent unit instead of arbitrarily slicing through sentences or code blocks",
+      "explanation": "Structure-aware chunking respects the document's actual organization (headings, paragraphs), avoiding the arbitrary mid-sentence or mid-block cuts that fixed-size chunking can produce."
+    }
+  ]
+}

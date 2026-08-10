@@ -1,0 +1,66 @@
+---
+title: What Is RAG?
+description: Grounding an LLM's answers in retrieved documents, instead of relying on what it memorized during training.
+order: 1
+estimatedMinutes: 15
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="rag" moduleSlug="rag-fundamentals" lessonSlug="what-is-rag" />
+
+## Overview
+
+An LLM's knowledge comes entirely from its training data — frozen at
+whatever point training stopped, and never including anything private to
+your organization (internal docs, your own codebase, today's data).
+**Retrieval-Augmented Generation (RAG)** solves this not by retraining the
+model, but by fetching relevant information at query time and inserting it
+directly into the prompt, so the model answers from what's actually in
+front of it rather than solely from memory.
+
+## The two-stage pipeline
+
+```
+1. Retrieve:  query -> search a document store -> top-k relevant chunks
+2. Generate:  (query + retrieved chunks) -> LLM -> grounded answer
+```
+
+This is deceptively simple to state and is the entire idea — everything
+else in this course is refinement of these two stages. The Deep Learning
+course's attention mechanism and this course's own embeddings lesson are
+what make step 1 possible: a query and a document chunk can be compared for
+relevance by embedding both and measuring vector similarity, exactly as the
+embeddings lesson demonstrated.
+
+## Why RAG beats "just put everything in the prompt"
+
+Modern context windows are large but still finite (context engineering
+lesson, previous course), and an organization's real documentation is
+usually far larger than any context window regardless. RAG's retrieval
+step is what makes a knowledge base of any size usable: instead of trying
+to fit everything, you fit only what's relevant to *this specific query* —
+directly the same "selective retrieval" context-engineering technique from
+two lessons ago, just given its own name and a full pipeline built around
+it.
+
+## Why RAG beats relying on the model's memory alone
+
+- **Reduces hallucination** — a model instructed to answer only from
+  provided context, and to say so when the context doesn't contain an
+  answer, has far less room to confidently make something up than one
+  answering from parametric memory (evaluation lesson, previous course).
+- **Stays current** — retrieved documents can be updated at any time
+  with zero retraining; a model's trained-in knowledge cannot.
+- **Grounds answers in your own private data** — internal
+  documentation, your own codebase, proprietary data the model never saw
+  during training.
+- **Citability** — since the answer is built from specific retrieved
+  chunks, you can point back to exactly which source supported which claim,
+  something a model working from memory alone cannot offer.
+
+## Check your understanding
+
+<Quiz courseSlug="rag" moduleSlug="rag-fundamentals" lessonSlug="what-is-rag" />

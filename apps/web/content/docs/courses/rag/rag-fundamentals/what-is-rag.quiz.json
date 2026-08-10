@@ -1,0 +1,41 @@
+{
+  "title": "What Is RAG? Check",
+  "questions": [
+    {
+      "questionText": "What are the two stages of a RAG pipeline?",
+      "questionType": "mcq",
+      "options": [
+        "Train, then predict",
+        "Retrieve relevant chunks for the query, then generate an answer using the query plus those chunks",
+        "Tokenize, then embed",
+        "Fine-tune, then deploy"
+      ],
+      "correctAnswer": "Retrieve relevant chunks for the query, then generate an answer using the query plus those chunks",
+      "explanation": "RAG's entire idea is these two stages: a retrieval step that finds relevant context, and a generation step that answers using that context."
+    },
+    {
+      "questionText": "Why can't you just paste an entire large knowledge base directly into every prompt instead of using retrieval?",
+      "questionType": "mcq",
+      "options": [
+        "You always can, retrieval offers no advantage",
+        "Context windows are finite, and most real knowledge bases are far larger than any context window regardless",
+        "LLMs cannot process more than one document at a time",
+        "Retrieval is only needed for very small knowledge bases"
+      ],
+      "correctAnswer": "Context windows are finite, and most real knowledge bases are far larger than any context window regardless",
+      "explanation": "The context window's hard limit (context engineering lesson) is exactly what makes retrieving only the relevant subset necessary for any knowledge base of meaningful size."
+    },
+    {
+      "questionText": "How does RAG help reduce hallucination compared to a model answering purely from its trained-in knowledge?",
+      "questionType": "mcq",
+      "options": [
+        "It doesn't affect hallucination at all",
+        "A model instructed to answer only from provided, retrieved context has much less room to confidently make something up than one relying on parametric memory alone",
+        "RAG makes the model larger, which prevents hallucination",
+        "RAG only works for models that have never hallucinated before"
+      ],
+      "correctAnswer": "A model instructed to answer only from provided, retrieved context has much less room to confidently make something up than one relying on parametric memory alone",
+      "explanation": "Grounding generation in explicit retrieved text — and instructing the model to stick to it — directly counters the tendency of a next-token predictor to produce plausible-sounding but unsupported claims."
+    }
+  ]
+}

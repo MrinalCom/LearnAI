@@ -1,0 +1,6 @@
+{
+  "title": "RAG Fundamentals",
+  "description": "Why retrieve before generating, and how source documents get split into retrievable pieces.",
+  "order": 1,
+  "pages": ["what-is-rag", "chunking-strategies"]
+}

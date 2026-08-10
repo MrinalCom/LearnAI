@@ -1,0 +1,92 @@
+---
+title: Chunking Strategies
+description: How you split documents determines what retrieval can and can't find.
+order: 2
+estimatedMinutes: 18
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="rag" moduleSlug="rag-fundamentals" lessonSlug="chunking-strategies" />
+
+## Overview
+
+You can't embed and retrieve an entire long document as one unit — it's
+too large, and a single embedding for a whole document blurs together many
+different topics into one vector, making it a poor match for any specific
+query. **Chunking** splits documents into smaller, individually-embeddable
+pieces first. How you chunk directly determines what retrieval can find
+later, which makes it a more consequential design decision than it might
+first appear.
+
+## The chunk size tradeoff
+
+- **Chunks too small** (a sentence or less) — lose surrounding context;
+  a retrieved sentence fragment may be technically relevant but
+  meaningless without the paragraph around it.
+- **Chunks too large** (multiple pages) — dilute relevance; a chunk
+  covering five different subtopics only partially matches a query about
+  one of them, hurting retrieval precision, and wastes context window
+  budget once retrieved (context engineering, previous course).
+
+There's no universal right size — it depends on the content's natural
+structure and how specific your queries tend to be. A common starting
+point is a few hundred tokens per chunk, tuned from there based on
+retrieval quality.
+
+## Fixed-size vs. structure-aware chunking
+
+**Fixed-size chunking** just splits every N tokens/characters, regardless
+of what's actually at that boundary — simple, but it can slice a sentence,
+a code block, or a table in half arbitrarily. **Structure-aware chunking**
+splits at natural boundaries instead — paragraph breaks, markdown headings,
+function definitions in code — so each chunk stays a coherent unit. This
+project's own content sync script (mentioned in the context engineering
+lesson) does exactly this: it splits lesson MDX content by heading rather
+than by a fixed character count, so each chunk corresponds to one coherent
+section rather than an arbitrary slice.
+
+## Overlap: a compromise for boundary information
+
+Chunking with a small **overlap** (e.g., the last 50 tokens of one chunk
+are repeated as the first 50 tokens of the next) helps recover information
+that would otherwise be split awkwardly across a chunk boundary — a
+sentence that references something explained just before the cut still has
+that context available in at least one of the two overlapping chunks.
+
+## In real code: comparing chunking strategies
+
+<PyodidePlayground initialCode={`text = """Machine learning models require careful evaluation. Accuracy alone
+can be misleading on imbalanced datasets.
+
+Precision measures how many predicted positives were actually correct.
+Recall measures how many actual positives were found.
+
+F1 score balances precision and recall using their harmonic mean."""
+
+def fixed_size_chunks(text, size=80):
+    return [text[i:i+size] for i in range(0, len(text), size)]
+
+def paragraph_chunks(text):
+    return [p.strip() for p in text.split("\\n\\n") if p.strip()]
+
+print("=== Fixed-size chunking (80 chars) ===")
+for i, chunk in enumerate(fixed_size_chunks(text)):
+    print(f"[{i}] {chunk!r}")
+
+print("\\n=== Paragraph-based chunking ===")
+for i, chunk in enumerate(paragraph_chunks(text)):
+    print(f"[{i}] {chunk!r}")
+`}
+/>
+
+Compare the two outputs: fixed-size chunking cuts mid-sentence wherever the
+character count happens to land, while paragraph-based chunking keeps each
+complete idea intact — at the cost of producing unevenly-sized chunks.
+
+## Check your understanding
+
+<Quiz courseSlug="rag" moduleSlug="rag-fundamentals" lessonSlug="chunking-strategies" />
