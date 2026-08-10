@@ -1,0 +1,87 @@
+---
+title: RAG Architecture Patterns
+description: Naive RAG is the baseline, not the ceiling — a few named patterns for when it isn't enough.
+order: 1
+estimatedMinutes: 18
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="rag" moduleSlug="rag-patterns-in-practice" lessonSlug="rag-architecture-patterns" />
+
+## Overview
+
+Everything so far in this course — embed, chunk, retrieve, optionally
+re-rank, generate — is often called **naive RAG**: one retrieval pass, then
+one generation pass. It's a genuinely strong baseline, but a few named
+patterns build on it for cases naive RAG handles poorly.
+
+## Naive RAG, restated as a diagram
+
+```
+query --> embed --> vector search --> top-k chunks --> [query + chunks] --> LLM --> answer
+```
+
+Everything downstream in this lesson modifies or extends this single
+straight-line pipeline.
+
+## Agentic RAG: let the model decide whether and what to retrieve
+
+Naive RAG always retrieves, exactly once, regardless of whether the query
+actually needs it — a greeting like "thanks, that helps!" triggers the same
+retrieval pipeline as a substantive question. **Agentic RAG** wraps
+retrieval as a *tool* (Agentic AI course) that the model can choose to
+call, zero or multiple times, deciding for itself whether retrieval is
+needed and what to search for:
+
+```
+User: "Thanks, that's clear!"
+  -> Agent decides: no retrieval needed, just acknowledge.
+
+User: "How does that compare to how random forests handle overfitting?"
+  -> Agent decides: retrieve twice, once per concept, then compare.
+```
+
+This is a direct application of the ReAct loop from the Agentic AI course
+— retrieval becomes one more tool in an agent's toolbox, called when the
+agent's own reasoning determines it's actually needed, rather than an
+unconditional first step.
+
+## Multi-step / iterative retrieval
+
+Some questions can't be answered from a single retrieval pass because the
+right second query only becomes clear after seeing the first result — a
+question "what technique fixed the training problem ResNet had at depth?"
+might first retrieve content about ResNet, discover it mentions "vanishing
+gradients," and only then know to retrieve specifically about that.
+**Iterative retrieval** lets the pipeline retrieve, look at what came back,
+and decide to retrieve again with a refined query — naturally implemented
+as a LangGraph loop (Agentic AI course): a retrieve node, a "do we have
+enough now?" conditional edge, and a loop back to retrieve again if not.
+
+## Corrective RAG: check before you generate
+
+**Corrective RAG** adds a validation step between retrieval and
+generation: before generating an answer, check whether the retrieved
+chunks are actually relevant and sufficient. If not, fall back — trigger a
+broader search, a web search, or explicitly tell the user the knowledge
+base doesn't cover this — rather than generating from weak, tangentially-
+relevant context and risking a confident-sounding but poorly-grounded
+answer (hallucination lesson, previous course).
+
+## Choosing a pattern
+
+Naive RAG is the right default until you have a concrete reason to add
+more — each of these patterns adds real complexity (more LLM calls, more
+latency, more failure modes to reason about) in exchange for handling a
+specific weakness. Reach for agentic RAG when many queries genuinely don't
+need retrieval at all; iterative retrieval when questions commonly require
+multi-hop reasoning across documents; corrective RAG when hallucination
+risk from weak retrieval matches is a real, costly problem for your use
+case.
+
+## Check your understanding
+
+<Quiz courseSlug="rag" moduleSlug="rag-patterns-in-practice" lessonSlug="rag-architecture-patterns" />

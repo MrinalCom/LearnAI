@@ -1,0 +1,6 @@
+{
+  "title": "RAG Patterns in Practice",
+  "description": "From naive RAG to agentic RAG, and a real worked example: this platform's own tutor design.",
+  "order": 3,
+  "pages": ["rag-architecture-patterns", "this-platforms-rag-pipeline"]
+}

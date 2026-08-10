@@ -1,0 +1,89 @@
+---
+title: "Case Study: This Platform's Own RAG Pipeline"
+description: A worked example — how everything in this course applies to this site's own (planned) AI tutor.
+order: 2
+estimatedMinutes: 15
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="rag" moduleSlug="rag-patterns-in-practice" lessonSlug="this-platforms-rag-pipeline" />
+
+## Overview
+
+Every concept in this course — chunking, embedding, vector search,
+retrieval quality, architecture patterns — has a concrete home in this
+site's own planned AI tutor feature. This lesson walks through that
+design end to end, as a single worked example tying the whole course
+together, rather than introducing anything new.
+
+## Ingestion: turning lessons into retrievable chunks
+
+The site's content sync script (referenced throughout this course)
+processes every lesson's MDX source, splitting it by heading — the
+structure-aware chunking approach from the chunking-strategies lesson,
+rather than a fixed character count — so each chunk corresponds to one
+coherent section (an "Overview," a specific technique, a code example's
+explanation) rather than an arbitrary slice. Each chunk is embedded and
+stored with a `content_hash`, so re-running ingestion after an edit only
+re-embeds chunks that actually changed.
+
+## Storage: pgvector, not a separate vector database
+
+Rather than standing up a dedicated vector database, chunk embeddings live
+in the same Postgres instance as everything else (users, progress, quiz
+attempts), in a `content_chunks` table with a `pgvector` column and an HNSW
+index — the exact ANN index type discussed in the vector-search-and-
+retrieval lesson. For a curriculum-sized corpus (low thousands of chunks,
+not billions), this keeps the entire system to one database instead of
+introducing and operating a second specialized store.
+
+## Retrieval: scoped, not global
+
+When a learner asks the tutor a question while reading a specific lesson,
+retrieval isn't run against the *entire* curriculum — it's scoped to the
+current lesson and course first. This is the selective-retrieval context
+engineering technique applied concretely: narrowing the search space before
+even computing similarity meaningfully improves both retrieval precision
+and speed, and it's a direct instance of "let the application context (what
+page is the user on) inform what gets retrieved," not just the query text
+alone.
+
+## Generation: grounded, with an explicit fallback
+
+The generation step's system prompt instructs the model to answer *only*
+from the retrieved chunks, cite which section supported the answer, and say
+so explicitly if the retrieved context doesn't cover the question — the
+corrective-RAG spirit from the previous lesson, implemented as a prompting
+constraint rather than a separate validation model call, since the
+low-stakes nature of a learning-platform Q&A doesn't obviously justify the
+extra latency and complexity a dedicated corrective step would add.
+
+## Orchestration: a LangGraph StateGraph, not a flat call
+
+Tying back to the Agentic AI course directly: the tutor isn't a single
+retrieve-then-generate function call, it's a small graph —
+`classifyIntent` (is this a question, a request to be quizzed, or
+something else?) routes to either a `retrieve -> generate` path or a
+`quizNode`, with conversation state persisted per-session via a Postgres
+checkpointer so a conversation resumes correctly across page visits. Every
+piece of this — the conditional routing, the checkpointer, the state
+management — is exactly what the LangGraph fundamentals module covered,
+applied to a real, concrete feature rather than a toy example.
+
+## The throughline
+
+Nothing about this design is exotic — it's naive RAG (chunking, embedding,
+retrieval, grounded generation) with two deliberate refinements (scoped
+retrieval, and orchestration as an explicit graph rather than a flat
+function) chosen because they concretely address this specific
+application's needs, not because more complexity is inherently better. That
+judgment — start from the naive baseline, add exactly the specific
+refinements your use case actually needs — is the real skill this course
+was building toward.
+
+## Check your understanding
+
+<Quiz courseSlug="rag" moduleSlug="rag-patterns-in-practice" lessonSlug="this-platforms-rag-pipeline" />

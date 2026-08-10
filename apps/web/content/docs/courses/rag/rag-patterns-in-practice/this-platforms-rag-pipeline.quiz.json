@@ -1,0 +1,41 @@
+{
+  "title": "Case Study: This Platform's RAG Pipeline Check",
+  "questions": [
+    {
+      "questionText": "How does this platform's content sync script chunk lesson content?",
+      "questionType": "mcq",
+      "options": [
+        "By a fixed character count, regardless of content structure",
+        "By heading — structure-aware chunking, so each chunk corresponds to one coherent section",
+        "It doesn't chunk content at all, each entire lesson is one chunk",
+        "Randomly, to encourage retrieval diversity"
+      ],
+      "correctAnswer": "By heading — structure-aware chunking, so each chunk corresponds to one coherent section",
+      "explanation": "This directly applies the chunking-strategies lesson's structure-aware approach: splitting at headings keeps each chunk a coherent unit rather than an arbitrary slice."
+    },
+    {
+      "questionText": "Why does the platform store embeddings in pgvector within the same Postgres instance, rather than a separate dedicated vector database?",
+      "questionType": "mcq",
+      "options": [
+        "pgvector is the only vector storage option that exists",
+        "The corpus is curriculum-sized (low thousands of chunks), so one database keeps the system simpler than operating a second specialized store for what a modest ANN index can already handle",
+        "Dedicated vector databases cannot use HNSW indexes",
+        "It's required for the tutor to work at all"
+      ],
+      "correctAnswer": "The corpus is curriculum-sized (low thousands of chunks), so one database keeps the system simpler than operating a second specialized store for what a modest ANN index can already handle",
+      "explanation": "At this scale, pgvector's HNSW index performs fine, and consolidating into one database avoids the operational overhead of a separate vector database for no real benefit."
+    },
+    {
+      "questionText": "Why does the tutor scope retrieval to the current lesson/course instead of searching the entire curriculum for every question?",
+      "questionType": "mcq",
+      "options": [
+        "It doesn't — it always searches everything",
+        "It's a concrete application of selective retrieval / context engineering: narrowing the search space with known application context improves both precision and speed",
+        "Scoping is required by the embedding model itself",
+        "It has no effect on retrieval quality"
+      ],
+      "correctAnswer": "It's a concrete application of selective retrieval / context engineering: narrowing the search space with known application context improves both precision and speed",
+      "explanation": "Using the fact that the user is reading a specific lesson to scope retrieval before even computing similarity is a direct, practical instance of the selective-retrieval context engineering technique."
+    }
+  ]
+}

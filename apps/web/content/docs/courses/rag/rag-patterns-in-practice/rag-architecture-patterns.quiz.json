@@ -1,0 +1,41 @@
+{
+  "title": "RAG Architecture Patterns Check",
+  "questions": [
+    {
+      "questionText": "What's the key difference between naive RAG and agentic RAG?",
+      "questionType": "mcq",
+      "options": [
+        "Agentic RAG never uses embeddings",
+        "Naive RAG always retrieves exactly once regardless of need; agentic RAG treats retrieval as a tool the model can choose to call zero, one, or multiple times",
+        "Naive RAG is always faster in every scenario",
+        "There is no meaningful difference between them"
+      ],
+      "correctAnswer": "Naive RAG always retrieves exactly once regardless of need; agentic RAG treats retrieval as a tool the model can choose to call zero, one, or multiple times",
+      "explanation": "Agentic RAG applies the ReAct/tool-calling pattern to retrieval itself, letting the model's own reasoning decide whether and how many times to retrieve, rather than an unconditional single retrieval step."
+    },
+    {
+      "questionText": "When is iterative (multi-step) retrieval most useful?",
+      "questionType": "mcq",
+      "options": [
+        "For every single query, regardless of complexity",
+        "When the right follow-up query only becomes clear after seeing an initial retrieval result — questions requiring multi-hop reasoning across documents",
+        "Only when the knowledge base is very small",
+        "It's never actually useful in practice"
+      ],
+      "correctAnswer": "When the right follow-up query only becomes clear after seeing an initial retrieval result — questions requiring multi-hop reasoning across documents",
+      "explanation": "Iterative retrieval specifically helps when a question can't be answered from one retrieval pass because a good second query depends on what the first pass returned."
+    },
+    {
+      "questionText": "What does corrective RAG add to the naive RAG pipeline?",
+      "questionType": "mcq",
+      "options": [
+        "A step that automatically retrains the embedding model",
+        "A validation check between retrieval and generation, falling back (broader search, or telling the user) if retrieved chunks aren't actually relevant/sufficient",
+        "It removes the need for chunking",
+        "It always retrieves from the web instead of the local knowledge base"
+      ],
+      "correctAnswer": "A validation check between retrieval and generation, falling back (broader search, or telling the user) if retrieved chunks aren't actually relevant/sufficient",
+      "explanation": "Corrective RAG guards against generating a confident answer from weak, tangentially-relevant retrieved context by explicitly checking relevance/sufficiency before generation."
+    }
+  ]
+}
