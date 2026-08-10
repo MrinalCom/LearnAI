@@ -1,0 +1,97 @@
+---
+title: Prompt Engineering Fundamentals
+description: Reliable techniques for getting an LLM to do what you actually want.
+order: 1
+estimatedMinutes: 18
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="nlp-and-llm-foundations" moduleSlug="prompt-and-context-engineering" lessonSlug="prompt-engineering-fundamentals" />
+
+## Overview
+
+Prompt engineering is often dismissed as unscientific trial and error, but
+there's a real, repeatable set of techniques behind it — each connects back
+to something concrete about how these models were trained (previous
+lessons) rather than being arbitrary folklore.
+
+## Be specific about the output you want
+
+Vague instructions leave the model to guess at format, length, and tone —
+and it will guess, confidently, in a way that may not match what you
+needed:
+
+```
+Weak:   "Tell me about renewable energy."
+Better: "Write a 3-paragraph overview of renewable energy for a high
+         school audience, covering solar, wind, and hydro. No bullet
+         points, no headers — plain prose."
+```
+
+The improved version specifies audience, length, structure, and scope —
+each constraint removes a degree of freedom the model would otherwise fill
+in with its own (possibly wrong) assumption about what you meant.
+
+## Show, don't just tell: few-shot examples
+
+Building directly on the previous lesson's in-context learning — a concrete
+example of the input/output pattern you want is usually more reliable than
+describing that pattern in prose, especially for anything with a specific
+format (structured data, a particular tone, an unusual output shape).
+
+## Ask for reasoning before the answer
+
+Directly connecting to the ReAct pattern from the Agentic AI course:
+prompting a model to reason through a problem *before* stating its final
+answer ("think step by step," or explicitly structuring the response as
+reasoning-then-answer) measurably improves accuracy on problems that
+benefit from decomposition — math, multi-step logic, anything where jumping
+straight to an answer skips useful intermediate work. This works for the
+same underlying reason ReAct's explicit "Thought" step helps agents: it
+forces the model to commit to intermediate steps in the token sequence
+before generating a final answer, rather than trying to leap there in one
+step.
+
+## Structure complex prompts clearly
+
+For prompts with multiple parts (instructions, context, examples, the
+actual question), clear delineation — headers, XML-style tags, or
+consistent formatting — measurably helps the model correctly attribute
+each piece of text to its role, rather than conflating, say, background
+context with the actual instruction:
+
+```
+<context>
+{retrieved background information}
+</context>
+
+<instructions>
+Answer the user's question using only the context above. If the context
+doesn't contain the answer, say so explicitly rather than guessing.
+</instructions>
+
+<question>
+{user's actual question}
+</question>
+```
+
+This pattern — instructions clearly separated from data the model should
+operate on — becomes especially important once you're inserting untrusted
+or variable content into a prompt, which is exactly the RAG course's
+retrieved-context scenario ahead, and is also a real security
+consideration (prompt injection) covered in the Applied/Production course.
+
+## Iterate like an experiment, not a guess
+
+Treat prompt changes as testable hypotheses: change one thing, run it
+against a consistent set of test cases, and check whether the output
+actually improved — not just on the one example you were staring at. This
+is the same discipline as the Classical ML course's train/test
+methodology, applied to prompts instead of model weights.
+
+## Check your understanding
+
+<Quiz courseSlug="nlp-and-llm-foundations" moduleSlug="prompt-and-context-engineering" lessonSlug="prompt-engineering-fundamentals" />

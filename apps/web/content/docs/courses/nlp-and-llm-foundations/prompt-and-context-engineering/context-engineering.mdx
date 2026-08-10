@@ -1,0 +1,89 @@
+---
+title: Context Engineering
+description: The context window is a finite, expensive resource — deciding what goes in it is its own discipline.
+order: 2
+estimatedMinutes: 20
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="nlp-and-llm-foundations" moduleSlug="prompt-and-context-engineering" lessonSlug="context-engineering" />
+
+## Overview
+
+Prompt engineering is about how you phrase *one* instruction. **Context
+engineering** is the broader discipline of deciding *everything* that goes
+into the model's context window for a given call: system instructions,
+conversation history, retrieved documents, tool definitions, and the
+current query — and, just as importantly, everything you deliberately
+*leave out*. As applications get more complex (long conversations, RAG,
+agents with many tools), what to include stops being obvious and becomes
+an active engineering problem.
+
+## The context window is a real, hard constraint
+
+Every model has a maximum context length, measured in tokens (tokenization
+lesson, earlier in this module). Everything competing for that budget —
+system prompt, tool definitions, conversation history, retrieved
+documents, the current message — has to fit inside it, and going over the
+limit isn't a soft degradation, it's a hard failure. This makes context a
+genuinely scarce resource to budget deliberately, not an unlimited scratch
+pad.
+
+## Techniques for managing the budget
+
+- **Summarization** — once a conversation gets long, replace older
+  turns with a compact summary that preserves the important facts, freeing
+  up token budget for new content. This trades some fidelity (details in
+  the summary may be lost) for headroom.
+- **Sliding windows** — keep only the most recent N turns verbatim,
+  dropping older ones entirely (or replacing them with a summary, combining
+  both techniques).
+- **Selective retrieval** — rather than stuffing an entire knowledge
+  base into context, retrieve only the specific chunks relevant to the
+  current query (exactly what the RAG course ahead covers in depth) — this
+  is context engineering's single most impactful technique for
+  knowledge-heavy applications.
+- **Tool schema minimization** — every tool definition available to an
+  agent (Agentic AI course) consumes context tokens whether or not it ends
+  up being called. An agent with 40 loosely-related tools pays a real
+  token cost for all 40 on every single call, which is itself an argument
+  for the multi-agent specialization pattern from that course — narrower
+  agents need fewer tool definitions in context at once.
+
+## Structure and ordering matter, not just content
+
+Two prompts with *identical* information can perform differently based on
+how that information is organized:
+
+- **Put the most important instructions where the model reliably attends
+  to them** — commonly the very start or very end of the context, since
+  models can be less reliably attentive to information buried in the
+  middle of a very long context (sometimes called the "lost in the
+  middle" effect).
+- **Group related information together** rather than interleaving
+  unrelated context and instructions, for the same attribution reasons
+  covered in the previous lesson.
+- **Keep the system prompt and per-turn instructions separable** — this is
+  why LangChain's `ChatPromptTemplate` (Agentic AI course) treats system
+  messages, few-shot examples, and the user's message as distinct,
+  composable pieces rather than one flat string.
+
+## Context engineering, applied: this site's own tutor
+
+This project's own (planned) tutor design is a concrete worked example of
+every technique above at once: it retrieves only the specific lesson
+content relevant to the current question (selective retrieval, not the
+whole curriculum), scopes retrieval to the current course/lesson (reducing
+what needs retrieving in the first place), and uses a Postgres checkpointer
+per conversation thread so history persists without needing to resend
+everything on each call. Managing context well is often the difference
+between an LLM application that feels reliable and one that seems to
+"forget" things or answer inconsistently — usually not because the model
+got worse, but because what it was actually given to work with changed.
+
+## Check your understanding
+
+<Quiz courseSlug="nlp-and-llm-foundations" moduleSlug="prompt-and-context-engineering" lessonSlug="context-engineering" />

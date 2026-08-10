@@ -1,0 +1,6 @@
+{
+  "title": "Prompt & Context Engineering",
+  "description": "Getting reliable behavior out of an LLM, and managing what actually fits in its limited context window.",
+  "order": 3,
+  "pages": ["prompt-engineering-fundamentals", "context-engineering"]
+}

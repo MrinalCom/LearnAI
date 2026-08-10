@@ -1,0 +1,41 @@
+{
+  "title": "Prompt Engineering Fundamentals Check",
+  "questions": [
+    {
+      "questionText": "Why does a vague instruction like \"Tell me about renewable energy\" tend to produce inconsistent results?",
+      "questionType": "mcq",
+      "options": [
+        "The model cannot process the topic of renewable energy",
+        "It leaves format, length, audience, and scope unspecified, so the model fills in those gaps with its own guesses",
+        "Vague prompts always cause errors",
+        "The model requires exact keyword matches to respond at all"
+      ],
+      "correctAnswer": "It leaves format, length, audience, and scope unspecified, so the model fills in those gaps with its own guesses",
+      "explanation": "Each unspecified constraint (length, tone, structure, audience) is a degree of freedom the model resolves on its own, which is why specific instructions produce more consistent, predictable output."
+    },
+    {
+      "questionText": "Why does asking a model to reason step by step before answering tend to improve accuracy on complex problems?",
+      "questionType": "mcq",
+      "options": [
+        "It makes the model respond faster",
+        "It forces the model to commit to intermediate steps in the generated tokens before the final answer, rather than jumping straight there",
+        "It has no real effect on accuracy",
+        "It only works for creative writing tasks"
+      ],
+      "correctAnswer": "It forces the model to commit to intermediate steps in the generated tokens before the final answer, rather than jumping straight there",
+      "explanation": "Since the model generates tokens sequentially, writing out reasoning first gives it a chance to work through intermediate logic that directly informs the final answer, rather than trying to leap to a conclusion in one step."
+    },
+    {
+      "questionText": "Why does clearly separating instructions from data (e.g. with tags) matter, especially once you're inserting retrieved or variable content into a prompt?",
+      "questionType": "mcq",
+      "options": [
+        "It's purely stylistic and has no functional effect",
+        "It helps the model correctly attribute each piece of text to its role, and matters for security once untrusted content is involved (prompt injection)",
+        "It's required syntax that the model cannot parse otherwise",
+        "It only matters for non-English prompts"
+      ],
+      "correctAnswer": "It helps the model correctly attribute each piece of text to its role, and matters for security once untrusted content is involved (prompt injection)",
+      "explanation": "Clear structural separation reduces the chance of instructions and data (e.g. retrieved context) being conflated, and becomes a real security consideration once that data might be untrusted or adversarial."
+    }
+  ]
+}

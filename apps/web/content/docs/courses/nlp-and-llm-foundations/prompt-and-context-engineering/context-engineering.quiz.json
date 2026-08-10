@@ -1,0 +1,41 @@
+{
+  "title": "Context Engineering Check",
+  "questions": [
+    {
+      "questionText": "How does context engineering differ from prompt engineering?",
+      "questionType": "mcq",
+      "options": [
+        "They are exactly the same thing",
+        "Prompt engineering is about phrasing one instruction; context engineering is the broader discipline of deciding everything (and what to exclude) that goes into the context window",
+        "Context engineering only applies to image models",
+        "Context engineering replaces the need for a system prompt"
+      ],
+      "correctAnswer": "Prompt engineering is about phrasing one instruction; context engineering is the broader discipline of deciding everything (and what to exclude) that goes into the context window",
+      "explanation": "Context engineering is the wider concern of what competes for the limited context budget across system instructions, history, retrieved documents, and tool definitions — not just how one instruction is worded."
+    },
+    {
+      "questionText": "Why is selective retrieval described as context engineering's most impactful technique for knowledge-heavy applications?",
+      "questionType": "mcq",
+      "options": [
+        "It's the only technique that exists",
+        "Retrieving only the specific relevant chunks (instead of stuffing an entire knowledge base into context) directly addresses the hard token budget constraint",
+        "It removes the need for a context window entirely",
+        "It only matters for very short conversations"
+      ],
+      "correctAnswer": "Retrieving only the specific relevant chunks (instead of stuffing an entire knowledge base into context) directly addresses the hard token budget constraint",
+      "explanation": "Since the context window is a hard limit, retrieving only what's relevant to the current query is what makes large knowledge bases usable at all within that constraint — the core idea RAG builds on."
+    },
+    {
+      "questionText": "Why does an agent with many loosely-related tools have a real context engineering cost, even for tools it doesn't end up calling?",
+      "questionType": "mcq",
+      "options": [
+        "It doesn't — unused tool definitions are free",
+        "Every available tool's schema/description consumes context tokens on every single call, whether or not that tool is actually invoked",
+        "Tools are only listed in context after being called",
+        "This only applies to LangGraph specifically, not other frameworks"
+      ],
+      "correctAnswer": "Every available tool's schema/description consumes context tokens on every single call, whether or not that tool is actually invoked",
+      "explanation": "Tool definitions occupy context budget just by being available to the model, which is a direct argument for narrower, specialized agents (fewer tools each) over one agent with many tools."
+    }
+  ]
+}
