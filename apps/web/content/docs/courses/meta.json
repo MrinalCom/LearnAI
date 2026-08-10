@@ -1,4 +1,4 @@
 {
   "title": "Courses",
-  "pages": ["classical-ml", "deep-learning", "agentic-ai"]
+  "pages": ["classical-ml", "deep-learning", "nlp-and-llm-foundations", "agentic-ai"]
 }

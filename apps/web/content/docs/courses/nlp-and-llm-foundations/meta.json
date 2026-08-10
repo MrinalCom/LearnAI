@@ -1,0 +1,11 @@
+{
+  "title": "NLP & LLM Foundations",
+  "description": "How raw text becomes tokens and embeddings, how LLMs are actually trained, and how to prompt and evaluate them well.",
+  "order": 4,
+  "pages": [
+    "tokenization-and-embeddings",
+    "how-llms-work",
+    "prompt-and-context-engineering",
+    "evaluating-llm-output"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "title": "Embeddings Check",
+  "questions": [
+    {
+      "questionText": "What property makes embeddings useful, that a raw token ID doesn't have?",
+      "questionType": "mcq",
+      "options": [
+        "Embeddings are always smaller numbers than token IDs",
+        "Semantically similar tokens end up close together in the vector space, so distance/similarity reflects meaning",
+        "Embeddings remove the need for tokenization",
+        "Embeddings are only used for images, not text"
+      ],
+      "correctAnswer": "Semantically similar tokens end up close together in the vector space, so distance/similarity reflects meaning",
+      "explanation": "A raw token ID is an arbitrary index with no inherent relationship to other IDs; embeddings are learned specifically so that geometric closeness corresponds to semantic closeness."
+    },
+    {
+      "questionText": "Where does an embedding's \"similar words end up close together\" property actually come from?",
+      "questionType": "mcq",
+      "options": [
+        "It's manually programmed by engineers for each word",
+        "It emerges from training a model to predict context (nearby or masked words) across huge amounts of text — words in similar contexts end up with similar vectors",
+        "It's a random accident with no underlying cause",
+        "It only happens for the 100 most common English words"
+      ],
+      "correctAnswer": "It emerges from training a model to predict context (nearby or masked words) across huge amounts of text — words in similar contexts end up with similar vectors",
+      "explanation": "This clustering behavior is a side effect of the training objective, not something explicitly designed in — words that appear in similar contexts get pushed toward similar vectors purely through gradient descent on that objective."
+    },
+    {
+      "questionText": "What does cosine similarity measure between two embedding vectors?",
+      "questionType": "mcq",
+      "options": [
+        "The exact Euclidean distance between them",
+        "The cosine of the angle between them, largely ignoring vector magnitude, ranging from -1 to 1",
+        "The number of dimensions they share",
+        "Whether the two vectors have the same length"
+      ],
+      "correctAnswer": "The cosine of the angle between them, largely ignoring vector magnitude, ranging from -1 to 1",
+      "explanation": "Cosine similarity focuses on direction rather than magnitude, which is the standard way to compare embedding vectors for semantic similarity."
+    }
+  ]
+}

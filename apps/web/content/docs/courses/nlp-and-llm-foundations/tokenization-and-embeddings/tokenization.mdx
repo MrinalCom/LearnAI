@@ -1,0 +1,108 @@
+---
+title: Tokenization
+description: LLMs don't see words or characters — they see tokens, and the split isn't what you'd guess.
+order: 1
+estimatedMinutes: 15
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="nlp-and-llm-foundations" moduleSlug="tokenization-and-embeddings" lessonSlug="tokenization" />
+
+## Overview
+
+Every network in the Deep Learning course operates on numbers, not text —
+so the very first step of any NLP pipeline is turning text into a sequence
+of integers. The naive options both have real problems: **character-level**
+splitting produces very long sequences and forces the model to learn
+spelling before it can learn meaning; **word-level** splitting needs a huge
+vocabulary and has no good answer for words it's never seen before. Modern
+LLMs use something in between: **subword tokenization**.
+
+## Byte-Pair Encoding (BPE), the idea
+
+BPE builds a vocabulary by starting from individual characters and
+repeatedly merging the most frequent adjacent pair into a new token, until
+reaching a target vocabulary size (commonly 50,000-100,000+ tokens for
+production LLMs):
+
+```
+Start:    "l o w e r", "l o w e s t", "n e w e s t"  (character-level)
+Merge 1:  "e s" is the most frequent pair -> merge into "es"
+Merge 2:  "es t" is now frequent -> merge into "est"
+...repeat thousands of times...
+Result:   common words become single tokens ("lower"),
+          rare/unseen words split into recognizable pieces ("unbelievable" -> "un" + "believ" + "able")
+```
+
+The payoff: common words end up as single tokens (efficient), while any
+word the model has never seen can still be represented as a sequence of
+familiar sub-word pieces (no "unknown word" problem) — including made-up
+words, typos, and words in other languages the tokenizer's training data
+touched even briefly.
+
+## Why token count, not word count, is what you're billed and limited on
+
+This is the practical reason tokenization matters even if you never train a
+model yourself: every API call to an LLM is priced and rate-limited by
+**token count**, and every model has a maximum **context window** measured
+in tokens. A rough rule of thumb for English text: about 4 characters, or
+0.75 words, per token — but this varies a lot by language and content type
+(code and non-English text often tokenize less efficiently).
+
+## In real code
+
+<PyodidePlayground initialCode={`# A tiny, from-scratch BPE implementation to illustrate the merge process
+# (real tokenizers use far bigger vocabularies and heavily optimized code).
+from collections import Counter
+
+def get_pair_counts(tokens_list):
+    counts = Counter()
+    for tokens in tokens_list:
+        for i in range(len(tokens) - 1):
+            counts[(tokens[i], tokens[i + 1])] += 1
+    return counts
+
+def merge_pair(tokens_list, pair):
+    merged = "".join(pair)
+    result = []
+    for tokens in tokens_list:
+        new_tokens = []
+        i = 0
+        while i < len(tokens):
+            if i < len(tokens) - 1 and (tokens[i], tokens[i + 1]) == pair:
+                new_tokens.append(merged)
+                i += 2
+            else:
+                new_tokens.append(tokens[i])
+                i += 1
+        result.append(new_tokens)
+    return result
+
+words = ["lower", "lowest", "newest", "widest"]
+tokens_list = [list(w) + ["_"] for w in words]  # start character-level, "_" marks word end
+
+for step in range(6):
+    pair_counts = get_pair_counts(tokens_list)
+    if not pair_counts:
+        break
+    best_pair = max(pair_counts, key=pair_counts.get)
+    tokens_list = merge_pair(tokens_list, best_pair)
+    print(f"Merge {step + 1}: {best_pair} (count={pair_counts[best_pair]})")
+
+print("\\nFinal tokenization:")
+for word, tokens in zip(words, tokens_list):
+    print(f"  {word!r} -> {tokens}")
+`}
+/>
+
+Watch which pairs get merged first — the most frequent adjacent pair across
+*all* the words wins each round, which is exactly why shared substrings
+like `"est_"` (a common suffix here) tend to become single tokens quickly.
+
+## Check your understanding
+
+<Quiz courseSlug="nlp-and-llm-foundations" moduleSlug="tokenization-and-embeddings" lessonSlug="tokenization" />

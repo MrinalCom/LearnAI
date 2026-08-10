@@ -1,0 +1,6 @@
+{
+  "title": "Tokenization & Embeddings",
+  "description": "How text becomes numbers an LLM can actually operate on.",
+  "order": 1,
+  "pages": ["tokenization", "embeddings"]
+}

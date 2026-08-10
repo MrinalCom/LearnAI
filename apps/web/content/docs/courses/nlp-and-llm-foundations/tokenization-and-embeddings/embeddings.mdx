@@ -1,0 +1,91 @@
+---
+title: Embeddings
+description: Turning tokens into vectors where distance means semantic similarity.
+order: 2
+estimatedMinutes: 18
+type: playground
+---
+
+import { EmbeddingSpaceVisualizer } from "@/components/viz/embedding-space-visualizer";
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="nlp-and-llm-foundations" moduleSlug="tokenization-and-embeddings" lessonSlug="embeddings" />
+
+## Overview
+
+The previous lesson turned text into integer token IDs. But a raw ID like
+`4521` carries no information about meaning — token `4522` isn't
+"one more" semantically than `4521` the way the numbers might suggest. The
+next step is turning each token into an **embedding**: a vector of
+(commonly hundreds to thousands of) real numbers, learned so that tokens
+with similar meaning end up close together in that vector space.
+
+## Distance as meaning
+
+The property that makes embeddings useful: semantically related words end
+up near each other, and the geometry of the space often reflects real
+relationships — the most famous illustration being
+`king − man + woman ≈ queen` in a well-trained embedding space. Embeddings
+aren't hand-designed to have this property; it *emerges* from training a
+model to predict context (nearby words, or masked words) across a huge
+amount of text — words that tend to appear in similar contexts end up with
+similar vectors purely as a side effect of that training objective.
+
+## Try it
+
+<EmbeddingSpaceVisualizer />
+
+This uses hand-placed 2D coordinates as a simplified stand-in for a real
+embedding space (real models use hundreds of dimensions, and the actual
+positions are *learned* from data, not hand-placed) — but the core property
+is the same one real embeddings have: semantically related words cluster
+together, and "nearest neighbor" in vector space corresponds to "similar in
+meaning."
+
+## Measuring similarity: cosine similarity
+
+The standard way to compare two embedding vectors is **cosine similarity**
+— the cosine of the angle between them, ranging from -1 (opposite meaning)
+to 1 (identical direction), largely ignoring vector magnitude:
+
+```
+cosine_similarity(a, b) = (a · b) / (‖a‖ · ‖b‖)
+```
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+
+def cosine_similarity(a, b):
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+# Toy embeddings (normally learned; hand-crafted here to make the pattern obvious).
+embeddings = {
+    "cat":     np.array([0.9, 0.1, 0.0]),
+    "kitten":  np.array([0.85, 0.15, 0.05]),
+    "dog":     np.array([0.8, 0.2, 0.1]),
+    "car":     np.array([0.0, 0.1, 0.95]),
+    "vehicle": np.array([0.05, 0.15, 0.9]),
+}
+
+query = "cat"
+print(f"Similarity to {query!r}:")
+for word, vec in embeddings.items():
+    if word == query:
+        continue
+    sim = cosine_similarity(embeddings[query], vec)
+    print(f"  {word:>8}: {sim:.3f}")
+`}
+/>
+
+"kitten" and "dog" should score meaningfully higher against "cat" than
+"car" or "vehicle" do — exactly the kind of retrieval this powers in
+practice: given a query, find the stored items with the highest cosine
+similarity to it. That's the entire mechanism behind semantic search, and
+it's exactly what the RAG course ahead builds on directly.
+
+## Check your understanding
+
+<Quiz courseSlug="nlp-and-llm-foundations" moduleSlug="tokenization-and-embeddings" lessonSlug="embeddings" />

@@ -1,0 +1,41 @@
+{
+  "title": "Tokenization Check",
+  "questions": [
+    {
+      "questionText": "Why do LLMs use subword tokenization instead of splitting text into whole words?",
+      "questionType": "mcq",
+      "options": [
+        "Whole-word tokenization needs a huge vocabulary and has no good way to handle words never seen during training",
+        "Subword tokenization is simpler to implement, nothing else",
+        "LLMs cannot process whole words at all",
+        "It has no real advantage, it's purely a historical accident"
+      ],
+      "correctAnswer": "Whole-word tokenization needs a huge vocabulary and has no good way to handle words never seen during training",
+      "explanation": "Subword tokenization lets common words be single tokens while unseen/rare words can still be represented as familiar sub-pieces, avoiding the \"unknown word\" problem entirely."
+    },
+    {
+      "questionText": "What does Byte-Pair Encoding's merge step actually do?",
+      "questionType": "mcq",
+      "options": [
+        "It randomly combines characters",
+        "It repeatedly merges the most frequent adjacent pair of tokens across the training data into a new single token",
+        "It removes rare words from the vocabulary entirely",
+        "It translates text into a different language"
+      ],
+      "correctAnswer": "It repeatedly merges the most frequent adjacent pair of tokens across the training data into a new single token",
+      "explanation": "BPE builds its vocabulary bottom-up: starting from individual characters, it repeatedly finds and merges the most frequent adjacent pair, growing common patterns into single tokens."
+    },
+    {
+      "questionText": "Why does token count matter practically when using an LLM API, beyond just understanding how the model works internally?",
+      "questionType": "mcq",
+      "options": [
+        "It doesn't matter practically, only word count matters for billing",
+        "API pricing, rate limits, and the maximum context window are all measured in tokens, not words or characters",
+        "Token count only matters for training, never for using an existing model",
+        "Tokens are only relevant for non-English languages"
+      ],
+      "correctAnswer": "API pricing, rate limits, and the maximum context window are all measured in tokens, not words or characters",
+      "explanation": "Since billing, rate limits, and context window size are all denominated in tokens, understanding roughly how text maps to token count is practically useful even without training your own model."
+    }
+  ]
+}
