@@ -1,0 +1,41 @@
+{
+  "title": "RNNs & LSTMs Check",
+  "questions": [
+    {
+      "questionText": "What makes an RNN different from the feedforward networks earlier in this course?",
+      "questionType": "mcq",
+      "options": [
+        "It uses a different activation function exclusively",
+        "It maintains a hidden state that's updated at each timestep and carries information forward across a sequence",
+        "It doesn't use weights at all",
+        "It can only process images, not text"
+      ],
+      "correctAnswer": "It maintains a hidden state that's updated at each timestep and carries information forward across a sequence",
+      "explanation": "The defining feature of an RNN is the recurrence: each step's hidden state depends on both the current input and the previous hidden state, giving the network a form of memory."
+    },
+    {
+      "questionText": "Why do plain RNNs struggle to remember information from many steps back in a sequence?",
+      "questionType": "mcq",
+      "options": [
+        "They have a hard-coded memory limit of exactly 5 steps",
+        "Backpropagating through many timesteps repeatedly multiplies gradients together, causing them to vanish, just like in very deep feedforward networks",
+        "RNNs cannot process sequences longer than their hidden state size",
+        "It's a hardware limitation, not a mathematical one"
+      ],
+      "correctAnswer": "Backpropagating through many timesteps repeatedly multiplies gradients together, causing them to vanish, just like in very deep feedforward networks",
+      "explanation": "This is the vanishing gradient problem applied across time instead of across layers — the further back in the sequence, the more gradient-shrinking multiplications have occurred."
+    },
+    {
+      "questionText": "What is the key architectural addition LSTMs make to solve this problem?",
+      "questionType": "mcq",
+      "options": [
+        "A larger hidden state size, nothing else",
+        "A separate cell state with learned gates (forget/input/output) that control what information flows through with less repeated squashing",
+        "Removing the recurrence entirely",
+        "Using ReLU instead of tanh"
+      ],
+      "correctAnswer": "A separate cell state with learned gates (forget/input/output) that control what information flows through with less repeated squashing",
+      "explanation": "The cell state's near-uninterrupted, gated path lets gradients flow back much further than a plain RNN's hidden state allows, enabling much longer-range dependencies to be learned."
+    }
+  ]
+}

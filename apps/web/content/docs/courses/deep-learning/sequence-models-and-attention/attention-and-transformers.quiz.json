@@ -1,0 +1,41 @@
+{
+  "title": "Attention & Transformers Check",
+  "questions": [
+    {
+      "questionText": "What key limitation of RNNs/LSTMs does attention solve?",
+      "questionType": "mcq",
+      "options": [
+        "Attention lets every position directly relate to every other position regardless of distance, instead of relying on information passed step by step through a chain",
+        "Attention removes the need for any training data",
+        "Attention only works on images, not text",
+        "There is no real difference from LSTMs"
+      ],
+      "correctAnswer": "Attention lets every position directly relate to every other position regardless of distance, instead of relying on information passed step by step through a chain",
+      "explanation": "Self-attention computes direct relevance between any two positions in a single step, avoiding the need for information to survive being passed through many intermediate hidden states."
+    },
+    {
+      "questionText": "What do the query, key, and value projections represent in self-attention?",
+      "questionType": "mcq",
+      "options": [
+        "Three unrelated random transformations with no specific purpose",
+        "Query = what this position is looking for; key = what a position offers to be matched against; value = what's actually returned if selected",
+        "They are three different loss functions",
+        "They only apply to the first token in a sequence"
+      ],
+      "correctAnswer": "Query = what this position is looking for; key = what a position offers to be matched against; value = what's actually returned if selected",
+      "explanation": "Query-key dot products determine relevance (attention weights), and those weights are used to blend the value vectors into the output for each position."
+    },
+    {
+      "questionText": "Why do transformers need positional encoding at all?",
+      "questionType": "mcq",
+      "options": [
+        "They don't — transformers inherently understand word order",
+        "Without recurrence, attention alone treats a sequence like an unordered set, so positional information must be added explicitly",
+        "Positional encoding is only needed for images, not text",
+        "It replaces the need for the attention mechanism entirely"
+      ],
+      "correctAnswer": "Without recurrence, attention alone treats a sequence like an unordered set, so positional information must be added explicitly",
+      "explanation": "Removing recurrence (what enables full parallelization) also removes any inherent sense of order, so transformers add a positional signal to each token's embedding to compensate."
+    }
+  ]
+}

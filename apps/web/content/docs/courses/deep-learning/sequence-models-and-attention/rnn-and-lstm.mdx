@@ -1,0 +1,105 @@
+---
+title: RNNs & LSTMs
+description: Giving a network memory of what it's already seen, and fixing the vanishing gradient this creates.
+order: 1
+estimatedMinutes: 20
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="deep-learning" moduleSlug="sequence-models-and-attention" lessonSlug="rnn-and-lstm" />
+
+## Overview
+
+Every network so far processes one fixed-size input and produces one
+output, with no notion of "before" or "after." That's a poor fit for
+**sequential** data — text, audio, time series — where the *order* of
+elements carries meaning, and understanding element `n` usually depends on
+what came before it. **Recurrent neural networks (RNNs)** are built to
+carry information forward across a sequence, one element at a time.
+
+## The recurrence: a hidden state that persists
+
+An RNN processes a sequence step by step, maintaining a **hidden state**
+that gets updated at every step and carries information forward to the
+next one:
+
+```
+h_t = activation(W_x · x_t + W_h · h_(t-1) + b)
+```
+
+At each timestep `t`, the new hidden state `h_t` depends on both the
+current input `x_t` *and* the previous hidden state `h_(t-1)` — this is the
+"recurrence." The same weights (`W_x`, `W_h`) are reused at every timestep,
+which is exactly the parameter-sharing idea from CNNs, just applied across
+time instead of across space.
+
+## The problem: RNNs forget
+
+In principle, an RNN's hidden state could carry information arbitrarily far
+back through a sequence. In practice, plain RNNs suffer from an extreme
+version of the vanishing gradient problem from earlier in this course:
+backpropagating through many timesteps means repeatedly multiplying
+gradients together, and they shrink toward zero just as fast as they did
+through many stacked layers — except now "many layers" means "many words
+back in the sentence." Plain RNNs reliably lose track of anything more than
+a handful of steps in the past.
+
+## LSTMs: learned gates control what to remember
+
+**LSTMs** (Long Short-Term Memory networks) fix this with an explicit,
+separate **cell state** — a kind of conveyor belt that information can flow
+along mostly unchanged — plus three learned **gates** (each a small neural
+network of its own, using sigmoid so their output is a `(0, 1)` "how much
+to let through" value) that control it:
+
+- **Forget gate** — decides what to discard from the cell state.
+- **Input gate** — decides what new information to add to the cell state.
+- **Output gate** — decides what part of the cell state to expose as this
+  step's hidden state / output.
+
+Because the cell state has a nearly-uninterrupted path across timesteps
+(gated by multiplication rather than forced through a squashing activation
+every single step), gradients can flow back much further before vanishing —
+LSTMs can learn dependencies across dozens or hundreds of steps that plain
+RNNs simply can't.
+
+## In real code: a plain RNN cell, from scratch
+
+<PyodidePlayground initialCode={`import numpy as np
+
+def tanh(x):
+    return np.tanh(x)
+
+rng = np.random.RandomState(0)
+hidden_size = 4
+input_size = 3
+
+Wx = rng.uniform(-0.5, 0.5, (input_size, hidden_size))
+Wh = rng.uniform(-0.5, 0.5, (hidden_size, hidden_size))
+b = np.zeros(hidden_size)
+
+def rnn_step(x_t, h_prev):
+    return tanh(x_t @ Wx + h_prev @ Wh + b)
+
+# A toy "sequence" of 5 input vectors.
+sequence = [rng.uniform(-1, 1, input_size) for _ in range(5)]
+
+h = np.zeros(hidden_size)
+for t, x_t in enumerate(sequence):
+    h = rnn_step(x_t, h)
+    print(f"t={t}: hidden state = {np.round(h, 3)}")
+`}
+/>
+
+Notice each step's hidden state depends on the *previous* hidden state, not
+just the current input — run the same input at `t=2` with a different
+history before it, and you'd get a different result, exactly the
+sequence-awareness a plain feedforward network lacks.
+
+## Check your understanding
+
+<Quiz courseSlug="deep-learning" moduleSlug="sequence-models-and-attention" lessonSlug="rnn-and-lstm" />

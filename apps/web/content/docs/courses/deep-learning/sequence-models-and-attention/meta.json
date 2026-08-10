@@ -1,0 +1,6 @@
+{
+  "title": "Sequence Models & Attention",
+  "description": "Networks that handle order and memory — RNNs, LSTMs, and the attention mechanism that led to transformers.",
+  "order": 4,
+  "pages": ["rnn-and-lstm", "attention-and-transformers"]
+}

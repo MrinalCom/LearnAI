@@ -1,0 +1,118 @@
+---
+title: Attention & Transformers
+description: Why looking at the whole sequence at once beat processing it step by step — the architecture behind every modern LLM.
+order: 2
+estimatedMinutes: 22
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="deep-learning" moduleSlug="sequence-models-and-attention" lessonSlug="attention-and-transformers" />
+
+## Overview
+
+LSTMs improved on plain RNNs, but they still process a sequence one
+element at a time — which means training can't be parallelized across the
+sequence (step 5 needs step 4's result), and even LSTMs' gating only
+softens, rather than eliminates, the difficulty of connecting very distant
+elements. The **attention mechanism**, and the **transformer** architecture
+built entirely around it, solved both problems — and is the architecture
+behind every modern large language model, including the one answering
+questions in this course's (planned) tutor.
+
+## The core idea: let every position look at every other position
+
+Instead of forcing information to flow step by step through a chain of
+hidden states, attention lets each position in a sequence directly compute
+how relevant *every other position* is to it, and pull information from
+wherever's relevant — regardless of distance. In "The cat sat on the mat
+because **it** was tired," attention lets the word "it" directly attend to
+"cat" — no matter how many words separate them — rather than needing that
+association to survive being passed through dozens of intermediate hidden
+states.
+
+## Query, key, value
+
+Attention is computed with three learned projections of each input: a
+**query** (what am I looking for?), a **key** (what do I contain, for
+others to match against?), and a **value** (what do I actually offer if
+selected?).
+
+```
+score(i, j) = query_i · key_j              # how relevant is position j to position i?
+weights = softmax(scores)                   # normalize into a probability distribution
+output_i = Σⱼ weights(i, j) · value_j       # weighted blend of every position's value
+```
+
+Every position ends up as a weighted combination of *every* position's
+value, where the weights are learned to reflect how relevant each other
+position actually is — this is **self-attention**: a sequence attending to
+itself.
+
+## Try it: a simplified self-attention pass
+
+<PyodidePlayground initialCode={`import numpy as np
+
+def softmax(x, axis=-1):
+    e = np.exp(x - np.max(x, axis=axis, keepdims=True))
+    return e / e.sum(axis=axis, keepdims=True)
+
+# 4 tokens, each represented as a 3-dim embedding (toy-sized, for illustration).
+rng = np.random.RandomState(0)
+tokens = ["The", "cat", "sat", "down"]
+X = rng.uniform(-1, 1, size=(4, 3))
+
+# Learned projection matrices (normally trained; fixed here for illustration).
+Wq = rng.uniform(-0.5, 0.5, (3, 3))
+Wk = rng.uniform(-0.5, 0.5, (3, 3))
+Wv = rng.uniform(-0.5, 0.5, (3, 3))
+
+Q, K, V = X @ Wq, X @ Wk, X @ Wv
+
+scores = Q @ K.T / np.sqrt(K.shape[1])   # scaled dot-product attention
+weights = softmax(scores, axis=-1)
+output = weights @ V
+
+print("Attention weights (each row sums to 1 -- how much each token attends to every token):")
+for i, row in enumerate(weights):
+    print(f"  {tokens[i]:>5}:", np.round(row, 2))
+`}
+/>
+
+Each row of the weights matrix shows one token's attention distribution
+over every token in the sequence (including itself) — this is the real
+mechanism, just with random (untrained) projections instead of ones learned
+from data.
+
+## The transformer: attention, minus the recurrence entirely
+
+A transformer stacks self-attention layers (usually several attention
+"heads" running in parallel, each potentially learning to attend based on
+different kinds of relationships) with feedforward layers, and — crucially
+— **no recurrence at all**. Every position is processed simultaneously,
+which makes training massively parallelizable on GPUs, unlike an RNN's
+forced step-by-step sequence.
+
+One thing this design loses for free: without recurrence, the model has no
+inherent sense of word *order* — attention alone treats a sequence like an
+unordered set. Transformers add this back explicitly via **positional
+encoding**: a signal added to each token's embedding that encodes its
+position in the sequence, so the model can still tell "cat sat on mat" from
+"mat sat on cat."
+
+## Why this matters for the rest of this platform
+
+This is the architecture underneath essentially every model referenced in
+the Agentic AI course — Claude, and every other modern LLM, is a
+transformer trained on next-token prediction at massive scale. The NLP/LLM
+course ahead picks up exactly here: how tokenization turns text into the
+sequences this lesson's attention mechanism operates on, and how that
+next-token training objective turns into everything from chat assistants to
+tool-using agents.
+
+## Check your understanding
+
+<Quiz courseSlug="deep-learning" moduleSlug="sequence-models-and-attention" lessonSlug="attention-and-transformers" />
