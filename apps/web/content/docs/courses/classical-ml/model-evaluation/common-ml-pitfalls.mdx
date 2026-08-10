@@ -1,0 +1,129 @@
+---
+title: Common ML Pitfalls
+description: Three specific ways a model evaluation quietly lies to you — shown breaking, then fixed.
+order: 5
+estimatedMinutes: 20
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="classical-ml" moduleSlug="model-evaluation" lessonSlug="common-ml-pitfalls" />
+
+## Overview
+
+This module has covered the theory of evaluation — train/test splits,
+cross-validation, the right metrics. This lesson closes it out the same
+way the Agentic AI course closes its own curriculum: not more theory, but
+three specific, common mistakes shown actually happening, because a bug
+that quietly inflates your reported accuracy is far more dangerous than
+one that crashes loudly.
+
+## Pitfall 1: data leakage through preprocessing
+
+The setup: fitting a scaler (or any preprocessing step) on the *entire*
+dataset before splitting into train/test — which leaks statistics from the
+test set into training, inflating reported performance.
+
+<PyodidePlayground initialCode={`import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+
+rng = np.random.RandomState(0)
+X = rng.normal(0, 1, size=(200, 5))
+y = (X[:, 0] + X[:, 1] > 0).astype(int)
+
+# BUGGY: scaler sees the whole dataset, including what will become the test set.
+scaler_leaky = StandardScaler().fit(X)
+X_leaky = scaler_leaky.transform(X)
+X_train, X_test, y_train, y_test = train_test_split(X_leaky, y, test_size=0.3, random_state=0)
+model_leaky = LogisticRegression().fit(X_train, y_train)
+print("Leaky pipeline test accuracy:", model_leaky.score(X_test, y_test))
+
+# CORRECT: split first, fit the scaler on training data only.
+X_train2, X_test2, y_train2, y_test2 = train_test_split(X, y, test_size=0.3, random_state=0)
+scaler_clean = StandardScaler().fit(X_train2)  # fit on TRAIN only
+X_train2 = scaler_clean.transform(X_train2)
+X_test2 = scaler_clean.transform(X_test2)      # test set only ever transformed, never fit
+model_clean = LogisticRegression().fit(X_train2, y_train2)
+print("Correct pipeline test accuracy:", model_clean.score(X_test2, y_test2))
+`}
+/>
+
+On this toy example the gap may be small, but on real data — especially
+with more elaborate preprocessing (imputation, feature selection) — leakage
+like this routinely makes a model look meaningfully better in evaluation
+than it will ever perform in production, because production data was
+never part of any "whole dataset" statistic.
+
+**The fix**: always split first, then fit any preprocessing exclusively on
+the training fold — `scikit-learn`'s `Pipeline` class enforces this
+automatically when combined with cross-validation, which is the more
+robust way to avoid this class of bug entirely.
+
+## Pitfall 2: picking a metric that hides the real problem
+
+The setup: using accuracy to compare models on an imbalanced dataset,
+where a nearly useless model can still post a high accuracy — the same
+trap the classification-metrics lesson opened with, shown concretely here.
+
+<PyodidePlayground initialCode={`import numpy as np
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, recall_score
+
+rng = np.random.RandomState(0)
+X_majority = rng.normal(0, 1, size=(970, 2))
+X_minority = rng.normal(3, 1, size=(30, 2))
+X = np.vstack([X_majority, X_minority])
+y = np.array([0] * 970 + [1] * 30)
+
+model = LogisticRegression(class_weight=None).fit(X, y)
+preds = model.predict(X)
+
+print("Accuracy:", round(accuracy_score(y, preds), 3))
+print("Recall on the minority class:", round(recall_score(y, preds), 3))
+print("Predicted positive count:", preds.sum(), "-- out of 30 real positives")
+`}
+/>
+
+**The fix**: on imbalanced data, check recall/precision/F1 per class (not
+just aggregate accuracy) before trusting a headline number — exactly the
+classification-metrics lesson's guidance, now seen producing a real,
+misleadingly high accuracy alongside a much weaker minority-class recall.
+
+## Pitfall 3: tuning hyperparameters against the test set
+
+The setup: repeatedly checking test-set performance while trying different
+hyperparameters, then reporting that same test set's score as your final
+result — silently turning the test set into a second training set.
+
+```
+# The mistake, in pseudocode:
+for k in [1, 3, 5, 7, 9, ...]:
+    train on X_train
+    check accuracy on X_test        # <- peeking at test set to choose k
+report final accuracy on X_test     # <- reporting a score you already optimized for
+```
+
+**The fix**: this is exactly why the cross-validation lesson's procedure
+exists — tune hyperparameters using cross-validation *within* the training
+data only, and touch the test set exactly once, after the hyperparameter
+is already locked in. A test set checked more than once for decision-making
+has stopped being a valid measure of generalization.
+
+## The throughline
+
+All three pitfalls share a root cause: information from what's supposed to
+be an unseen, future evaluation leaking backward into decisions made before
+that evaluation — through a shared scaler, a misleading aggregate metric,
+or a test set peeked at too many times. Guarding against this — not just
+knowing the theory of train/test splits, but noticing where leakage
+actually sneaks in — is the practical skill this module was building
+toward.
+
+## Check your understanding
+
+<Quiz courseSlug="classical-ml" moduleSlug="model-evaluation" lessonSlug="common-ml-pitfalls" />

@@ -1,0 +1,41 @@
+{
+  "title": "Common ML Pitfalls Check",
+  "questions": [
+    {
+      "questionText": "Why does fitting a scaler on the entire dataset before splitting into train/test cause data leakage?",
+      "questionType": "mcq",
+      "options": [
+        "It doesn't cause any problem, fitting order doesn't matter",
+        "The scaler's statistics (mean, variance) are computed using test set data too, so information about the test set leaks into what the model effectively sees",
+        "It makes the model train faster",
+        "It only affects regression models, never classification"
+      ],
+      "correctAnswer": "The scaler's statistics (mean, variance) are computed using test set data too, so information about the test set leaks into what the model effectively sees",
+      "explanation": "Since the scaler is fit using test-set values, the transformed test set is no longer truly \"unseen\" — its own statistics helped shape the transformation, inflating reported performance versus real-world deployment."
+    },
+    {
+      "questionText": "Why can accuracy alone be a misleading metric to optimize for on an imbalanced dataset?",
+      "questionType": "mcq",
+      "options": [
+        "Accuracy is always the correct metric regardless of class balance",
+        "A model that mostly predicts the majority class can score high accuracy while performing very poorly on the minority class, which aggregate accuracy hides",
+        "Accuracy cannot be computed on imbalanced data",
+        "Imbalanced data makes accuracy impossible to interpret at all"
+      ],
+      "correctAnswer": "A model that mostly predicts the majority class can score high accuracy while performing very poorly on the minority class, which aggregate accuracy hides",
+      "explanation": "This is the same trap from the classification-metrics lesson: high aggregate accuracy can coexist with very poor minority-class recall, which per-class metrics expose and accuracy alone hides."
+    },
+    {
+      "questionText": "Why does repeatedly checking test-set performance while trying different hyperparameters invalidate the final reported test score?",
+      "questionType": "mcq",
+      "options": [
+        "It doesn't invalidate anything, this is standard practice",
+        "The test set effectively becomes a second training set once it's used to make decisions, so it no longer measures true generalization to unseen data",
+        "Hyperparameter tuning should always use the test set directly",
+        "This only matters for deep learning models, not classical ML"
+      ],
+      "correctAnswer": "The test set effectively becomes a second training set once it's used to make decisions, so it no longer measures true generalization to unseen data",
+      "explanation": "Once a test set has influenced any decision (like which hyperparameter to pick), it's no longer an unbiased measure of generalization — cross-validation within the training data is the correct way to tune hyperparameters instead."
+    }
+  ]
+}

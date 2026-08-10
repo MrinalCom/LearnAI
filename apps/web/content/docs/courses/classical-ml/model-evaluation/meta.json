@@ -2,5 +2,11 @@
   "title": "Model Evaluation",
   "description": "How to tell if a model is actually good, and how to make it generalize better.",
   "order": 5,
-  "pages": ["bias-variance-tradeoff", "cross-validation", "classification-metrics", "regularization"]
+  "pages": [
+    "bias-variance-tradeoff",
+    "cross-validation",
+    "classification-metrics",
+    "regularization",
+    "common-ml-pitfalls"
+  ]
 }
