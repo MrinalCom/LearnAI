@@ -1,0 +1,41 @@
+{
+  "title": "Calculus for Gradients Check",
+  "questions": [
+    {
+      "questionText": "What does the derivative of a function at a point tell you?",
+      "questionType": "mcq",
+      "options": [
+        "The exact value of the function at that point",
+        "The instantaneous rate of change (slope) of the function at that point",
+        "The total area under the function's curve",
+        "How many times the function crosses zero"
+      ],
+      "correctAnswer": "The instantaneous rate of change (slope) of the function at that point",
+      "explanation": "The derivative measures how steeply the function is increasing or decreasing right at that specific point."
+    },
+    {
+      "questionText": "Why does gradient descent's update rule subtract the gradient (w := w - alpha * gradient) rather than add it?",
+      "questionType": "mcq",
+      "options": [
+        "Subtraction is just a stylistic convention with no mathematical meaning",
+        "The gradient points in the direction of increasing loss, so stepping in the opposite direction decreases loss",
+        "Addition would make the model train faster",
+        "It only matters for classification, not regression"
+      ],
+      "correctAnswer": "The gradient points in the direction of increasing loss, so stepping in the opposite direction decreases loss",
+      "explanation": "Since the gradient indicates the direction of steepest increase, subtracting it (stepping opposite) is what actually reduces the loss — exactly the mechanism from the linear regression lesson."
+    },
+    {
+      "questionText": "What does the chain rule enable that's directly relevant to training deep networks?",
+      "questionType": "mcq",
+      "options": [
+        "It removes the need for a loss function",
+        "It lets you compute how a change in an early-layer weight affects the final loss, by multiplying the rates of change through each intermediate layer",
+        "It only applies to single-layer models",
+        "It replaces the need for a learning rate"
+      ],
+      "correctAnswer": "It lets you compute how a change in an early-layer weight affects the final loss, by multiplying the rates of change through each intermediate layer",
+      "explanation": "A deep network is functions composed inside functions, and the chain rule is exactly what lets backpropagation compute gradients for weights many layers away from the final loss."
+    }
+  ]
+}

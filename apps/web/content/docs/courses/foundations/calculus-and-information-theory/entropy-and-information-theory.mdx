@@ -1,0 +1,101 @@
+---
+title: Entropy & Information Theory
+description: The single number that measures "how surprised should I be" — and what decision trees and log loss are both secretly computing.
+order: 2
+estimatedMinutes: 18
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="foundations" moduleSlug="calculus-and-information-theory" lessonSlug="entropy-and-information-theory" />
+
+## Overview
+
+Two seemingly unrelated concepts from the Classical ML course — decision
+trees' Gini impurity and logistic regression's log loss — are both, under
+the hood, measuring the same underlying idea from **information theory**:
+how much uncertainty (or "surprise") is in a distribution.
+
+## Entropy: quantifying uncertainty
+
+```
+Entropy = −Σ pᵢ log(pᵢ)
+```
+
+Entropy is highest when outcomes are maximally uncertain (a fair coin: 50%
+heads, 50% tails) and lowest — zero — when there's no uncertainty at all
+(a coin that always lands heads). Intuitively: entropy answers "on average,
+how surprised should I be by the outcome?" — a very predictable process
+has low entropy (you're rarely surprised); a very unpredictable one has
+high entropy.
+
+This is directly analogous to **Gini impurity** from the decision trees
+lesson — both measure how "mixed" a group of labels is, and a decision
+tree could equally be built by minimizing entropy instead of Gini impurity
+(scikit-learn supports both via the `criterion` parameter); they usually
+produce very similar trees in practice.
+
+## Cross-entropy: comparing two distributions
+
+**Cross-entropy** measures the difference between a true distribution and
+a predicted one:
+
+```
+Cross-entropy = −Σ pᵢ log(qᵢ)
+```
+
+where `p` is the true distribution (e.g., the actual label: 100%
+class 1, 0% class 0) and `q` is the model's predicted distribution. This is
+*exactly* the log loss from the logistic regression lesson — log loss is
+cross-entropy applied to a binary classification's two possible outcomes.
+The same formula, generalized to more than two classes, is the standard
+loss function for training the softmax output layer of a neural network
+classifier (Deep Learning course).
+
+## KL divergence: how far one distribution is from another
+
+**KL (Kullback-Leibler) divergence** is closely related to cross-entropy —
+it measures specifically how much *extra* uncertainty you incur by using
+distribution `q` to approximate the true distribution `p`, rather than
+using `p` itself. It's asymmetric (`KL(p‖q) ≠ KL(q‖p)`) and shows up
+throughout more advanced generative modeling and RLHF-style training
+(referenced in the NLP/LLM course's training-stages lesson).
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+
+def entropy(probs):
+    probs = np.array(probs)
+    probs = probs[probs > 0]  # avoid log(0)
+    return -np.sum(probs * np.log2(probs))
+
+# A fair coin: maximum uncertainty for a 2-outcome event.
+print("Fair coin entropy:", round(entropy([0.5, 0.5]), 3), "bits")
+
+# A biased coin: less uncertain, lower entropy.
+print("Biased coin (90/10) entropy:", round(entropy([0.9, 0.1]), 3), "bits")
+
+# A certain outcome: zero entropy, zero surprise.
+print("Certain outcome entropy:", round(entropy([1.0, 0.0]), 3), "bits")
+
+def cross_entropy(true_label, predicted_prob):
+    # This is exactly log loss from the logistic regression lesson.
+    p = predicted_prob if true_label == 1 else 1 - predicted_prob
+    return -np.log(p)
+
+print("\\nCross-entropy when true=1, confident correct prediction (0.95):", round(cross_entropy(1, 0.95), 3))
+print("Cross-entropy when true=1, confident WRONG prediction (0.05):", round(cross_entropy(1, 0.05), 3))
+`}
+/>
+
+Notice how sharply cross-entropy penalizes a confident wrong prediction —
+exactly the property the logistic regression lesson highlighted as the
+reason log loss (not squared error) is used for classification.
+
+## Check your understanding
+
+<Quiz courseSlug="foundations" moduleSlug="calculus-and-information-theory" lessonSlug="entropy-and-information-theory" />

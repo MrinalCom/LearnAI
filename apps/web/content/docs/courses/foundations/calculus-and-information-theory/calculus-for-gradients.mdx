@@ -1,0 +1,92 @@
+---
+title: Calculus for Gradients
+description: What a derivative actually is, and why it's the single most-used piece of math in this entire platform.
+order: 1
+estimatedMinutes: 20
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+import { ExplainedTwice, ForBeginners, ForEngineers } from "@/components/mdx/explained-twice";
+
+<LessonProgressToggle courseSlug="foundations" moduleSlug="calculus-and-information-theory" lessonSlug="calculus-for-gradients" />
+
+## Overview
+
+Gradient descent appears in the Classical ML course (linear/logistic
+regression), the Deep Learning course (every optimizer, backpropagation),
+and even fine-tuning (Applied/Production course). Every one of those
+lessons rests on one calculus idea: the **derivative**.
+
+<ExplainedTwice>
+<ForBeginners>
+
+Imagine standing on a hillside in thick fog — you can't see the whole
+landscape, only feel which way the ground slopes right under your feet.
+The derivative is exactly that: how steep the ground is, right here, and
+which direction is "downhill." Take a small step downhill, feel the new
+slope, step again — that's gradient descent, done blindfolded, one small
+step at a time.
+
+</ForBeginners>
+<ForEngineers>
+
+The derivative `f'(x)` is the instantaneous rate of change of `f` at
+point `x` — formally, `lim(h→0) [f(x+h) − f(x)] / h`. For a function of
+several variables (a loss function of many weights), the **gradient** is
+the vector of partial derivatives, one per weight, each measuring how the
+loss changes if you nudge *that* weight alone, holding the others fixed.
+Gradient descent repeatedly steps every weight in the direction that
+decreases loss fastest: `w := w − α · ∂Loss/∂w`.
+
+</ForEngineers>
+</ExplainedTwice>
+
+## Why the derivative tells you which way to step
+
+A positive derivative at a point means the function is increasing there —
+step *left* (decrease `x`) to reduce it. A negative derivative means the
+function is decreasing — step *right* to reduce it further. Gradient
+descent always steps in the direction *opposite* the derivative's sign,
+which is why the update rule has a minus sign: `w := w − α · gradient`.
+
+## The chain rule: derivatives of composed functions
+
+If `y` depends on `u`, and `u` depends on `x`, the chain rule says:
+`dy/dx = dy/du · du/dx` — the rate of change of the whole composition is
+the product of the rates of change of each piece. This is the entire
+mathematical basis of backpropagation (Deep Learning course): a deep
+network is nothing but functions composed inside functions, and the chain
+rule is what lets you compute how the final loss changes with respect to
+a weight buried many layers back.
+
+## In real code: computing a derivative numerically
+
+<PyodidePlayground initialCode={`def f(x):
+    return x**2 + 3*x + 1
+
+def numerical_derivative(f, x, h=1e-6):
+    # The formal definition of a derivative, computed directly:
+    # the slope of a very short secant line near x.
+    return (f(x + h) - f(x - h)) / (2 * h)
+
+for x in [-2, 0, 1, 3]:
+    slope = numerical_derivative(f, x)
+    direction = "decreasing (step right)" if slope < 0 else "increasing (step left)"
+    print(f"At x={x}: f(x)={f(x):.2f}, slope={slope:.2f} -> function is {direction} to minimize")
+
+# Compare to the exact derivative, f'(x) = 2x + 3, computed by calculus rules:
+print("\\nExact derivative at x=0:", 2*0 + 3, "(matches the numerical estimate above)")
+`}
+/>
+
+This numerical approach — estimating a slope by checking the function at
+two nearby points — is exactly how you'd verify an analytically-computed
+gradient is correct, a real debugging technique called **gradient
+checking**.
+
+## Check your understanding
+
+<Quiz courseSlug="foundations" moduleSlug="calculus-and-information-theory" lessonSlug="calculus-for-gradients" />

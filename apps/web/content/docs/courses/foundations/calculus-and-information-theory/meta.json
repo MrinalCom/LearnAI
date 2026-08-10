@@ -1,0 +1,6 @@
+{
+  "title": "Calculus & Information Theory",
+  "description": "Derivatives (what gradient descent actually climbs down) and entropy (what every split and loss function is measuring).",
+  "order": 2,
+  "pages": ["calculus-for-gradients", "entropy-and-information-theory"]
+}

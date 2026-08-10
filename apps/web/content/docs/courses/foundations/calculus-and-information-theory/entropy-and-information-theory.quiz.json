@@ -1,0 +1,41 @@
+{
+  "title": "Entropy & Information Theory Check",
+  "questions": [
+    {
+      "questionText": "When is entropy at its maximum for a two-outcome event?",
+      "questionType": "mcq",
+      "options": [
+        "When one outcome is certain (probability 1.0)",
+        "When both outcomes are equally likely (50/50), representing maximum uncertainty",
+        "Entropy is always constant regardless of probabilities",
+        "When there are more than two possible outcomes"
+      ],
+      "correctAnswer": "When both outcomes are equally likely (50/50), representing maximum uncertainty",
+      "explanation": "Entropy measures uncertainty, and a perfectly balanced 50/50 outcome is maximally unpredictable — you're most \"surprised\" on average by the result."
+    },
+    {
+      "questionText": "How does log loss (from the logistic regression lesson) relate to cross-entropy?",
+      "questionType": "mcq",
+      "options": [
+        "They are unrelated concepts",
+        "Log loss is cross-entropy applied specifically to a binary classification's two possible outcomes",
+        "Cross-entropy only applies to regression, not classification",
+        "Log loss is a simplified approximation that ignores probability entirely"
+      ],
+      "correctAnswer": "Log loss is cross-entropy applied specifically to a binary classification's two possible outcomes",
+      "explanation": "Log loss's formula is exactly the cross-entropy formula specialized to two classes, which is why it shares cross-entropy's property of sharply penalizing confident wrong predictions."
+    },
+    {
+      "questionText": "What is the relationship between entropy and decision trees' Gini impurity?",
+      "questionType": "mcq",
+      "options": [
+        "They measure completely different, unrelated properties",
+        "Both measure how \"mixed\" or uncertain a group of labels is, and trees can be built by minimizing either one",
+        "Gini impurity is only used for regression trees",
+        "Entropy can only be computed for continuous values, never class labels"
+      ],
+      "correctAnswer": "Both measure how \"mixed\" or uncertain a group of labels is, and trees can be built by minimizing either one",
+      "explanation": "Gini impurity and entropy are both impurity measures for a group of class labels — scikit-learn's decision trees support either as the split criterion, and they typically produce similar trees."
+    }
+  ]
+}
