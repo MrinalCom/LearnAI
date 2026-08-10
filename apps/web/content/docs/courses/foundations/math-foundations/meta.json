@@ -1,0 +1,6 @@
+{
+  "title": "Math Foundations",
+  "description": "Vectors, matrices, and probability — the language every model in this platform is written in.",
+  "order": 1,
+  "pages": ["linear-algebra-essentials", "probability-and-statistics-essentials"]
+}

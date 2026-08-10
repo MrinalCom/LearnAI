@@ -1,0 +1,6 @@
+{
+  "title": "Foundations",
+  "description": "The math and Python you'll actually use throughout this platform — linear algebra, probability, calculus, numpy, and pandas.",
+  "order": 0,
+  "pages": ["math-foundations", "calculus-and-information-theory", "python-for-ml"]
+}

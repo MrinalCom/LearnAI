@@ -1,0 +1,41 @@
+{
+  "title": "Linear Algebra Essentials Check",
+  "questions": [
+    {
+      "questionText": "What ML operation is the dot product directly responsible for?",
+      "questionType": "mcq",
+      "options": [
+        "It has no real use in machine learning",
+        "The weighted sum computed by every neuron, plus similarity scoring in attention and embeddings",
+        "Only image resizing operations",
+        "Only used for sorting data"
+      ],
+      "correctAnswer": "The weighted sum computed by every neuron, plus similarity scoring in attention and embeddings",
+      "explanation": "A neuron's weighted sum, cosine similarity for embeddings, and attention's query-key scoring are all built directly on the dot product."
+    },
+    {
+      "questionText": "What does the matrix operation W @ x + b represent in a neural network?",
+      "questionType": "mcq",
+      "options": [
+        "A completely unrelated mathematical curiosity",
+        "Exactly one layer of a neural network: transforming an input vector into the next layer's pre-activation values",
+        "Only used for image data, never for numeric features",
+        "A method for splitting training and test data"
+      ],
+      "correctAnswer": "Exactly one layer of a neural network: transforming an input vector into the next layer's pre-activation values",
+      "explanation": "W @ x + b is literally the computation a neural network layer performs — the weight matrix transforms the input vector, and the bias vector shifts the result, before an activation function is applied."
+    },
+    {
+      "questionText": "What does cosine similarity measure, in terms of the dot product formula a·b = |a||b|cos(θ)?",
+      "questionType": "mcq",
+      "options": [
+        "The exact numeric distance between two vectors",
+        "The angle between two vectors, isolated from their magnitudes by dividing out |a| and |b|",
+        "The number of dimensions two vectors share",
+        "Whether two vectors have identical values"
+      ],
+      "correctAnswer": "The angle between two vectors, isolated from their magnitudes by dividing out |a| and |b|",
+      "explanation": "Normalizing the dot product by both vectors' magnitudes leaves only cos(θ), which is why cosine similarity captures directional similarity independent of vector length."
+    }
+  ]
+}

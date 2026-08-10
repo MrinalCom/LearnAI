@@ -1,6 +1,7 @@
 {
   "title": "Courses",
   "pages": [
+    "foundations",
     "classical-ml",
     "deep-learning",
     "nlp-and-llm-foundations",

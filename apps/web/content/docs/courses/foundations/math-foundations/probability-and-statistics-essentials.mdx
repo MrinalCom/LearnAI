@@ -1,0 +1,86 @@
+---
+title: Probability & Statistics Essentials
+description: Distributions, mean and variance — the vocabulary every evaluation metric in this platform is built from.
+order: 2
+estimatedMinutes: 18
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="foundations" moduleSlug="math-foundations" lessonSlug="probability-and-statistics-essentials" />
+
+## Overview
+
+Machine learning is fundamentally about making predictions under
+uncertainty, and probability is the mathematical language for describing
+that uncertainty precisely. A handful of concepts from this lesson show up
+by name throughout the rest of this platform.
+
+## Mean and variance: the two numbers that summarize a distribution
+
+- **Mean** — the average value: `Σx / n`. The single-number "center" of
+  a set of data.
+- **Variance** — how spread out the data is around that mean:
+  `Σ(x − mean)² / n`. Low variance means values cluster tightly around
+  the mean; high variance means they're spread widely.
+- **Standard deviation** — the square root of variance, back in the same
+  units as the original data (variance is in *squared* units, which is
+  hard to interpret directly).
+
+These two numbers reappear constantly: feature scaling (Classical ML's
+KNN lesson) standardizes using exactly mean and standard deviation, and
+the "variance" in the bias-variance tradeoff is a direct application of
+this same concept to a model's *predictions* rather than raw data.
+
+## Probability distributions
+
+A probability distribution describes how likely different outcomes are.
+Two you'll see referenced throughout this platform:
+
+- **Normal (Gaussian) distribution** — the familiar bell curve, where
+  values cluster around the mean and become rarer the further out you go.
+  Many real-world quantities (heights, measurement errors) approximate
+  this shape, which is why it's the default choice for generating
+  synthetic data in this platform's own playgrounds (`rng.normal(...)`
+  appears in dozens of them).
+- **Bernoulli distribution** — a single yes/no outcome with some
+  probability `p` of "yes." Every binary classifier (logistic regression,
+  from Classical ML) is, at its core, estimating the parameter `p` of a
+  Bernoulli distribution for each input.
+
+## Conditional probability: the basis of Bayes' theorem
+
+`P(A | B)` reads "the probability of A, given that B is true" — and it's
+the building block of Naive Bayes (Classical ML course), which is built
+directly from Bayes' theorem relating `P(class | features)` to
+`P(features | class)`.
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+
+rng = np.random.RandomState(0)
+data = rng.normal(loc=50, scale=10, size=1000)  # mean=50, std=10
+
+print("Mean:", round(np.mean(data), 2))
+print("Variance:", round(np.var(data), 2))
+print("Standard deviation:", round(np.std(data), 2))
+
+# Standardizing (z-scoring): subtract the mean, divide by std --
+# exactly the feature-scaling operation from the KNN lesson.
+standardized = (data - np.mean(data)) / np.std(data)
+print("Standardized mean (~0):", round(np.mean(standardized), 4))
+print("Standardized std (~1):", round(np.std(standardized), 4))
+`}
+/>
+
+Standardizing a feature so its mean is 0 and standard deviation is 1 is
+exactly the transformation `StandardScaler` performs in scikit-learn — now
+you've seen precisely what it computes under the hood.
+
+## Check your understanding
+
+<Quiz courseSlug="foundations" moduleSlug="math-foundations" lessonSlug="probability-and-statistics-essentials" />

@@ -1,0 +1,99 @@
+---
+title: Linear Algebra Essentials
+description: Vectors, dot products, and matrices — the actual computation underneath every model in this platform.
+order: 1
+estimatedMinutes: 20
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+import { ExplainedTwice, ForBeginners, ForEngineers } from "@/components/mdx/explained-twice";
+
+<LessonProgressToggle courseSlug="foundations" moduleSlug="math-foundations" lessonSlug="linear-algebra-essentials" />
+
+## Overview
+
+Every single model in this platform — from logistic regression to a
+transformer — is, underneath, a sequence of vector and matrix operations.
+You don't need a full linear algebra course to work with ML, but the
+handful of concepts on this page will make every later lesson's math
+sections click instead of blur.
+
+## Vectors: a list of numbers with meaning
+
+A vector is just an ordered list of numbers — `[1.0, 0.5, -2.0]` — but in
+ML, that list usually represents something specific: a data point's
+features, a word's embedding, a set of model weights. Two vector
+operations come up constantly:
+
+- **Dot product**: multiply corresponding elements and sum the results.
+  `[1, 2, 3] · [4, 5, 6] = 1×4 + 2×5 + 3×6 = 32`. This single operation is
+  the weighted sum at the heart of every neuron (Deep Learning course) and
+  the similarity score at the heart of attention (also Deep Learning) and
+  embeddings (NLP/LLM course).
+- **Norm (magnitude)**: how "long" a vector is, `√(x₁² + x₂² + ...)`. Used
+  directly in cosine similarity (embeddings) and in L2 regularization
+  (Classical ML's regularization lesson).
+
+<ExplainedTwice>
+<ForBeginners>
+
+Think of a vector as a set of directions: "3 blocks east, 2 blocks
+north." A dot product between two such directions tells you how much
+they point the *same way* — two vectors pointing in similar directions
+have a large dot product; pointing in opposite directions gives a
+negative one; pointing perpendicular gives zero.
+
+</ForBeginners>
+<ForEngineers>
+
+The dot product `a · b = |a||b|cos(θ)` is why cosine similarity — used
+throughout the NLP/LLM and RAG courses — is just a normalized dot
+product: dividing out the vectors' magnitudes leaves only the angle
+between them, isolating "direction similarity" from "magnitude."
+
+</ForEngineers>
+</ExplainedTwice>
+
+## Matrices: many vectors, and a compact way to transform them
+
+A matrix is a grid of numbers — think of it as a stack of vectors, or as a
+*function* that transforms one vector into another via matrix-vector
+multiplication. This is exactly what a neural network layer does: `Wx + b`
+takes an input vector `x`, multiplies it by a weight matrix `W` (producing
+a new vector, one dot product per output neuron, all at once), and adds a
+bias vector `b`.
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+
+print("Dot product a . b:", np.dot(a, b))
+print("Norm of a:", np.linalg.norm(a))
+
+# A weight matrix transforming a 3-dim input into a 2-dim output --
+# exactly the shape of one layer of a neural network (Deep Learning course).
+W = np.array([
+    [0.1, 0.2, 0.3],
+    [0.4, 0.5, 0.6],
+])
+x = np.array([1.0, 0.0, -1.0])
+b = np.array([0.1, -0.1])
+
+output = W @ x + b   # @ is matrix multiplication in numpy
+print("W @ x + b =", output)
+`}
+/>
+
+That last computation — `W @ x + b` — is not a simplified example of a
+neural network layer. It *is* one, exactly, and it's the operation
+underlying "the perceptron" lesson in the Deep Learning course.
+
+## Check your understanding
+
+<Quiz courseSlug="foundations" moduleSlug="math-foundations" lessonSlug="linear-algebra-essentials" />

@@ -1,0 +1,41 @@
+{
+  "title": "Probability & Statistics Essentials Check",
+  "questions": [
+    {
+      "questionText": "What does variance measure about a dataset?",
+      "questionType": "mcq",
+      "options": [
+        "The single average value of the data",
+        "How spread out the data is around its mean",
+        "The total number of data points",
+        "Whether the data is normally distributed"
+      ],
+      "correctAnswer": "How spread out the data is around its mean",
+      "explanation": "Variance is the average squared deviation from the mean — low variance means values cluster tightly, high variance means they're widely spread."
+    },
+    {
+      "questionText": "What does a logistic regression model's output actually estimate, in probability terms?",
+      "questionType": "mcq",
+      "options": [
+        "The mean of a normal distribution",
+        "The parameter p of a Bernoulli distribution — the probability of the \"yes\" outcome",
+        "The variance of the input features",
+        "A completely deterministic value with no probabilistic interpretation"
+      ],
+      "correctAnswer": "The parameter p of a Bernoulli distribution — the probability of the \"yes\" outcome",
+      "explanation": "Binary classification's probability output is exactly the p parameter of a Bernoulli distribution — the model is estimating how likely the \"positive\" outcome is for each input."
+    },
+    {
+      "questionText": "What transformation does standardizing a feature (subtracting the mean, dividing by standard deviation) accomplish?",
+      "questionType": "mcq",
+      "options": [
+        "It removes the feature entirely",
+        "It rescales the feature so its mean becomes 0 and its standard deviation becomes 1, putting it on a comparable scale to other features",
+        "It converts the feature into a categorical variable",
+        "It has no effect on the data's distribution shape"
+      ],
+      "correctAnswer": "It rescales the feature so its mean becomes 0 and its standard deviation becomes 1, putting it on a comparable scale to other features",
+      "explanation": "This is exactly what scikit-learn's StandardScaler computes, and exactly why it addresses the feature-scaling issue raised in the KNN lesson — putting features on comparable scales before distance-based computations."
+    }
+  ]
+}
