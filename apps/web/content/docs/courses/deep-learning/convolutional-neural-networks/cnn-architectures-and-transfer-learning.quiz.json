@@ -1,0 +1,41 @@
+{
+  "title": "CNN Architectures & Transfer Learning Check",
+  "questions": [
+    {
+      "questionText": "What problem did ResNet's residual connections solve?",
+      "questionType": "mcq",
+      "options": [
+        "They made CNNs work on color images for the first time",
+        "Beyond a certain depth, plain stacked CNNs got harder to train (a form of vanishing gradient); shortcut connections let much deeper networks train reliably",
+        "They eliminated the need for pooling layers",
+        "They removed the need for labeled training data"
+      ],
+      "correctAnswer": "Beyond a certain depth, plain stacked CNNs got harder to train (a form of vanishing gradient); shortcut connections let much deeper networks train reliably",
+      "explanation": "Residual connections let a layer's input skip ahead and add directly to its output, which solved the degradation problem that made very deep plain CNNs difficult to train."
+    },
+    {
+      "questionText": "In transfer learning's \"feature extraction\" approach, what do you actually train?",
+      "questionType": "mcq",
+      "options": [
+        "The entire network from random weights",
+        "Only a new final classification layer, while the pretrained convolutional layers stay frozen",
+        "Only the very first convolutional layer",
+        "Nothing — feature extraction requires no training at all"
+      ],
+      "correctAnswer": "Only a new final classification layer, while the pretrained convolutional layers stay frozen",
+      "explanation": "Feature extraction reuses the pretrained network's already-learned general visual features unchanged, and only trains a new layer on top for the specific target classes."
+    },
+    {
+      "questionText": "Why is transfer learning so widely used in practice instead of training CNNs from scratch?",
+      "questionType": "mcq",
+      "options": [
+        "Training from scratch is technically impossible",
+        "Early CNN layers learn broadly general-purpose visual features (edges, textures), which are wasteful to re-derive from a small dataset when a pretrained network already has them",
+        "Transfer learning always produces a smaller model file",
+        "It's required by law for computer vision applications"
+      ],
+      "correctAnswer": "Early CNN layers learn broadly general-purpose visual features (edges, textures), which are wasteful to re-derive from a small dataset when a pretrained network already has them",
+      "explanation": "Since a huge labeled dataset and heavy compute are needed to learn good general features from scratch, reusing an already-trained network's early layers is far more practical for most projects."
+    }
+  ]
+}

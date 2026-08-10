@@ -1,0 +1,6 @@
+{
+  "title": "Convolutional Neural Networks",
+  "description": "The architecture that made deep learning work for images: convolutions, filters, and pooling.",
+  "order": 3,
+  "pages": ["cnn-fundamentals", "cnn-architectures-and-transfer-learning"]
+}

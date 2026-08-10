@@ -1,0 +1,112 @@
+---
+title: CNN Fundamentals
+description: Why images need a different architecture than the fully-connected networks from earlier in this course.
+order: 1
+estimatedMinutes: 20
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="deep-learning" moduleSlug="convolutional-neural-networks" lessonSlug="cnn-fundamentals" />
+
+## Overview
+
+Feed a raw image into the fully-connected MLP from earlier in this course
+and you hit two problems immediately: a modest 224×224 color image is
+150,528 numbers, so the very first layer alone needs hundreds of millions
+of weights — and worse, a fully-connected layer treats every pixel as
+independent, throwing away the fact that nearby pixels are *spatially*
+related. **Convolutional neural networks (CNNs)** are built specifically to
+exploit that spatial structure instead of ignoring it.
+
+## The convolution operation
+
+A convolution slides a small grid of learnable weights — a **filter** (or
+**kernel**), typically 3×3 or 5×5 — across the image, computing a weighted
+sum of the pixels it currently overlaps at each position:
+
+```
+Image patch:        Filter (edge detector):
+1  2  1              -1   0   1
+0  5  0              -1   0   1
+1  2  1              -1   0   1
+
+output = (1×-1)+(2×0)+(1×1) + (0×-1)+(5×0)+(0×1) + (1×-1)+(2×0)+(1×1) = -1
+```
+
+Slide that same filter across every position in the image, and you get a
+**feature map** — an output image where high values mark wherever that
+specific pattern (this filter happens to detect vertical edges) occurred in
+the input.
+
+## Why this is a better fit than a fully-connected layer
+
+- **Parameter sharing** — the *same* 9 weights (for a 3×3 filter) are reused
+  at every position in the image, rather than needing separate weights per
+  pixel. This is a massive reduction in parameters compared to a
+  fully-connected layer.
+- **Translation invariance** — because the filter is applied everywhere
+  identically, a pattern the network learns to detect in the top-left
+  corner is automatically detected anywhere else in the image too.
+- **Locality** — each output value only depends on a small local patch of
+  the input, matching the actual structure of images (nearby pixels are
+  meaningfully related; a pixel in the corner usually has little to do with
+  one on the opposite side).
+
+## Pooling: shrinking the feature maps
+
+After a convolution layer, a **pooling** layer (commonly **max pooling**)
+downsamples the feature map — e.g., replacing every non-overlapping 2×2
+block with just its maximum value, cutting the feature map's size in each
+dimension in half. This reduces computation for later layers and adds a
+small amount of additional translation invariance (a feature detected
+slightly off-position still survives pooling).
+
+## In real code: convolution, from scratch
+
+<PyodidePlayground initialCode={`import numpy as np
+
+def convolve2d(image, kernel):
+    kh, kw = kernel.shape
+    h, w = image.shape
+    out = np.zeros((h - kh + 1, w - kw + 1))
+    for i in range(out.shape[0]):
+        for j in range(out.shape[1]):
+            patch = image[i:i+kh, j:j+kw]
+            out[i, j] = np.sum(patch * kernel)
+    return out
+
+# A simple 6x6 "image": a bright vertical stripe down the middle.
+image = np.array([
+    [0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0],
+], dtype=float)
+
+vertical_edge_filter = np.array([
+    [-1, 0, 1],
+    [-1, 0, 1],
+    [-1, 0, 1],
+])
+
+feature_map = convolve2d(image, vertical_edge_filter)
+print("Feature map (positive = left edge, negative = right edge):")
+print(feature_map)
+`}
+/>
+
+The output feature map should light up (strongly positive or negative)
+exactly where the stripe's edges are, and stay near zero everywhere else —
+this hand-picked filter happens to detect vertical edges, but in a real
+CNN, the filter values are **learned** via backpropagation, just like every
+other weight in this course.
+
+## Check your understanding
+
+<Quiz courseSlug="deep-learning" moduleSlug="convolutional-neural-networks" lessonSlug="cnn-fundamentals" />

@@ -1,0 +1,41 @@
+{
+  "title": "CNN Fundamentals Check",
+  "questions": [
+    {
+      "questionText": "Why don't fully-connected layers scale well to raw images?",
+      "questionType": "mcq",
+      "options": [
+        "Images can't be represented as numbers",
+        "A modest-sized image has hundreds of thousands of pixels, requiring an enormous number of weights, and treats every pixel as independent, ignoring spatial structure",
+        "Fully-connected layers can only process grayscale images",
+        "There is no real problem, CNNs offer no advantage"
+      ],
+      "correctAnswer": "A modest-sized image has hundreds of thousands of pixels, requiring an enormous number of weights, and treats every pixel as independent, ignoring spatial structure",
+      "explanation": "Both the parameter explosion and the loss of spatial relationships between nearby pixels make fully-connected layers a poor fit for raw image input."
+    },
+    {
+      "questionText": "What is \"parameter sharing\" in a convolutional layer?",
+      "questionType": "mcq",
+      "options": [
+        "Multiple filters share the exact same weights as each other",
+        "The same filter's weights are reused at every position across the image, rather than learning separate weights per pixel location",
+        "Parameters are shared between the training and test sets",
+        "It refers to sharing a model between multiple users"
+      ],
+      "correctAnswer": "The same filter's weights are reused at every position across the image, rather than learning separate weights per pixel location",
+      "explanation": "Applying the same small filter everywhere is what makes convolution dramatically more parameter-efficient than a fully-connected layer, and gives translation invariance for free."
+    },
+    {
+      "questionText": "What does a pooling layer (e.g. max pooling) do?",
+      "questionType": "mcq",
+      "options": [
+        "It learns new filter weights",
+        "It downsamples the feature map (e.g. keeping only the max value in each small block), reducing size and adding some translation invariance",
+        "It converts the image to grayscale",
+        "It replaces the need for an activation function"
+      ],
+      "correctAnswer": "It downsamples the feature map (e.g. keeping only the max value in each small block), reducing size and adding some translation invariance",
+      "explanation": "Pooling shrinks feature maps to reduce computation for subsequent layers, while also making the network somewhat robust to small shifts in where a feature appears."
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+---
+title: CNN Architectures & Transfer Learning
+description: How real CNNs stack these pieces, and why you rarely need to train one from scratch.
+order: 2
+estimatedMinutes: 15
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="deep-learning" moduleSlug="convolutional-neural-networks" lessonSlug="cnn-architectures-and-transfer-learning" />
+
+## Overview
+
+A real CNN is many convolution + activation + pooling blocks stacked in
+sequence, followed by one or more fully-connected layers at the end to
+produce a final prediction. The specific ways researchers have arranged
+these blocks over the years have names, and understanding the trend
+between them tells you something real about how the field's understanding
+evolved.
+
+## The general shape
+
+```
+Input image
+  -> [Conv -> ReLU -> Pool] x many
+  -> Flatten
+  -> Fully-connected layer(s)
+  -> Output (e.g. softmax over classes)
+```
+
+Each successive convolutional block typically works on a spatially
+*smaller* but *deeper* representation than the last — pooling shrinks
+height/width, while using more filters per layer increases the number of
+feature channels. Intuitively, early layers learn simple, generic features
+(edges, colors, textures); deeper layers combine those into increasingly
+abstract, task-specific features (shapes, object parts, whole objects).
+
+## A brief tour of the trend
+
+- **LeNet (1998)** — one of the earliest CNNs, a handful of conv/pool
+  layers for recognizing handwritten digits. Small by modern standards, but
+  it established the core pattern above.
+- **AlexNet (2012)** — much deeper and wider, trained on GPUs on the
+  ImageNet dataset; its dramatic accuracy jump over prior approaches is
+  usually cited as the moment deep learning went mainstream for computer
+  vision.
+- **ResNet (2015)** — introduced **residual connections**: a shortcut that
+  lets a layer's input skip ahead and be added directly to its output.
+  This sounds like a small detail, but it solved a real problem — beyond a
+  certain depth, plain stacked CNNs actually got *harder* to train (a
+  variant of the vanishing gradient problem from earlier in this course),
+  and residual connections let researchers train networks with over 100
+  layers reliably for the first time.
+
+The trend across all three: deeper networks, enabled by solving whatever
+training problem depth was currently running into.
+
+## Transfer learning: reuse instead of retrain
+
+Training a large CNN from scratch needs a huge labeled dataset and
+significant compute — usually more of both than any individual project
+has. **Transfer learning** sidesteps this: take a network already trained
+on a large general dataset (commonly ImageNet, 1000+ object categories),
+and adapt it to your specific task instead of starting from random weights.
+
+Two common approaches:
+
+- **Feature extraction** — freeze all the pretrained convolutional layers
+  (their learned edge/texture/shape detectors are broadly useful for almost
+  any image task) and only train a new final classification layer on top,
+  for your specific classes.
+- **Fine-tuning** — start from the pretrained weights, but continue
+  training some or all layers on your data at a small learning rate,
+  adapting the general features slightly toward your specific task.
+
+This is why, in practice, you rarely train an image model completely from
+scratch: a network's early layers have already learned genuinely
+general-purpose visual features, and re-deriving those from nothing on a
+small dataset would be both wasteful and likely to underperform.
+
+## Check your understanding
+
+<Quiz courseSlug="deep-learning" moduleSlug="convolutional-neural-networks" lessonSlug="cnn-architectures-and-transfer-learning" />
