@@ -1,4 +1,4 @@
-import { Sigma, BrainCircuit, Bot, Type, Search, ShieldCheck, type LucideIcon } from "lucide-react";
+import { Sigma, BrainCircuit, Bot, Type, Search, ShieldCheck, Calculator, type LucideIcon } from "lucide-react";
 
 export type Level = "Beginner" | "Beginner → Intermediate" | "Intermediate" | "Intermediate → Advanced" | "Advanced";
 
@@ -19,6 +19,13 @@ const DEFAULT_META: CourseMeta = {
 };
 
 const COURSE_META: Record<string, CourseMeta> = {
+  foundations: {
+    icon: Calculator,
+    bg: "bg-brand-sky/15",
+    fg: "text-brand-sky",
+    level: "Beginner",
+    hours: "~2 hours",
+  },
   "classical-ml": {
     icon: Sigma,
     bg: "bg-brand-indigo/15",

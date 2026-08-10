@@ -1,0 +1,41 @@
+{
+  "title": "NumPy Fundamentals Check",
+  "questions": [
+    {
+      "questionText": "What is \"vectorization\" in numpy, and why does it matter?",
+      "questionType": "mcq",
+      "options": [
+        "Converting text into vector embeddings",
+        "Performing element-wise operations on entire arrays via optimized compiled code instead of explicit Python loops, which is dramatically faster",
+        "A way to visualize data as charts",
+        "It has no performance benefit over plain Python loops"
+      ],
+      "correctAnswer": "Performing element-wise operations on entire arrays via optimized compiled code instead of explicit Python loops, which is dramatically faster",
+      "explanation": "Vectorized numpy operations avoid slow Python-level loops, running instead as optimized compiled code — typically 10-100x faster for array operations of any real size."
+    },
+    {
+      "questionText": "What does \"broadcasting\" let you do in numpy?",
+      "questionType": "mcq",
+      "options": [
+        "Send data over a network",
+        "Combine arrays of different shapes in an operation (e.g. a scalar or smaller array applied across a larger one) without manually resizing them",
+        "Convert numpy arrays into Python lists",
+        "Broadcasting is not a real numpy feature"
+      ],
+      "correctAnswer": "Combine arrays of different shapes in an operation (e.g. a scalar or smaller array applied across a larger one) without manually resizing them",
+      "explanation": "Broadcasting follows specific shape-compatibility rules to let numpy implicitly apply an operation across arrays of different shapes, exactly what makes W @ x + b work cleanly."
+    },
+    {
+      "questionText": "What does boolean indexing like a[a > 2] do?",
+      "questionType": "mcq",
+      "options": [
+        "It converts the array to boolean (True/False) values",
+        "It selects only the elements of the array that satisfy the given condition",
+        "It sorts the array in ascending order",
+        "It raises an error since numpy doesn't support conditional selection"
+      ],
+      "correctAnswer": "It selects only the elements of the array that satisfy the given condition",
+      "explanation": "a > 2 produces a boolean mask, and indexing the array with that mask returns only the elements where the condition is true — a common, concise numpy pattern."
+    }
+  ]
+}

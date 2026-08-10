@@ -1,0 +1,41 @@
+{
+  "title": "Pandas & Data Exploration Check",
+  "questions": [
+    {
+      "questionText": "What does a pandas DataFrame add on top of a raw numpy array?",
+      "questionType": "mcq",
+      "options": [
+        "Nothing, they are functionally identical",
+        "Named columns and an index, making it much easier to work with real, labeled tabular data",
+        "DataFrames can only hold text, never numbers",
+        "DataFrames remove the need for numpy entirely"
+      ],
+      "correctAnswer": "Named columns and an index, making it much easier to work with real, labeled tabular data",
+      "explanation": "A DataFrame is essentially a 2D array with labels, letting you reference columns by name (df[\"age\"]) instead of remembering numeric positions."
+    },
+    {
+      "questionText": "Why is exploratory data analysis (EDA) recommended before fitting any model?",
+      "questionType": "mcq",
+      "options": [
+        "It's an optional step with no real benefit",
+        "Checking for missing values, outliers, and feature distributions upfront helps catch data problems (like those in the ML pitfalls lesson) before they silently corrupt results",
+        "EDA replaces the need for a train/test split",
+        "EDA is only useful for deep learning, not classical ML"
+      ],
+      "correctAnswer": "Checking for missing values, outliers, and feature distributions upfront helps catch data problems (like those in the ML pitfalls lesson) before they silently corrupt results",
+      "explanation": "Skipping EDA is exactly how issues like unexpected nulls or skewed distributions go unnoticed until they've already caused a misleading evaluation."
+    },
+    {
+      "questionText": "What's the standard bridge from a pandas DataFrame to the numpy arrays a model actually trains on?",
+      "questionType": "mcq",
+      "options": [
+        "Models can train directly on DataFrames with no conversion needed",
+        "Selecting the relevant columns and calling .values or .to_numpy() to get a numpy array",
+        "Converting the DataFrame to a Python dictionary first",
+        "There is no way to convert a DataFrame to numpy"
+      ],
+      "correctAnswer": "Selecting the relevant columns and calling .values or .to_numpy() to get a numpy array",
+      "explanation": "This is the standard final step connecting data exploration/cleaning in pandas to the numpy-array X inputs used throughout every model in this platform's Classical ML and Deep Learning courses."
+    }
+  ]
+}

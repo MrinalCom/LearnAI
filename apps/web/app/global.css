@@ -11,6 +11,7 @@
   --color-brand-pink: oklch(0.68 0.22 350);
   --color-brand-amber: oklch(0.78 0.15 75);
   --color-brand-emerald: oklch(0.7 0.16 155);
+  --color-brand-sky: oklch(0.72 0.13 230);
 }
 
 :root {

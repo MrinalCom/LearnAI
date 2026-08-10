@@ -1,0 +1,97 @@
+---
+title: NumPy Fundamentals
+description: Arrays and vectorized operations — the tool behind every single code playground on this platform.
+order: 1
+estimatedMinutes: 18
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="foundations" moduleSlug="python-for-ml" lessonSlug="numpy-fundamentals" />
+
+## Overview
+
+Every Pyodide playground across every course on this platform starts with
+`import numpy as np`. If you've been running that code without fully
+knowing what numpy is doing differently from plain Python, this lesson
+fills that gap.
+
+## Why not just use Python lists?
+
+A plain Python list can hold numbers, but operating on it element-by-element
+requires an explicit loop:
+
+```python
+a = [1, 2, 3]
+b = [4, 5, 6]
+result = [a[i] + b[i] for i in range(len(a))]  # manual loop
+```
+
+A numpy array supports the same operation directly, and runs it as
+optimized, compiled code instead of a slow Python-level loop:
+
+```python
+import numpy as np
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+result = a + b  # vectorized -- no explicit loop, and much faster
+```
+
+This is called **vectorization**, and it's the single biggest reason
+numpy exists: for datasets of any real size, the difference between a
+Python loop and a vectorized numpy operation is easily 10-100x in speed,
+which matters a great deal when a training loop runs that operation
+thousands of times.
+
+## Broadcasting: operating on arrays of different shapes
+
+Numpy also lets you combine arrays of *different* shapes without manually
+resizing them, following specific rules called **broadcasting** — most
+commonly, applying a single number (or a smaller array) across an entire
+larger array:
+
+```python
+prices = np.array([10, 20, 30])
+prices_with_tax = prices * 1.08   # the scalar 1.08 is "broadcast" across every element
+```
+
+This exact pattern — a single operation implicitly applied across an
+entire array or matrix — is what made the `W @ x + b` computation in the
+linear algebra lesson, and every Pyodide playground's numpy code
+throughout this platform, so compact.
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+
+# Creating arrays
+a = np.array([1, 2, 3, 4, 5])
+matrix = np.array([[1, 2, 3], [4, 5, 6]])
+
+print("Array:", a)
+print("Shape of matrix:", matrix.shape)  # (rows, columns)
+
+# Vectorized arithmetic -- no loops needed
+print("a * 2:", a * 2)
+print("a squared:", a ** 2)
+print("Sum:", a.sum(), " Mean:", a.mean(), " Max:", a.max())
+
+# Boolean indexing: select elements matching a condition
+print("Elements > 2:", a[a > 2])
+
+# Broadcasting: a (2,3) matrix plus a (3,) vector, applied row-wise
+row_adjustment = np.array([10, 20, 30])
+print("Matrix + broadcast vector:\\n", matrix + row_adjustment)
+`}
+/>
+
+Every operation above — vectorized arithmetic, boolean indexing,
+broadcasting — appears somewhere in nearly every playground you've run
+throughout this platform's Classical ML and Deep Learning courses.
+
+## Check your understanding
+
+<Quiz courseSlug="foundations" moduleSlug="python-for-ml" lessonSlug="numpy-fundamentals" />

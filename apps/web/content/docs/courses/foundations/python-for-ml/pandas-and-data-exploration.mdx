@@ -1,0 +1,91 @@
+---
+title: Pandas & Data Exploration
+description: DataFrames — the standard way real, messy datasets get loaded, cleaned, and explored before any model sees them.
+order: 2
+estimatedMinutes: 20
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="foundations" moduleSlug="python-for-ml" lessonSlug="pandas-and-data-exploration" />
+
+## Overview
+
+Every playground throughout this platform generates clean, synthetic
+numpy arrays — real datasets are rarely that tidy. **pandas** is the
+standard library for loading, cleaning, and exploring tabular data (rows
+and named columns, like a spreadsheet) before it's ever turned into the
+numpy arrays a model actually trains on.
+
+## DataFrames: numpy arrays with labels
+
+A pandas `DataFrame` is essentially a 2D numpy array with named columns
+and an index, which makes real data far easier to work with than raw
+arrays: you can refer to `df["age"]` instead of remembering "age is
+column 3."
+
+## Exploratory Data Analysis (EDA): look before you model
+
+Before fitting any model from the Classical ML course, it's standard
+practice to explore the data first — checking for missing values, obvious
+outliers, and the actual distribution of each feature. Skipping this step
+is how the data-leakage and misleading-metric pitfalls from the Classical
+ML course's pitfalls lesson often go unnoticed until it's too late.
+
+## In real code
+
+<PyodidePlayground initialCode={`import pandas as pd
+import numpy as np
+
+# A small, deliberately messy dataset -- missing values and all.
+data = {
+    "age": [25, 32, np.nan, 45, 29, 38],
+    "income": [50000, 62000, 58000, np.nan, 71000, 65000],
+    "purchased": [0, 1, 1, 1, 0, 1],
+}
+df = pd.DataFrame(data)
+
+print("First few rows:")
+print(df.head())
+
+print("\\nSummary statistics:")
+print(df.describe())
+
+print("\\nMissing values per column:")
+print(df.isna().sum())
+
+# A common cleaning step: fill missing values with the column's median
+# (a simple, defensible default -- more sophisticated imputation exists too).
+df["age"] = df["age"].fillna(df["age"].median())
+df["income"] = df["income"].fillna(df["income"].median())
+
+print("\\nAfter filling missing values:")
+print(df)
+
+# Grouping: average income by purchase outcome.
+print("\\nAverage income by purchase decision:")
+print(df.groupby("purchased")["income"].mean())
+`}
+/>
+
+`df.describe()`, `df.isna().sum()`, and `df.groupby(...)` are three of the
+most-used pandas operations in real EDA workflows — respectively:
+summarizing every numeric column at once, finding exactly where data is
+missing, and comparing a metric across categories, which is often the
+first hint of whether a feature is actually predictive before you ever
+fit a model.
+
+## From DataFrame to model input
+
+Every model throughout this platform's Classical ML and Deep Learning
+courses expects numpy arrays, not DataFrames — the standard bridge is
+`df[["age", "income"]].values` (or `.to_numpy()`), which is the exact
+final step between the data exploration shown here and every `X = ...`
+line you've seen throughout every other course's playgrounds.
+
+## Check your understanding
+
+<Quiz courseSlug="foundations" moduleSlug="python-for-ml" lessonSlug="pandas-and-data-exploration" />

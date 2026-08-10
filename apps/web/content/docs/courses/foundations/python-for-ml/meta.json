@@ -1,0 +1,6 @@
+{
+  "title": "Python for ML",
+  "description": "numpy and pandas — the two libraries every playground on this platform is built on.",
+  "order": 3,
+  "pages": ["numpy-fundamentals", "pandas-and-data-exploration"]
+}

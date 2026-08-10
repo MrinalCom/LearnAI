@@ -1,8 +1,8 @@
 const STATS = [
-  { value: "6", label: "courses" },
-  { value: "54", label: "in-depth lessons" },
-  { value: "27+", label: "live code playgrounds" },
-  { value: "54", label: "scored quizzes" },
+  { value: "7", label: "courses" },
+  { value: "61", label: "in-depth lessons" },
+  { value: "34+", label: "live code playgrounds" },
+  { value: "61", label: "scored quizzes" },
 ];
 
 export function StatsBar() {
