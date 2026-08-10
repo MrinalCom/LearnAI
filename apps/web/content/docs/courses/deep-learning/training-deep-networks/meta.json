@@ -1,0 +1,6 @@
+{
+  "title": "Training Deep Networks",
+  "description": "Making gradient descent actually work well at scale, and keeping large networks from overfitting.",
+  "order": 2,
+  "pages": ["optimizers", "regularization-in-deep-learning"]
+}

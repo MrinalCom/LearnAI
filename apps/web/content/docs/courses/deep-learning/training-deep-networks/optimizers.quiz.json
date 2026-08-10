@@ -1,0 +1,41 @@
+{
+  "title": "Optimizers Check",
+  "questions": [
+    {
+      "questionText": "Why does SGD use a small random mini-batch instead of the entire training set for each gradient update?",
+      "questionType": "mcq",
+      "options": [
+        "Mini-batches always produce a more accurate gradient than the full dataset",
+        "It's far cheaper to compute per update, and the resulting noise can even help escape shallow local minima",
+        "It's required by the chain rule",
+        "Mini-batches are only used for classification, not regression"
+      ],
+      "correctAnswer": "It's far cheaper to compute per update, and the resulting noise can even help escape shallow local minima",
+      "explanation": "Computing the true gradient over millions of examples before every update would be prohibitively slow; mini-batches trade some gradient accuracy for a huge speed gain, and the added noise is often beneficial."
+    },
+    {
+      "questionText": "What problem does momentum specifically address?",
+      "questionType": "mcq",
+      "options": [
+        "It prevents overfitting",
+        "It smooths out zigzagging on loss surfaces that are steep in one direction and shallow in another, by carrying velocity from past gradients",
+        "It removes the need for a learning rate entirely",
+        "It only affects the very first training step"
+      ],
+      "correctAnswer": "It smooths out zigzagging on loss surfaces that are steep in one direction and shallow in another, by carrying velocity from past gradients",
+      "explanation": "By accumulating a running average of past gradients, momentum lets the optimizer maintain a consistent direction instead of overreacting to each individual noisy gradient."
+    },
+    {
+      "questionText": "What does Adam add on top of plain momentum?",
+      "questionType": "mcq",
+      "options": [
+        "Nothing, Adam and momentum are identical",
+        "A per-weight adaptive learning rate, based on a running average of each weight's squared gradient",
+        "It removes the need for backpropagation",
+        "It only works with ReLU activations"
+      ],
+      "correctAnswer": "A per-weight adaptive learning rate, based on a running average of each weight's squared gradient",
+      "explanation": "Adam combines momentum with automatic per-weight learning-rate scaling, which is why it typically requires much less manual learning-rate tuning than plain SGD."
+    }
+  ]
+}

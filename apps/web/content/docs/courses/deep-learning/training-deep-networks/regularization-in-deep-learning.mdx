@@ -1,0 +1,81 @@
+---
+title: Regularization in Deep Learning
+description: Dropout, batch normalization, and early stopping — L1/L2's cousins, purpose-built for deep networks.
+order: 2
+estimatedMinutes: 15
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="deep-learning" moduleSlug="training-deep-networks" lessonSlug="regularization-in-deep-learning" />
+
+## Overview
+
+L1/L2 regularization from the Classical ML course still applies to neural
+networks — penalizing weight magnitude works the same way regardless of how
+many layers there are. But deep networks have millions of parameters and
+overfit easily, so a few techniques specific to deep learning have become
+standard on top of L1/L2.
+
+## Dropout: randomly delete neurons during training
+
+**Dropout** randomly "turns off" a fraction of neurons (commonly 20-50%) on
+each training step — their output is forced to zero, and they don't
+participate in that step's forward or backward pass at all.
+
+```
+during training: each neuron has probability p of being zeroed out
+during inference: all neurons active, outputs scaled to compensate
+```
+
+Why this helps: it prevents neurons from **co-adapting** — relying on very
+specific combinations of other neurons to correct their mistakes. Since any
+neuron might be dropped at any step, the network is forced to learn
+features that are useful somewhat independently, which is a more robust,
+less overfit representation. It's a similar spirit to a random forest's
+bagging (from Classical ML) — introducing randomness during training to
+prevent the model from overfitting to spurious detail.
+
+## Batch normalization: keep layer inputs well-behaved
+
+As training proceeds, the *distribution* of values flowing into each layer
+keeps shifting as earlier layers' weights update — a problem called
+**internal covariate shift** that makes deeper networks slower and more
+finicky to train. **Batch normalization** re-centers and re-scales each
+layer's inputs (using the mean/variance of the current mini-batch) before
+they hit the next layer, keeping that distribution stable throughout
+training. In practice this lets you use higher learning rates and makes
+the network noticeably less sensitive to how weights were initialized —
+it's as much a training-speed technique as a regularization one, though it
+does have a regularizing side effect from the noise introduced by
+per-batch statistics.
+
+## Early stopping: just stop before you overfit
+
+The simplest technique of all: track validation loss (using the
+cross-validation ideas from Classical ML) during training, and stop as soon
+as it starts getting *worse* even while training loss keeps improving —
+that gap is the model starting to memorize the training set instead of
+generalizing.
+
+```
+epoch 10: train_loss=0.42, val_loss=0.45
+epoch 20: train_loss=0.31, val_loss=0.38
+epoch 30: train_loss=0.22, val_loss=0.39   <- val loss went up, stop here
+epoch 40: train_loss=0.15, val_loss=0.44   <- would have kept getting worse
+```
+
+## Putting it together
+
+A typical modern network combines several of these at once: L2
+regularization on the weights, dropout between fully-connected layers,
+batch normalization after convolutional/linear layers, and early stopping
+to decide when training is done — none of these compete with each other,
+they address overfitting and unstable training from different angles
+simultaneously.
+
+## Check your understanding
+
+<Quiz courseSlug="deep-learning" moduleSlug="training-deep-networks" lessonSlug="regularization-in-deep-learning" />

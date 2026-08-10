@@ -1,0 +1,41 @@
+{
+  "title": "Regularization in Deep Learning Check",
+  "questions": [
+    {
+      "questionText": "What does dropout actually do during training?",
+      "questionType": "mcq",
+      "options": [
+        "It permanently removes weak neurons from the network",
+        "It randomly zeroes out a fraction of neurons on each training step, preventing neurons from co-adapting to very specific combinations",
+        "It increases the learning rate over time",
+        "It only affects the output layer"
+      ],
+      "correctAnswer": "It randomly zeroes out a fraction of neurons on each training step, preventing neurons from co-adapting to very specific combinations",
+      "explanation": "By randomly disabling different neurons each step, dropout forces the network to learn features that are useful without relying on very specific neuron combinations, reducing overfitting."
+    },
+    {
+      "questionText": "What problem does batch normalization primarily address?",
+      "questionType": "mcq",
+      "options": [
+        "It removes the need for an activation function",
+        "The shifting distribution of layer inputs during training (internal covariate shift), which makes deep networks slower and more sensitive to train",
+        "It replaces the need for a loss function",
+        "It only matters for convolutional layers, never fully-connected ones"
+      ],
+      "correctAnswer": "The shifting distribution of layer inputs during training (internal covariate shift), which makes deep networks slower and more sensitive to train",
+      "explanation": "By re-centering and re-scaling each layer's inputs using current batch statistics, batch norm keeps input distributions stable, enabling higher learning rates and more robust training."
+    },
+    {
+      "questionText": "In early stopping, what signal tells you it's time to stop training?",
+      "questionType": "mcq",
+      "options": [
+        "Training loss reaching exactly zero",
+        "Validation loss starting to increase even while training loss keeps decreasing",
+        "A fixed number of epochs, regardless of performance",
+        "The learning rate reaching zero"
+      ],
+      "correctAnswer": "Validation loss starting to increase even while training loss keeps decreasing",
+      "explanation": "That divergence between improving training loss and worsening validation loss is the signature of the model starting to memorize training data instead of generalizing — the same overfitting signal from the Classical ML course's bias-variance lesson."
+    }
+  ]
+}

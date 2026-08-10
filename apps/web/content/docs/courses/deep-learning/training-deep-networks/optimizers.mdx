@@ -1,0 +1,99 @@
+---
+title: Optimizers
+description: Plain gradient descent works, but momentum and adaptive learning rates make training deep networks actually practical.
+order: 1
+estimatedMinutes: 18
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="deep-learning" moduleSlug="training-deep-networks" lessonSlug="optimizers" />
+
+## Overview
+
+Plain gradient descent (`w := w − α · gradient`) is correct, but it's slow
+and finicky at the scale of deep networks — millions of weights, a bumpy,
+high-dimensional loss surface, and gradients that vary wildly in magnitude
+across different weights. **Optimizers** are refinements to the basic
+update rule that make training in practice dramatically faster and more
+reliable.
+
+## SGD and the mini-batch
+
+Plain **stochastic gradient descent (SGD)** doesn't compute the gradient
+over the *entire* training set before each update (which would be
+extremely slow) — it estimates the gradient from a small random
+**mini-batch** (commonly 32-256 examples) and updates immediately. This
+gradient estimate is noisier than the true full-dataset gradient, but it's
+far cheaper to compute, and that noise even turns out to help — it can
+knock the optimizer out of shallow local minima that a perfectly smooth
+gradient would get stuck in.
+
+## Momentum: don't forget the last step
+
+Plain SGD can zigzag badly across a loss surface that's steep in one
+direction and shallow in another. **Momentum** fixes this by accumulating a
+running average of past gradients, so the update carries some "velocity"
+from previous steps rather than reacting solely to the current gradient:
+
+```
+velocity := β · velocity + gradient
+w := w − α · velocity
+```
+
+This is a literal physical metaphor: like a ball rolling downhill, momentum
+smooths out the zigzag and accelerates through consistently-sloped regions.
+
+## Adam: momentum + per-weight adaptive learning rates
+
+**Adam** (Adaptive Moment Estimation) is the default optimizer for most
+deep learning today. It combines momentum with a *second* adaptive
+mechanism: it tracks a running average of each weight's *squared* gradient,
+and uses that to automatically scale down the learning rate for weights
+that have been getting large, volatile gradients, and scale it up for
+weights getting small, stable ones. In practice this means far less manual
+learning-rate tuning than plain SGD requires.
+
+## In real code: comparing convergence speed
+
+<PyodidePlayground initialCode={`import numpy as np
+
+# A deliberately awkward loss surface: steep in one direction, shallow in another.
+def loss(w):
+    return 0.1 * w[0]**2 + 5 * w[1]**2
+
+def grad(w):
+    return np.array([0.2 * w[0], 10 * w[1]])
+
+def run_sgd(steps=40, lr=0.15):
+    w = np.array([5.0, 5.0])
+    for _ in range(steps):
+        w -= lr * grad(w)
+    return w, loss(w)
+
+def run_momentum(steps=40, lr=0.15, beta=0.9):
+    w = np.array([5.0, 5.0])
+    velocity = np.zeros(2)
+    for _ in range(steps):
+        velocity = beta * velocity + grad(w)
+        w -= lr * velocity
+    return w, loss(w)
+
+w_sgd, loss_sgd = run_sgd()
+w_mom, loss_mom = run_momentum()
+print(f"Plain SGD:  final w={np.round(w_sgd, 3)}, loss={loss_sgd:.5f}")
+print(f"Momentum:   final w={np.round(w_mom, 3)}, loss={loss_mom:.5f}")
+`}
+/>
+
+On this lopsided loss surface, momentum should reach a meaningfully lower
+loss in the same 40 steps — try raising `lr` for plain SGD and watch it
+start to oscillate or diverge, while momentum tolerates a higher learning
+rate more gracefully.
+
+## Check your understanding
+
+<Quiz courseSlug="deep-learning" moduleSlug="training-deep-networks" lessonSlug="optimizers" />

@@ -1,3 +1,25 @@
 @import "tailwindcss";
 @import "fumadocs-ui/css/neutral.css";
 @import "fumadocs-ui/css/preset.css";
+
+/* Brand identity: a vivid teal primary (replacing Fumadocs' neutral black/white default)
+   plus fixed per-course accent colors used for category badges/icons across the site. */
+@theme {
+  --color-brand-teal: oklch(0.72 0.14 195);
+  --color-brand-indigo: oklch(0.62 0.19 275);
+  --color-brand-purple: oklch(0.6 0.2 305);
+  --color-brand-pink: oklch(0.68 0.22 350);
+  --color-brand-amber: oklch(0.78 0.15 75);
+}
+
+:root {
+  --color-fd-primary: oklch(0.6 0.13 195);
+  --color-fd-primary-foreground: oklch(0.99 0 0);
+  --color-fd-ring: oklch(0.6 0.13 195);
+}
+
+.dark {
+  --color-fd-primary: oklch(0.75 0.13 195);
+  --color-fd-primary-foreground: oklch(0.15 0.02 195);
+  --color-fd-ring: oklch(0.75 0.13 195);
+}
