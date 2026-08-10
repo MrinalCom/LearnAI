@@ -1,0 +1,41 @@
+{
+  "title": "When to Fine-Tune Check",
+  "questions": [
+    {
+      "questionText": "What's the recommended order for trying to change an LLM's behavior, from cheapest to most expensive?",
+      "questionType": "mcq",
+      "options": [
+        "Fine-tuning, then RAG, then prompt engineering",
+        "Prompt engineering, then RAG, then fine-tuning",
+        "They're all equally expensive, order doesn't matter",
+        "RAG, then fine-tuning, then prompt engineering"
+      ],
+      "correctAnswer": "Prompt engineering, then RAG, then fine-tuning",
+      "explanation": "Each step up costs more in engineering complexity and iteration speed — prompting is testable in seconds, while fine-tuning requires a full training/eval pipeline and hours-to-days per iteration."
+    },
+    {
+      "questionText": "Why is RAG usually the better tool than fine-tuning for adding new factual knowledge to a model's responses?",
+      "questionType": "mcq",
+      "options": [
+        "Fine-tuning cannot process factual information at all",
+        "Retrieval can be updated instantly by changing the document store, while fine-tuning doesn't reliably teach new facts and freezes again once training ends",
+        "RAG is always cheaper regardless of the task",
+        "Fine-tuning only works with images, not text"
+      ],
+      "correctAnswer": "Retrieval can be updated instantly by changing the document store, while fine-tuning doesn't reliably teach new facts and freezes again once training ends",
+      "explanation": "Fine-tuning is better understood as adjusting behavior/style than reliably injecting new knowledge, and any fine-tuned-in facts are frozen the moment training stops — unlike a retrieval index, which updates instantly."
+    },
+    {
+      "questionText": "What's a genuinely good use case for fine-tuning?",
+      "questionType": "mcq",
+      "options": [
+        "Any task you haven't tried prompting or RAG on yet",
+        "Extremely consistent output format/style at scale, where relying on few-shot examples in every prompt would be less reliable and cost repeated context budget",
+        "Adding information from today's news",
+        "Fine-tuning has no genuinely good use cases"
+      ],
+      "correctAnswer": "Extremely consistent output format/style at scale, where relying on few-shot examples in every prompt would be less reliable and cost repeated context budget",
+      "explanation": "Fine-tuning shines when you need very high reliability on a specific format/style across huge volumes, which can outperform relying on repeated few-shot examples in every single prompt."
+    }
+  ]
+}

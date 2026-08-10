@@ -1,0 +1,41 @@
+{
+  "title": "Fine-Tuning Techniques Check",
+  "questions": [
+    {
+      "questionText": "What does full fine-tuning require that makes it expensive for large models?",
+      "questionType": "mcq",
+      "options": [
+        "Nothing extra, it's the cheapest fine-tuning approach",
+        "GPU memory to store gradients and optimizer state for every single weight in the model, plus a full model copy per fine-tuned variant",
+        "It only works on CPUs, never GPUs",
+        "It requires no training data at all"
+      ],
+      "correctAnswer": "GPU memory to store gradients and optimizer state for every single weight in the model, plus a full model copy per fine-tuned variant",
+      "explanation": "Updating every weight means storing gradient and optimizer state proportional to the entire model's parameter count, which scales expensively for billion-parameter models."
+    },
+    {
+      "questionText": "What does LoRA actually train, while the original model's weights stay frozen?",
+      "questionType": "mcq",
+      "options": [
+        "It retrains every weight, just more slowly",
+        "Small, low-rank additional matrices added on top of specific weight matrices, dramatically smaller than the original weights",
+        "Only the model's output layer",
+        "A completely separate model from scratch"
+      ],
+      "correctAnswer": "Small, low-rank additional matrices added on top of specific weight matrices, dramatically smaller than the original weights",
+      "explanation": "LoRA freezes the pretrained weights entirely and trains small add-on matrices (A and B) whose product approximates the needed adaptation, at a small fraction of the original parameter count."
+    },
+    {
+      "questionText": "What key insight does LoRA rely on to work well despite training so few parameters?",
+      "questionType": "mcq",
+      "options": [
+        "That most tasks require completely reshaping the model's behavior",
+        "That the change needed to adapt a model to a new task typically has much lower intrinsic complexity than the model's full weight matrix",
+        "That gradients don't matter for fine-tuning",
+        "That frozen weights automatically adapt themselves"
+      ],
+      "correctAnswer": "That the change needed to adapt a model to a new task typically has much lower intrinsic complexity than the model's full weight matrix",
+      "explanation": "This low intrinsic-rank assumption is what lets small A/B matrices capture most of the useful adaptation, without needing to update the full, much larger weight matrix."
+    }
+  ]
+}

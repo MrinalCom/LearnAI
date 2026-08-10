@@ -1,0 +1,6 @@
+{
+  "title": "Applied AI & Production",
+  "description": "Taking a model from a notebook to a real deployed system: fine-tuning, MLOps, and safety/ethics.",
+  "order": 6,
+  "pages": ["fine-tuning", "mlops-and-deployment", "ai-safety-and-ethics"]
+}

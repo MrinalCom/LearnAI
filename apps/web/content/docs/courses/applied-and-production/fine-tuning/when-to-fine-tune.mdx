@@ -1,0 +1,68 @@
+---
+title: When to Fine-Tune
+description: Fine-tuning is the most expensive lever available — and usually not the first one to pull.
+order: 1
+estimatedMinutes: 15
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="applied-and-production" moduleSlug="fine-tuning" lessonSlug="when-to-fine-tune" />
+
+## Overview
+
+By now this platform has covered three genuinely different ways to change
+an LLM's behavior: prompt engineering (change the instructions), RAG
+(change what information it has access to), and fine-tuning (change the
+model's actual weights). They aren't interchangeable, and reaching for
+fine-tuning first is one of the most common expensive mistakes teams make.
+
+## The decision order, and why it's ordered this way
+
+```
+1. Prompt engineering  -- cheapest, fastest to iterate, zero infra
+2. RAG                 -- adds retrieval infra, but no training needed
+3. Fine-tuning          -- needs a training pipeline, data, compute, evaluation
+```
+
+Each step up costs meaningfully more in engineering complexity and
+iteration speed. A prompt change is testable in seconds; a RAG pipeline
+change might take an afternoon to properly re-evaluate; a fine-tuning run
+takes hours-to-days and needs a real training/eval pipeline (next module)
+around it. The practical implication: exhaust the cheaper options first,
+and only fine-tune once you've identified a *specific* gap that prompting
+and retrieval genuinely can't close.
+
+## What fine-tuning is actually good for
+
+- **Consistent style/format at scale** — if you need a very specific
+  output format followed with extremely high reliability across huge
+  volumes of requests, fine-tuning on many examples of that exact format
+  can be more reliable than relying on few-shot examples in every single
+  prompt (which also cost context budget every time, per the context
+  engineering lesson).
+- **Domain-specific language patterns** — legal, medical, or highly
+  technical domains with vocabulary and conventions underrepresented in
+  general training data.
+- **Distillation** — training a smaller, cheaper model to imitate a
+  larger model's outputs on your specific task, trading some general
+  capability for much lower cost per request.
+
+## What fine-tuning is a poor fit for
+
+- **Adding new factual knowledge** — RAG is almost always the better tool
+  here: retrieval can be updated instantly by changing the document store,
+  while fine-tuned-in facts are frozen again the moment training ends, and
+  fine-tuning doesn't reliably teach a model new facts the way people
+  often assume — it's better understood as adjusting *behavior* than
+  injecting *knowledge*.
+- **A problem you haven't tried prompting/RAG on yet** — without first
+  establishing what those cheaper approaches can't fix, there's no way to
+  know fine-tuning is actually the missing piece rather than a prompt or
+  retrieval issue in disguise.
+
+## Check your understanding
+
+<Quiz courseSlug="applied-and-production" moduleSlug="fine-tuning" lessonSlug="when-to-fine-tune" />

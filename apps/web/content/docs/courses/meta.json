@@ -1,4 +1,11 @@
 {
   "title": "Courses",
-  "pages": ["classical-ml", "deep-learning", "nlp-and-llm-foundations", "rag", "agentic-ai"]
+  "pages": [
+    "classical-ml",
+    "deep-learning",
+    "nlp-and-llm-foundations",
+    "rag",
+    "agentic-ai",
+    "applied-and-production"
+  ]
 }

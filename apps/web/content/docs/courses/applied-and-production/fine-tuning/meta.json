@@ -1,0 +1,6 @@
+{
+  "title": "Fine-Tuning",
+  "description": "When updating a model's actual weights is worth it, and how to do it without retraining from scratch.",
+  "order": 1,
+  "pages": ["when-to-fine-tune", "fine-tuning-techniques"]
+}

@@ -1,0 +1,80 @@
+---
+title: Fine-Tuning Techniques
+description: Full fine-tuning updates every weight. LoRA updates a tiny fraction of that, for almost the same effect.
+order: 2
+estimatedMinutes: 18
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="applied-and-production" moduleSlug="fine-tuning" lessonSlug="fine-tuning-techniques" />
+
+## Overview
+
+Once you've decided fine-tuning is genuinely the right tool (previous
+lesson), there's still a real choice about *how* — updating every one of a
+model's weights is possible but usually needlessly expensive, which is why
+**parameter-efficient fine-tuning (PEFT)** methods, especially **LoRA**,
+have become the practical default.
+
+## Full fine-tuning: update everything
+
+The direct approach: continue training via backpropagation (Deep Learning
+course) on your task-specific data, updating every weight in the model,
+exactly like the original training process, just starting from the
+pretrained weights instead of random initialization. This genuinely works
+and gives the model maximum flexibility to adapt — but for a model with
+billions of parameters, it needs a proportional amount of GPU memory (to
+store gradients and optimizer state for every weight, not just the weights
+themselves) and storage (a full new copy of the model per fine-tuned
+variant).
+
+## LoRA: freeze the model, train a small add-on instead
+
+**LoRA** (Low-Rank Adaptation) takes a different approach: freeze the
+entire pretrained model, and instead train small additional matrices
+that get added on top of specific weight matrices (typically the attention
+layers from the Deep Learning course):
+
+```
+original behavior:      output = W · x
+LoRA-adapted behavior:   output = W · x + (B · A) · x
+                                          ^^^^^^^^^
+                                    small, trainable matrices;
+                                    W stays completely frozen
+```
+
+`A` and `B` are much smaller than `W` — if `W` is a 4096×4096 matrix, `A`
+and `B` might be 4096×8 and 8×4096, reducing the trainable parameter count
+for that layer by roughly 500x. The insight this relies on: the *change*
+needed to adapt a model to a new task typically has much lower intrinsic
+complexity than the model's full weight matrix, so a low-rank (small `A`
+and `B`) update can capture most of the useful adaptation.
+
+## Why this matters practically, not just theoretically
+
+- **Dramatically less GPU memory** — no need to store gradients/optimizer
+  state for the frozen weights, only for the small `A`/`B` matrices.
+- **Small, swappable artifacts** — a LoRA adapter is often megabytes, not
+  gigabytes, so you can store many task-specific adapters cheaply and swap
+  between them at inference time against the same frozen base model,
+  rather than storing a full model copy per task.
+- **Faster iteration** — fewer trainable parameters means faster training
+  runs, which matters a lot when you're iterating on data quality and
+  hyperparameters (next module's territory).
+
+## The tradeoff
+
+LoRA doesn't always match full fine-tuning's ceiling on very difficult
+adaptation tasks that genuinely need to reshape a large fraction of the
+model's behavior — but for the large majority of practical fine-tuning use
+cases (style/format adaptation, domain vocabulary, distillation from the
+previous lesson), it gets close enough at a small fraction of the cost,
+which is why it's the default starting point rather than full fine-tuning
+in most real-world workflows today.
+
+## Check your understanding
+
+<Quiz courseSlug="applied-and-production" moduleSlug="fine-tuning" lessonSlug="fine-tuning-techniques" />
