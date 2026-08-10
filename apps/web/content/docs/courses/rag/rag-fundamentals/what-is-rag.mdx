@@ -8,8 +8,32 @@ type: article
 
 import { Quiz } from "@/components/quiz/quiz";
 import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+import { ExplainedTwice, ForBeginners, ForEngineers } from "@/components/mdx/explained-twice";
 
 <LessonProgressToggle courseSlug="rag" moduleSlug="rag-fundamentals" lessonSlug="what-is-rag" />
+
+<ExplainedTwice>
+<ForBeginners>
+
+It's like the difference between asking a friend a question from
+memory versus asking them to first go look it up in a book, then
+answer using what they just read. The second friend gives you a more
+trustworthy answer, especially about something specific or recent —
+and can show you exactly which page backs up what they said.
+
+</ForBeginners>
+<ForEngineers>
+
+RAG replaces (or augments) reliance on a model's parametric knowledge
+with in-context knowledge injected at inference time: embed the query,
+retrieve the top-k most similar chunks from a vector index, and
+concatenate them into the prompt before generation. No weights change
+— it's an architectural pattern around a frozen model, not a training
+technique, which is exactly why it composes so cleanly with everything
+in the Agentic AI course's tool-calling machinery.
+
+</ForEngineers>
+</ExplainedTwice>
 
 ## Overview
 

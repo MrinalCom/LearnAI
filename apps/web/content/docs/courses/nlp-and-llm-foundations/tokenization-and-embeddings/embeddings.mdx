@@ -10,8 +10,33 @@ import { EmbeddingSpaceVisualizer } from "@/components/viz/embedding-space-visua
 import { PyodidePlayground } from "@/components/playground/pyodide-playground";
 import { Quiz } from "@/components/quiz/quiz";
 import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+import { ExplainedTwice, ForBeginners, ForEngineers } from "@/components/mdx/explained-twice";
 
 <LessonProgressToggle courseSlug="nlp-and-llm-foundations" moduleSlug="tokenization-and-embeddings" lessonSlug="embeddings" />
+
+<ExplainedTwice>
+<ForBeginners>
+
+Imagine every word gets a spot on a giant map, placed there so that
+words with similar meaning end up near each other — "cat" and "kitten"
+are neighbors, "cat" and "car" are on opposite sides of town. An
+embedding is just a word's coordinates on that map. Finding "words like
+this one" becomes finding "nearby dots on the map."
+
+</ForBeginners>
+<ForEngineers>
+
+An embedding is a dense vector (typically 256-4096 dimensions for modern
+models) produced by a learned projection, trained so that vectors for
+tokens appearing in similar contexts converge under whatever objective
+the model was trained with (masked-token prediction, contrastive
+pairs, etc.). Similarity is measured with cosine similarity or dot
+product, and the entire mechanism that makes semantic search — and by
+extension RAG — possible is nearest-neighbor lookup in this vector
+space.
+
+</ForEngineers>
+</ExplainedTwice>
 
 ## Overview
 

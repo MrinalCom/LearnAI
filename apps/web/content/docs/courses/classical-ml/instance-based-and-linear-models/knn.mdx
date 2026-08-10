@@ -10,6 +10,7 @@ import { KnnVisualizer } from "@/components/viz/knn-visualizer";
 import { PyodidePlayground } from "@/components/playground/pyodide-playground";
 import { Quiz } from "@/components/quiz/quiz";
 import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+import { ExplainedTwice, ForBeginners, ForEngineers } from "@/components/mdx/explained-twice";
 
 <LessonProgressToggle courseSlug="classical-ml" moduleSlug="instance-based-and-linear-models" lessonSlug="knn" />
 
@@ -19,6 +20,30 @@ K-Nearest Neighbors (KNN) is one of the simplest supervised learning algorithms.
 To classify a new point, it looks at the `k` closest labeled points in the
 training set and takes a majority vote (for regression, it averages their
 values instead).
+
+<ExplainedTwice>
+<ForBeginners>
+
+Imagine you move to a new neighborhood and want to guess whether it's a
+friendly area. You knock on the doors of the 5 closest houses and ask.
+If 4 out of 5 say "yes, friendly," you guess your neighborhood is
+friendly too — no research, no formula, just: look at who's nearby and go
+with the majority.
+
+</ForBeginners>
+<ForEngineers>
+
+KNN has no training phase — it's a non-parametric, instance-based
+learner that defers all computation to prediction time. Classifying a
+query point requires computing its distance to every stored training
+point (`O(n)` per query, `n` = training set size), sorting for the `k`
+smallest, then taking a majority vote over their labels. This is why KNN
+scales poorly to large datasets without an approximate-nearest-neighbor
+index — the same tradeoff the RAG course's vector-search lesson covers
+in depth.
+
+</ForEngineers>
+</ExplainedTwice>
 
 There's no training phase — KNN just memorizes the training data and does all
 the work at prediction time. That makes it easy to reason about, but expensive

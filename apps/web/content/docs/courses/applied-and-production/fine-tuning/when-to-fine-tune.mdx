@@ -8,8 +8,34 @@ type: article
 
 import { Quiz } from "@/components/quiz/quiz";
 import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+import { ExplainedTwice, ForBeginners, ForEngineers } from "@/components/mdx/explained-twice";
 
 <LessonProgressToggle courseSlug="applied-and-production" moduleSlug="fine-tuning" lessonSlug="when-to-fine-tune" />
+
+<ExplainedTwice>
+<ForBeginners>
+
+Think of teaching a very well-read new employee. First you'd just tell
+them what you need ("write it like this") — that's prompting. If that's
+not enough, you'd hand them a reference binder to check while they work
+— that's RAG. Only if neither works would you send them through a whole
+retraining course to change how they fundamentally think — that's
+fine-tuning, and it's the slowest, most expensive option of the three.
+
+</ForBeginners>
+<ForEngineers>
+
+The three levers operate at completely different points in the stack:
+prompting modifies the input string per-request (zero infra, instant
+iteration); RAG modifies the retrieved context per-request (needs an
+index, still zero weight changes); fine-tuning modifies the model's
+weights themselves (needs a training pipeline, GPU time, and — critically
+— re-evaluation, since a weight change can regress capabilities the eval
+set doesn't cover). Reach for the cheapest lever that actually closes the
+gap you've concretely measured.
+
+</ForEngineers>
+</ExplainedTwice>
 
 ## Overview
 
