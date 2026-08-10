@@ -1,0 +1,41 @@
+{
+  "title": "How LLMs Are Trained Check",
+  "questions": [
+    {
+      "questionText": "What is the training objective during pretraining?",
+      "questionType": "mcq",
+      "options": [
+        "Ranking multiple candidate responses from best to worst",
+        "Predicting the next token given everything before it, across a massive text corpus, with no human-labeled answers",
+        "Classifying text into predefined categories",
+        "Translating text between languages"
+      ],
+      "correctAnswer": "Predicting the next token given everything before it, across a massive text corpus, with no human-labeled answers",
+      "explanation": "Pretraining uses the simple next-token prediction objective at massive scale, which forces the model to implicitly learn grammar, facts, and reasoning patterns without any human-curated \"correct answer\" labels."
+    },
+    {
+      "questionText": "What does supervised fine-tuning (SFT) specifically teach a base model?",
+      "questionType": "mcq",
+      "options": [
+        "New factual knowledge not present during pretraining",
+        "The format and behavior of being a helpful assistant — following instructions and staying on topic — using curated example conversations",
+        "How to tokenize text",
+        "How to run on GPU hardware more efficiently"
+      ],
+      "correctAnswer": "The format and behavior of being a helpful assistant — following instructions and staying on topic — using curated example conversations",
+      "explanation": "A base model just continues text; SFT trains it on prompt/high-quality-response pairs specifically to teach the assistant behavior pattern on top of the knowledge pretraining already provided."
+    },
+    {
+      "questionText": "How does RLHF's training signal differ from SFT's?",
+      "questionType": "mcq",
+      "options": [
+        "There is no difference, they use identical data",
+        "RLHF trains on human rankings/comparisons of multiple candidate responses, rather than fixed example responses",
+        "RLHF only uses unlabeled text with no human involvement",
+        "RLHF replaces the need for pretraining entirely"
+      ],
+      "correctAnswer": "RLHF trains on human rankings/comparisons of multiple candidate responses, rather than fixed example responses",
+      "explanation": "Instead of \"here's the one correct response,\" RLHF uses relative preference judgments across multiple candidate responses, which is especially useful for shaping qualities that are hard to specify with a single fixed example."
+    }
+  ]
+}

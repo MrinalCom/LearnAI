@@ -1,0 +1,6 @@
+{
+  "title": "How LLMs Work",
+  "description": "The three-stage training process behind a model like Claude, and why prompting alone can change its behavior.",
+  "order": 2,
+  "pages": ["how-llms-are-trained", "in-context-learning"]
+}

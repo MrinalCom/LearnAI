@@ -1,0 +1,81 @@
+---
+title: How LLMs Are Trained
+description: Pretraining, supervised fine-tuning, and RLHF — three very different training stages, stacked.
+order: 1
+estimatedMinutes: 18
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="nlp-and-llm-foundations" moduleSlug="how-llms-work" lessonSlug="how-llms-are-trained" />
+
+## Overview
+
+A model like Claude isn't trained once, with one objective — it goes
+through several distinct stages, each with a different goal, each building
+on the previous one. Understanding these stages explains a lot about *why*
+LLMs behave the way they do: why they sometimes sound like they're
+predicting text rather than conversing, why instruction-following had to be
+taught separately, and why "alignment" is a real, separate engineering
+problem from raw capability.
+
+## Stage 1: Pretraining — next-token prediction at massive scale
+
+The base model is trained on one deceptively simple objective across a
+huge corpus of text (a large fraction of the internet, books, code):
+predict the next token, given everything before it. That's it — no
+labels, no human curation of "correct answers," just: given this sequence
+so far, what token comes next?
+
+This objective, at sufficient scale, turns out to force the model to learn
+an enormous amount implicitly — grammar, facts, reasoning patterns, coding
+conventions — because accurately predicting the next token in, say, a
+worked math proof or a Python function *requires* something functionally
+like understanding the content, not just surface-level pattern matching.
+The result of this stage is a **base model**: extremely knowledgeable, but
+prone to just continuing text in whatever style it started, not
+necessarily "answering a question" the way a human assistant would.
+
+## Stage 2: Supervised Fine-Tuning (SFT) — teaching the assistant format
+
+A base model completes text; it doesn't inherently know it's supposed to
+behave like a helpful assistant responding to a user. **SFT** fixes this by
+further training the model on a (much smaller, carefully curated) dataset
+of example conversations: a prompt, paired with a high-quality example of
+how a helpful assistant should respond. This teaches the model the
+*format* and *behavior* of being an assistant — following instructions,
+staying on topic, refusing harmful requests — on top of the knowledge
+pretraining already gave it.
+
+## Stage 3: RLHF — refining behavior from human preferences
+
+**RLHF** (Reinforcement Learning from Human Feedback) goes a step further:
+rather than training on fixed example responses, it trains on *comparisons*
+— humans (or a model trained to imitate human judgment) rank multiple
+candidate responses to the same prompt from best to worst, and the model is
+optimized to produce responses more like the ones ranked highly. This stage
+is what most directly shapes qualities that are hard to specify with fixed
+example responses: being appropriately cautious, admitting uncertainty
+instead of confidently making things up, being genuinely helpful rather
+than just superficially compliant.
+
+## Why this matters for how you use these models
+
+- **Hallucination** traces partly back to Stage 1 — a next-token predictor
+  trained to always continue plausibly will produce a plausible-sounding
+  answer even when it doesn't actually know one, unless later stages have
+  specifically trained it to express uncertainty instead.
+- **Following unusual instruction formats well** is a Stage 2/3 skill, not
+  guaranteed by raw capability — a very knowledgeable base model can still
+  be bad at reliably following a specific output format without adequate
+  fine-tuning on exactly that kind of task.
+- **"Jailbreaks"** (covered in the Applied/Production course's ethics
+  material) often specifically target the gap between what Stage 1
+  knowledge makes the model *capable* of producing and what Stages 2-3
+  trained it to actually produce by default.
+
+## Check your understanding
+
+<Quiz courseSlug="nlp-and-llm-foundations" moduleSlug="how-llms-work" lessonSlug="how-llms-are-trained" />

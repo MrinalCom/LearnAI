@@ -1,0 +1,69 @@
+---
+title: In-Context Learning
+description: How a model can pick up a new task from a handful of examples in the prompt, with no weight updates at all.
+order: 2
+estimatedMinutes: 15
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="nlp-and-llm-foundations" moduleSlug="how-llms-work" lessonSlug="in-context-learning" />
+
+## Overview
+
+Every model discussed in Classical ML and Deep Learning learns by
+*updating weights* through gradient descent on training data. LLMs can do
+something additional and genuinely different: pick up a new task's pattern
+purely from examples placed in the prompt, with the model's weights never
+changing at all. This is **in-context learning**, and it's the mechanism
+behind few-shot prompting.
+
+## Zero-shot vs. few-shot
+
+```
+Zero-shot (no examples, just an instruction):
+  "Classify the sentiment of this review as positive or negative: {review}"
+
+Few-shot (a few input/output examples, then the real task):
+  "Review: 'Amazing food, terrible service.' -> Mixed
+   Review: 'Best meal of my life!' -> Positive
+   Review: 'Cold food, rude staff.' -> Negative
+   Review: {review} ->"
+```
+
+Few-shot examples do two things at once: they clarify the *exact* task
+(including edge cases like "mixed" that a zero-shot instruction might not
+have specified), and they demonstrate the expected *output format* far more
+reliably than describing the format in words.
+
+## Why this works without training
+
+Nothing about the model changes between the zero-shot and few-shot calls —
+same weights, same everything. What's happening is that the examples in the
+prompt become part of the context the transformer's attention mechanism
+(from the Deep Learning course) operates over: the model attends to the
+pattern established by the examples when generating the next tokens for the
+real query, effectively using the prompt itself as a temporary, tiny
+"training set" it conditions its output on for this one generation. This
+capability emerges from pretraining at scale — a next-token predictor
+trained on huge amounts of text has seen countless examples of "here's a
+pattern, now continue it," and few-shot prompting is directly invoking that
+learned skill.
+
+## Practical implications
+
+- **Few-shot examples cost context window** — each example uses real
+  tokens, competing with everything else you want in the prompt. This
+  tradeoff (more examples vs. more room for everything else) is a direct
+  preview of the context engineering lesson coming next.
+- **Example quality and diversity matter more than quantity** — 3 well-
+  chosen examples covering different cases usually beat 10 similar ones.
+- **Order can matter** — models can be sensitive to the order few-shot
+  examples appear in, which is worth testing rather than assuming is
+  irrelevant.
+
+## Check your understanding
+
+<Quiz courseSlug="nlp-and-llm-foundations" moduleSlug="how-llms-work" lessonSlug="in-context-learning" />

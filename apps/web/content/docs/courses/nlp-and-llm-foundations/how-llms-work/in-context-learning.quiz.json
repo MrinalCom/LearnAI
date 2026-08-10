@@ -1,0 +1,41 @@
+{
+  "title": "In-Context Learning Check",
+  "questions": [
+    {
+      "questionText": "What makes in-context learning different from how models in the Classical ML/Deep Learning courses learn?",
+      "questionType": "mcq",
+      "options": [
+        "It requires more training data than gradient descent",
+        "The model picks up a task's pattern purely from examples in the prompt, with no weight updates at all",
+        "It only works for classification tasks",
+        "It's identical to gradient descent, just renamed"
+      ],
+      "correctAnswer": "The model picks up a task's pattern purely from examples in the prompt, with no weight updates at all",
+      "explanation": "Unlike every training process covered earlier in this platform, in-context learning changes nothing about the model's weights — the \"learning\" happens entirely within a single forward pass over the prompt."
+    },
+    {
+      "questionText": "What do few-shot examples in a prompt accomplish that a zero-shot instruction alone often doesn't?",
+      "questionType": "mcq",
+      "options": [
+        "Nothing, they're purely decorative",
+        "They clarify the exact task including edge cases, and demonstrate the expected output format more reliably than describing it in words",
+        "They permanently update the model's weights for future conversations",
+        "They reduce the number of tokens used"
+      ],
+      "correctAnswer": "They clarify the exact task including edge cases, and demonstrate the expected output format more reliably than describing it in words",
+      "explanation": "Concrete input/output examples pin down ambiguous cases and formatting far more precisely than a natural-language description alone typically can."
+    },
+    {
+      "questionText": "What's a real practical tradeoff of adding more few-shot examples to a prompt?",
+      "questionType": "mcq",
+      "options": [
+        "There is no tradeoff, more examples are always strictly better",
+        "Each example consumes context window tokens, competing with everything else you want to include in the prompt",
+        "More examples always slow down model training",
+        "Few-shot examples can only be used with certain model architectures"
+      ],
+      "correctAnswer": "Each example consumes context window tokens, competing with everything else you want to include in the prompt",
+      "explanation": "Since few-shot examples occupy real tokens in a finite context window, there's a genuine tradeoff between example count and room for other context — the exact issue the context engineering lesson tackles next."
+    }
+  ]
+}
