@@ -2,5 +2,5 @@
   "title": "Multi-Agent Systems & Production",
   "description": "Composing multiple specialized agents, and keeping a human in the loop for high-stakes actions.",
   "order": 4,
-  "pages": ["multi-agent-patterns", "human-in-the-loop"]
+  "pages": ["multi-agent-patterns", "human-in-the-loop", "common-agent-failure-modes"]
 }

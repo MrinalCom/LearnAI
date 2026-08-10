@@ -8,6 +8,7 @@ type: article
 
 import { Quiz } from "@/components/quiz/quiz";
 import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+import { ExplainedTwice, ForBeginners, ForEngineers } from "@/components/mdx/explained-twice";
 
 <LessonProgressToggle courseSlug="agentic-ai" moduleSlug="foundations-of-agents" lessonSlug="what-is-an-agent" />
 
@@ -20,6 +21,31 @@ it's an LLM wired into a *loop*, given the ability to take actions in the
 world (search the web, run code, query a database, call another API), and
 left to decide *for itself*, step by step, what to do next until it decides
 the task is done.
+
+<ExplainedTwice>
+<ForBeginners>
+
+Think of the difference between asking a very knowledgeable friend a
+question over text (they answer once, from memory, and that's it) versus
+asking them to actually go handle something for you — check a website,
+make a call, come back and tell you what happened, maybe do one more thing
+based on that. The first is a single LLM call. The second is an agent: it
+can act, see what happened, and decide what to do next, instead of only
+ever giving you one answer from memory.
+
+</ForBeginners>
+<ForEngineers>
+
+Structurally, an agent is a `while` loop around an LLM call: at each
+iteration, the model receives the current state (conversation history plus
+any tool results so far) and either returns a tool call (which the
+application executes, appending the result to state) or a final answer
+(which ends the loop). Nothing about the model's weights or API changes —
+the loop, and the tool-calling contract, are entirely in the application
+code wrapping the model.
+
+</ForEngineers>
+</ExplainedTwice>
 
 ## A single LLM call vs. an agent
 

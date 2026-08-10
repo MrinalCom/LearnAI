@@ -1,0 +1,124 @@
+---
+title: Common Agent Failure Modes
+description: Three specific ways agents break in production, and the concrete fix for each — the failure mode teaches the lesson better than the theory alone.
+order: 3
+estimatedMinutes: 18
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="agentic-ai" moduleSlug="multi-agent-and-production" lessonSlug="common-agent-failure-modes" />
+
+## Overview
+
+Every concept in this course so far has been introduced by explaining how
+it's supposed to work. This lesson does the opposite: three specific,
+common ways agent systems break in production, shown concretely rather
+than just described — because the moment you watch a failure happen is
+often when the underlying issue actually clicks.
+
+## Failure 1: the infinite tool loop
+
+The setup: a tool's result doesn't clearly signal success or failure, so
+the agent (from the ReAct pattern lesson) keeps deciding it needs to try
+again, forever — burning tokens and money with no progress.
+
+<PyodidePlayground initialCode={`# Simulating an agent stuck calling the same tool forever because
+# the tool's result never clearly signals success.
+
+def flaky_search_tool(query, attempt):
+    # Always returns something *technically* valid, but never
+    # anything the agent's (simulated) logic recognizes as "done."
+    return {"results": [], "status": "ok"}
+
+def agent_should_stop(tool_result):
+    # Bug: only checks for an error field, never checks whether
+    # the results are actually empty/useless.
+    return "error" in tool_result
+
+max_steps = 8
+for step in range(max_steps):
+    result = flaky_search_tool("population of France", step)
+    print(f"Step {step}: tool result = {result}")
+    if agent_should_stop(result):
+        print("Agent decided it has enough info. Stopping.")
+        break
+else:
+    print(f"\\nHit max_steps={max_steps} with no real progress -- this is the infinite loop, capped only by a hard limit.")
+`}
+/>
+
+**The fix**: never rely on an unbounded loop. Set an explicit maximum step
+count (LangGraph's `recursionLimit` or a manual counter) as a hard backstop
+regardless of the agent's own reasoning, *and* fix the actual signal —
+here, `agent_should_stop` should also check whether `results` is
+meaningfully non-empty, not just whether an `error` key is present.
+
+## Failure 2: malformed structured output
+
+The setup: a model asked for JSON adds a conversational wrapper around it
+("Sure! Here's the JSON:") instead of returning bare JSON, and the next
+step in the pipeline — which expects to parse the response directly —
+throws.
+
+<PyodidePlayground initialCode={`import json
+
+# What a model sometimes returns despite being asked for "only JSON":
+raw_response = 'Sure! Here is the JSON you requested:\\n\\n{"category": "billing", "priority": "high"}'
+
+try:
+    data = json.loads(raw_response)
+    print("Parsed:", data)
+except json.JSONDecodeError as e:
+    print(f"Crashed: {e}")
+
+    # The fix: extract the JSON substring instead of assuming the whole
+    # response is valid JSON, or (better) use structured output / tool
+    # calling (from the LangChain course) so the model can't add prose at all.
+    start = raw_response.find("{")
+    end = raw_response.rfind("}") + 1
+    recovered = json.loads(raw_response[start:end])
+    print("Recovered by extracting the JSON substring:", recovered)
+`}
+/>
+
+**The fix**: prefer a model's native structured-output / tool-calling mode
+(the `withStructuredOutput` pattern from the LangChain course), which
+constrains generation so this wrapper text can't appear at all, rather than
+trusting free-form text to already be valid JSON. When that's not
+available, parse defensively — extract the JSON substring, and wrap parsing
+in a repair loop that re-asks the model on failure — rather than letting
+one malformed response crash the pipeline.
+
+## Failure 3: context window collapse
+
+The setup: a multi-agent pipeline (from the previous lesson) has several
+workers each contribute a large chunk of text to a shared context, and by
+the time a final "synthesizer" step receives all of it, the original
+question is buried dozens of pages back — degrading the quality of the
+final answer even though every individual step "worked."
+
+**The fix**: this is a direct application of the context engineering
+lesson from the NLP/LLM course — summarize or selectively pass forward only
+each worker's *conclusion*, not its full raw output; keep the original
+question re-stated close to where the final generation actually happens
+(context engineering's "put important instructions where the model
+reliably attends" guidance), rather than trusting that everything relevant
+survives being buried in an ever-growing shared context.
+
+## The pattern behind all three
+
+Every failure above has the same shape: something *looks* like it's
+working (a tool returns "ok," a response looks like it read the JSON
+instructions, a pipeline runs to completion without error) while actually
+failing silently. This is exactly why the evaluation lesson's discipline —
+a real eval set, checked automatically, not just "did it run without
+throwing" — matters as much for agents as it does for any other model in
+this platform's curriculum.
+
+## Check your understanding
+
+<Quiz courseSlug="agentic-ai" moduleSlug="multi-agent-and-production" lessonSlug="common-agent-failure-modes" />

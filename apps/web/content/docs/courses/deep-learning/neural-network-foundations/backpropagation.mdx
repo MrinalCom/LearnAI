@@ -9,6 +9,7 @@ type: playground
 import { PyodidePlayground } from "@/components/playground/pyodide-playground";
 import { Quiz } from "@/components/quiz/quiz";
 import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+import { ExplainedTwice, ForBeginners, ForEngineers } from "@/components/mdx/explained-twice";
 
 <LessonProgressToggle courseSlug="deep-learning" moduleSlug="neural-network-foundations" lessonSlug="backpropagation" />
 
@@ -20,6 +21,32 @@ the network — including ones several layers removed from the output — to
 make it less wrong next time. **Backpropagation** is the algorithm that
 computes this efficiently, and it's nothing more than the chain rule from
 calculus, applied systematically layer by layer.
+
+<ExplainedTwice>
+<ForBeginners>
+
+Imagine passing a note backward through a line of people, where each
+person adjusts it slightly based on what the person behind them says was
+wrong with it. The last person (closest to the answer) points out the
+mistake first; each person before them figures out their own small part of
+the blame, adjusts accordingly, and passes that blame further back. By the
+time the note reaches the front of the line, everyone has updated their
+part — without anyone needing to understand the *whole* chain, just their
+own link in it.
+
+</ForBeginners>
+<ForEngineers>
+
+Backpropagation computes `∂Loss/∂w` for every weight `w` in the network by
+applying the multivariate chain rule from the output layer backward. Each
+layer's local gradient is combined with the gradient already computed for
+the layer *after* it (`∂Loss/∂output_of_this_layer`), so no layer's
+gradient computation needs to "see" further than one layer away — the
+recursive reuse of upstream gradients is what makes one backward pass
+sufficient for a network of any depth.
+
+</ForEngineers>
+</ExplainedTwice>
 
 ## The chain rule, the short version
 

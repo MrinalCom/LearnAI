@@ -73,7 +73,7 @@ export function CourseGrid() {
             .filter((l) => l.moduleId === firstModule?.id)
             .sort((a, b) => a.orderIndex - b.orderIndex)[0];
           const href = firstLesson ? `/docs/courses/${course.slug}/${firstModule.slug}/${firstLesson.slug}` : "/docs";
-          const { icon: Icon, bg, fg } = getCourseMeta(course.slug);
+          const { icon: Icon, bg, fg, level, hours } = getCourseMeta(course.slug);
 
           return (
             <Card key={course.id} className="flex flex-col justify-between">
@@ -87,6 +87,11 @@ export function CourseGrid() {
                   </span>
                 </div>
                 <CardTitle>{course.title}</CardTitle>
+                <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wide text-fd-muted-foreground">
+                  <span className={fg}>{level}</span>
+                  <span aria-hidden>·</span>
+                  <span>{hours}</span>
+                </div>
                 <CardDescription>{course.description}</CardDescription>
               </CardHeader>
               <CardContent>

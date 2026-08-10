@@ -1,0 +1,41 @@
+{
+  "title": "Common Agent Failure Modes Check",
+  "questions": [
+    {
+      "questionText": "What's the most reliable fix for an infinite tool-calling loop?",
+      "questionType": "mcq",
+      "options": [
+        "Hope the model eventually stops on its own",
+        "Set an explicit maximum step count as a hard backstop, and fix the actual stop-condition signal the agent checks",
+        "Remove all tools from the agent",
+        "Increase the model's temperature"
+      ],
+      "correctAnswer": "Set an explicit maximum step count as a hard backstop, and fix the actual stop-condition signal the agent checks",
+      "explanation": "A hard step limit guarantees termination regardless of the agent's own (possibly buggy) reasoning, and fixing the actual stop-condition check addresses the root cause rather than just capping the symptom."
+    },
+    {
+      "questionText": "What's the more robust fix for a model wrapping requested JSON in conversational text?",
+      "questionType": "mcq",
+      "options": [
+        "Always crash the pipeline and alert a human immediately",
+        "Prefer the model's native structured-output/tool-calling mode, which constrains generation so wrapper text can't appear at all",
+        "Ask the user to manually reformat every response",
+        "There is no possible fix for this failure mode"
+      ],
+      "correctAnswer": "Prefer the model's native structured-output/tool-calling mode, which constrains generation so wrapper text can't appear at all",
+      "explanation": "Structured output / tool calling (withStructuredOutput) constrains the model at generation time, which is more robust than defensively parsing free-form text after the fact, though defensive parsing is a reasonable fallback."
+    },
+    {
+      "questionText": "What underlying context engineering technique fixes \"context window collapse\" in a multi-agent pipeline?",
+      "questionType": "mcq",
+      "options": [
+        "Passing every worker's full raw output forward unchanged",
+        "Summarizing or selectively passing forward only each worker's conclusion, and keeping the original question re-stated close to where final generation happens",
+        "Removing all workers except one",
+        "Increasing the number of workers in the pipeline"
+      ],
+      "correctAnswer": "Summarizing or selectively passing forward only each worker's conclusion, and keeping the original question re-stated close to where final generation happens",
+      "explanation": "This directly applies the context engineering lesson's selective-retrieval and attention-placement guidance to prevent the original question from getting buried under accumulated raw worker output."
+    }
+  ]
+}
