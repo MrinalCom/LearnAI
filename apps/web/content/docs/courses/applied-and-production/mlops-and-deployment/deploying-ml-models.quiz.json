@@ -1,0 +1,41 @@
+{
+  "title": "Deploying ML Models Check",
+  "questions": [
+    {
+      "questionText": "What's the difference between batch inference and real-time inference?",
+      "questionType": "mcq",
+      "options": [
+        "They are the same thing with different names",
+        "Batch inference runs predictions on a large input set on a schedule; real-time inference returns a prediction per live request within a strict latency budget",
+        "Batch inference is only used for image models",
+        "Real-time inference cannot use neural networks"
+      ],
+      "correctAnswer": "Batch inference runs predictions on a large input set on a schedule; real-time inference returns a prediction per live request within a strict latency budget",
+      "explanation": "Batch inference fits cases where predictions don't need to be instantaneous (e.g. nightly recommendation precomputation), while real-time inference serves individual requests live, which is what most API endpoints (including LLM chat) require."
+    },
+    {
+      "questionText": "Why is model monitoring specifically important, beyond standard server monitoring?",
+      "questionType": "mcq",
+      "options": [
+        "It isn't important, standard server monitoring covers everything",
+        "A model that's gotten worse usually doesn't throw an error — it just quietly makes worse predictions, which is much easier to miss than a crash",
+        "Model monitoring only tracks server uptime",
+        "Models never degrade once deployed"
+      ],
+      "correctAnswer": "A model that's gotten worse usually doesn't throw an error — it just quietly makes worse predictions, which is much easier to miss than a crash",
+      "explanation": "Data drift and performance degradation are silent failure modes — the system keeps responding normally while the actual quality of predictions declines, which requires dedicated monitoring to catch."
+    },
+    {
+      "questionText": "What is a canary deployment, and why use one for a new model version?",
+      "questionType": "mcq",
+      "options": [
+        "Deploying to 100% of traffic immediately with no testing",
+        "Routing a small fraction of real traffic to the new version first, comparing its live behavior, and rolling out fully only once confirmed to perform well",
+        "A type of data drift detection algorithm",
+        "A method for compressing model file size"
+      ],
+      "correctAnswer": "Routing a small fraction of real traffic to the new version first, comparing its live behavior, and rolling out fully only once confirmed to perform well",
+      "explanation": "Since offline evaluation doesn't always predict real-world behavior perfectly, canary rollouts limit the blast radius of a problematic new version while still testing it against genuine live traffic."
+    }
+  ]
+}

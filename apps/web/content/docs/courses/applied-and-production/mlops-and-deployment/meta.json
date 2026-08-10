@@ -1,0 +1,6 @@
+{
+  "title": "MLOps & Deployment",
+  "description": "A model that only works in a notebook isn't shipped — serving, monitoring, and testing it in production.",
+  "order": 2,
+  "pages": ["deploying-ml-models", "ci-cd-for-ml"]
+}

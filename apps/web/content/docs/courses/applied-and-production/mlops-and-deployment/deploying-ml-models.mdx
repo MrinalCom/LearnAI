@@ -1,0 +1,79 @@
+---
+title: Deploying ML Models
+description: The gap between a working notebook and a reliable production system, and what fills it.
+order: 1
+estimatedMinutes: 18
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="applied-and-production" moduleSlug="mlops-and-deployment" lessonSlug="deploying-ml-models" />
+
+## Overview
+
+Every model built throughout this platform — from the KNN classifier in
+Classical ML through a fine-tuned LLM — eventually faces the same
+question: how does it actually serve real requests, reliably, at whatever
+scale is needed? **MLOps** is the set of practices around answering that,
+distinct from the modeling work itself.
+
+## Serving patterns
+
+- **Batch inference** — run predictions on a large set of inputs on a
+  schedule (nightly, hourly), storing results for later use. Simple, and
+  the right fit when predictions don't need to be instantaneous (e.g.,
+  precomputing recommendations overnight).
+- **Real-time inference** — a live API endpoint that returns a
+  prediction per request, typically with a latency budget measured in
+  milliseconds to low seconds. This is what every route in this
+  platform's own Express API is — a real-time serving pattern, even for
+  non-ML endpoints.
+- **Streaming inference** — process a continuous stream of events as they
+  arrive rather than discrete requests (e.g., fraud detection on a live
+  transaction stream).
+
+Most LLM applications, including this platform's planned tutor, are
+real-time inference with the added wrinkle of response streaming
+(LangGraph fundamentals module) — tokens delivered incrementally rather
+than the full response computed then returned at once.
+
+## Model versioning
+
+Once a model is retrained (new data, a fine-tuning update, a different
+hyperparameter choice), you need a clear answer to "which version is
+currently serving traffic, and can I roll back?" — the same discipline as
+code versioning, applied to model artifacts. This matters more than it
+might seem: a model is a black-box function learned from data, so
+"what changed in this version" isn't visible from a diff the way code
+changes are; version tracking (what data, what hyperparameters, what
+resulting metrics) is often the only record of that.
+
+## Monitoring: models degrade silently
+
+Unlike a crashed server, a model that's gotten *worse* usually doesn't
+throw an error — it just quietly makes worse predictions, which is far
+easier to miss. **Model monitoring** specifically watches for:
+
+- **Data drift** — the distribution of incoming requests changing over
+  time relative to what the model was trained/evaluated on (e.g., a fraud
+  model facing entirely new fraud patterns it never saw in training).
+- **Performance degradation** — tracking real-world outcomes against
+  predictions where possible, to catch accuracy silently dropping.
+- **Latency and error rates** — the more conventional infrastructure
+  monitoring, still very much relevant for anything serving real traffic.
+
+## Rollback and canary deployment
+
+Given that a new model version can look fine in offline evaluation
+(cross-validation, from Classical ML) but still behave unexpectedly on real
+traffic, production ML deployments commonly use a **canary** rollout: route
+a small fraction of real traffic to the new version, compare its live
+behavior against the current version, and only roll out fully once it's
+confirmed to actually perform well — with a fast rollback path if it
+doesn't.
+
+## Check your understanding
+
+<Quiz courseSlug="applied-and-production" moduleSlug="mlops-and-deployment" lessonSlug="deploying-ml-models" />

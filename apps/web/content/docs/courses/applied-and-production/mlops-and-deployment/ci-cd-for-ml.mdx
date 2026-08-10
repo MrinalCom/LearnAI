@@ -1,0 +1,69 @@
+---
+title: CI/CD for ML
+description: Standard software CI/CD tests code. ML systems need to test data and model behavior too.
+order: 2
+estimatedMinutes: 15
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="applied-and-production" moduleSlug="mlops-and-deployment" lessonSlug="ci-cd-for-ml" />
+
+## Overview
+
+Standard software CI/CD runs unit tests and integration tests against code
+changes before merging or deploying. ML systems need everything that
+provides, plus checks that are specific to models and data — a passing
+test suite doesn't guarantee a newly retrained model is actually good.
+
+## What breaks that standard CI/CD doesn't catch
+
+- **Silently bad training data** — a data pipeline bug (a join that drops
+  rows, a schema change upstream, an ETL job that started producing nulls)
+  can produce a model that trains "successfully" — no errors, a clean run —
+  while quietly learning from broken data.
+- **Model regressions with green tests** — code that computes predictions
+  can pass every unit test (correct types, no exceptions) while producing
+  meaningfully worse predictions than the previous model version, since
+  "does this function run without error" and "does this model perform
+  well" are entirely different questions.
+
+## What ML-specific CI adds
+
+- **Data validation** — automated checks on incoming training data:
+  expected schema, reasonable value ranges, no unexpected nulls, roughly
+  expected class balance — catching data pipeline problems before they
+  silently degrade a model trained on them.
+- **Eval-set regression tests** — the eval-set discipline from the NLP/LLM
+  course's evaluation lesson, run automatically: every model or prompt
+  change gets scored against a fixed eval set, and a meaningful score drop
+  blocks deployment the same way a failing unit test would.
+- **Model performance gates** — an explicit minimum bar (accuracy,
+  precision, whatever's relevant to the task) a new model version must
+  clear on held-out data before being eligible to deploy at all.
+
+## Reproducibility
+
+A production ML pipeline should be able to answer, precisely: given this
+exact code version, this exact dataset version, and these exact
+hyperparameters, retraining reproduces the same model. This requires
+**versioning data, not just code** — a training run's results are only as
+reproducible as the ability to point to the exact data it trained on,
+which plain git (built for text/code, not typically large datasets) isn't
+naturally set up to do without additional tooling.
+
+## Putting it together
+
+A mature ML CI/CD pipeline for something like this platform's tutor might:
+run standard code tests on every change, validate any updated training/eval
+data against expected schema, run the eval-set regression check from the
+NLP/LLM course automatically, and require passing a performance gate before
+a new prompt or retrieved-content change can deploy — treating model
+quality as a first-class thing to test, not something checked manually and
+occasionally.
+
+## Check your understanding
+
+<Quiz courseSlug="applied-and-production" moduleSlug="mlops-and-deployment" lessonSlug="ci-cd-for-ml" />

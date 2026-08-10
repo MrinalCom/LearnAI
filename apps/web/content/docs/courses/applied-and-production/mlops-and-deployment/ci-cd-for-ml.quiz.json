@@ -1,0 +1,41 @@
+{
+  "title": "CI/CD for ML Check",
+  "questions": [
+    {
+      "questionText": "Why can a model regression happen even when all standard unit tests pass?",
+      "questionType": "mcq",
+      "options": [
+        "It can't happen if unit tests pass",
+        "Unit tests typically check code correctness (types, no exceptions), which is a different question from whether the model's actual predictions are good",
+        "Unit tests always catch model quality issues",
+        "Model regressions only happen in untested code"
+      ],
+      "correctAnswer": "Unit tests typically check code correctness (types, no exceptions), which is a different question from whether the model's actual predictions are good",
+      "explanation": "Code can run perfectly (no errors, correct types) while producing meaningfully worse predictions than before — which is why ML pipelines need model-specific evaluation checks beyond standard unit tests."
+    },
+    {
+      "questionText": "What does an eval-set regression test in ML CI/CD actually check?",
+      "questionType": "mcq",
+      "options": [
+        "That the code compiles without syntax errors",
+        "That every model or prompt change is automatically scored against a fixed eval set, blocking deployment if the score drops meaningfully",
+        "That the training data file exists on disk",
+        "That the deployment server is reachable"
+      ],
+      "correctAnswer": "That every model or prompt change is automatically scored against a fixed eval set, blocking deployment if the score drops meaningfully",
+      "explanation": "This automates the eval-set discipline from the NLP/LLM course's evaluation lesson, treating a meaningful score drop the same way a failing unit test would be treated — as a deployment blocker."
+    },
+    {
+      "questionText": "Why does ML reproducibility require versioning data, not just code?",
+      "questionType": "mcq",
+      "options": [
+        "It doesn't, code versioning alone is always sufficient",
+        "A model's results depend on the exact dataset it trained on, and plain code versioning tools aren't naturally set up to track large dataset versions",
+        "Data versioning is only needed for image datasets",
+        "Reproducibility is impossible in ML regardless of versioning"
+      ],
+      "correctAnswer": "A model's results depend on the exact dataset it trained on, and plain code versioning tools aren't naturally set up to track large dataset versions",
+      "explanation": "Since a model is a function of both code and the specific data it was trained on, truly reproducing a training run requires being able to point to the exact data version used, which needs dedicated tooling beyond typical code-focused version control."
+    }
+  ]
+}
