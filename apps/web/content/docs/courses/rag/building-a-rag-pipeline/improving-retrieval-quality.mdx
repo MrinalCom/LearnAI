@@ -1,0 +1,72 @@
+---
+title: Improving Retrieval Quality
+description: Plain vector search isn't the ceiling — re-ranking, hybrid search, and diversity all improve on it.
+order: 2
+estimatedMinutes: 18
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="rag" moduleSlug="building-a-rag-pipeline" lessonSlug="improving-retrieval-quality" />
+
+## Overview
+
+Plain vector similarity search (previous lesson) is a strong baseline, but
+it has real, specific weaknesses. Each technique in this lesson addresses
+one of them directly, and production RAG systems typically combine several.
+
+## Weakness 1: semantic search can miss exact matches
+
+Embeddings capture meaning well but can under-weight exact keyword or
+identifier matches — a query containing a specific error code, product
+SKU, or function name might semantically resemble many chunks without any
+of them containing that literal string. **Hybrid search** runs both a
+traditional keyword search (like the fuzzy string matching you'd get from
+a search library, unrelated to embeddings entirely) and a vector similarity
+search, then combines both rankings — catching both "means something
+similar" and "contains this literal term" matches.
+
+## Weakness 2: initial retrieval and true relevance aren't identical
+
+Vector similarity is a fast, approximate proxy for relevance, not a
+perfect measure of it. **Re-ranking** adds a second, more expensive but
+more accurate pass: retrieve a larger initial set with fast vector search
+(e.g., top 50), then use a slower, more precise model to re-score just
+those 50 candidates against the actual query, keeping only the true top-k
+(e.g., top 5) to pass to generation. This two-stage "retrieve broad, then
+rerank precisely" pattern trades a bit of latency for meaningfully better
+final relevance, since the expensive step only ever runs on a small
+shortlist instead of the entire collection.
+
+## Weakness 3: top-k results can be redundant
+
+If the top 5 highest-similarity chunks all say nearly the same thing (five
+paraphrases of one fact), you've spent your context budget without
+actually covering the query's full information need. **Maximal Marginal
+Relevance (MMR)** re-ranks retrieved candidates to explicitly balance
+relevance *and* diversity — penalizing a candidate for being too similar to
+chunks already selected, so the final set covers more distinct ground
+instead of five near-duplicates.
+
+## Weakness 4: a single query embedding may not cover the real question
+
+Complex questions sometimes need multiple, different pieces of
+information that a single query embedding doesn't capture well.
+**Query decomposition** — using the LLM itself to break a complex question
+into several simpler sub-queries, retrieving separately for each, then
+combining the results — can substantially improve coverage for
+multi-part questions, at the cost of extra LLM calls and latency.
+
+## Putting several together
+
+A realistic production pipeline might: run hybrid search to get a broad
+initial candidate set, re-rank that set for precision, then apply MMR for
+diversity before finally handing the result to generation — each stage
+targeting a different specific failure mode of plain vector search, not
+redundant with the others.
+
+## Check your understanding
+
+<Quiz courseSlug="rag" moduleSlug="building-a-rag-pipeline" lessonSlug="improving-retrieval-quality" />

@@ -1,0 +1,95 @@
+---
+title: Vector Search & Retrieval
+description: Finding the k most relevant chunks for a query, and how that search stays fast at scale.
+order: 1
+estimatedMinutes: 20
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="rag" moduleSlug="building-a-rag-pipeline" lessonSlug="vector-search-and-retrieval" />
+
+## Overview
+
+With documents chunked (previous lesson) and each chunk embedded (NLP/LLM
+course), retrieval becomes a direct application of the embeddings lesson's
+cosine similarity: embed the incoming query the same way, compare it
+against every stored chunk embedding, and return the top-k most similar.
+
+## The naive approach: brute-force search
+
+```
+for each stored chunk embedding:
+    compute cosine_similarity(query_embedding, chunk_embedding)
+sort by similarity, descending
+return top k
+```
+
+This is exactly correct, and for a few thousand chunks (roughly this
+platform's own curriculum size), it's also fast enough to not need
+anything cleverer — brute force over a few thousand vectors takes
+milliseconds.
+
+## Why brute force stops working at scale
+
+Comparing a query against *every* stored vector is `O(n)` — fine at
+thousands of chunks, but a real production system might store millions.
+**Approximate Nearest Neighbor (ANN)** algorithms trade a small amount of
+retrieval accuracy for dramatically better speed at scale, using index
+structures (like HNSW — Hierarchical Navigable Small World graphs) that
+avoid comparing against every single stored vector. This project's own
+database schema uses exactly this: `pgvector`'s HNSW index on the
+`content_chunks` table, so the tradeoff described here isn't abstract —
+it's the actual index type backing this platform's planned tutor feature.
+
+## In real code: brute-force search, from scratch
+
+<PyodidePlayground initialCode={`import numpy as np
+
+def cosine_similarity(a, b):
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+# Simulated chunk embeddings (in a real pipeline, these come from an embedding model).
+chunks = {
+    "KNN classifies by majority vote among the k nearest labeled points.": [0.9, 0.1, 0.2],
+    "Random forests average many decorrelated decision trees.":            [0.85, 0.15, 0.25],
+    "LangGraph models an agent as an explicit graph of nodes and edges.":  [0.1, 0.9, 0.3],
+    "Attention lets every token directly relate to every other token.":     [0.15, 0.85, 0.35],
+}
+
+def retrieve(query_embedding, chunks, k=2):
+    scored = [(text, cosine_similarity(query_embedding, np.array(emb))) for text, emb in chunks.items()]
+    scored.sort(key=lambda pair: pair[1], reverse=True)
+    return scored[:k]
+
+# A query about classical ML should score highest against the KNN/forest chunks.
+query_embedding = np.array([0.88, 0.12, 0.22])
+
+print("Top-2 retrieved chunks:")
+for text, score in retrieve(query_embedding, chunks, k=2):
+    print(f"  [{score:.3f}] {text}")
+`}
+/>
+
+This is a complete, correct RAG retrieval step — a real system just swaps
+the hand-crafted embeddings for real ones from an embedding model, and
+brute-force comparison for an ANN index once the chunk count grows large
+enough to matter.
+
+## Choosing k, and setting a similarity floor
+
+Retrieving too few chunks (`k` too small) risks missing genuinely relevant
+information; retrieving too many wastes context budget on marginally
+relevant material (context engineering, previous course) and can actively
+distract the model with irrelevant text. Many pipelines also apply a
+minimum similarity threshold — if even the *best* match scores below it,
+that's a signal the knowledge base genuinely doesn't contain a good answer,
+which the generation step should be told explicitly rather than being
+handed a barely-relevant chunk to work with anyway.
+
+## Check your understanding
+
+<Quiz courseSlug="rag" moduleSlug="building-a-rag-pipeline" lessonSlug="vector-search-and-retrieval" />

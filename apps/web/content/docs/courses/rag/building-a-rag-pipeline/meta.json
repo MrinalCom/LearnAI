@@ -1,0 +1,6 @@
+{
+  "title": "Building a RAG Pipeline",
+  "description": "From a query to the right chunks: vector search, and techniques for improving what gets retrieved.",
+  "order": 2,
+  "pages": ["vector-search-and-retrieval", "improving-retrieval-quality"]
+}

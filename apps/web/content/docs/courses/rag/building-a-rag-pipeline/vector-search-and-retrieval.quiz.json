@@ -1,0 +1,41 @@
+{
+  "title": "Vector Search & Retrieval Check",
+  "questions": [
+    {
+      "questionText": "What does brute-force vector search actually do?",
+      "questionType": "mcq",
+      "options": [
+        "It randomly samples a few chunks and returns them",
+        "It compares the query embedding against every stored chunk embedding, then returns the top-k most similar",
+        "It only compares against the single most recently added chunk",
+        "It retrains the embedding model for each query"
+      ],
+      "correctAnswer": "It compares the query embedding against every stored chunk embedding, then returns the top-k most similar",
+      "explanation": "Brute-force search is exactly the direct application of cosine similarity from the embeddings lesson, applied against every stored vector, then sorted and truncated to the top-k."
+    },
+    {
+      "questionText": "Why does brute-force search stop being practical at very large scale (millions of vectors)?",
+      "questionType": "mcq",
+      "options": [
+        "It doesn't, brute force scales infinitely with no cost",
+        "It's O(n) in the number of stored vectors, so comparing against every single one becomes too slow as the collection grows very large",
+        "Brute-force search only works with fewer than 10 vectors",
+        "It requires retraining the embeddings for each new query"
+      ],
+      "correctAnswer": "It's O(n) in the number of stored vectors, so comparing against every single one becomes too slow as the collection grows very large",
+      "explanation": "At thousands of vectors, O(n) brute force is fast enough; at millions, comparing against every single one becomes a real bottleneck, motivating ANN index structures like HNSW."
+    },
+    {
+      "questionText": "Why might a RAG pipeline apply a minimum similarity threshold, rejecting a query if even the best match scores too low?",
+      "questionType": "mcq",
+      "options": [
+        "To make retrieval run faster",
+        "A low best-match score signals the knowledge base likely doesn't contain a good answer, which should be surfaced explicitly rather than handing the model a barely-relevant chunk",
+        "Thresholds are only used to save storage space",
+        "It has no real purpose, it's just a convention"
+      ],
+      "correctAnswer": "A low best-match score signals the knowledge base likely doesn't contain a good answer, which should be surfaced explicitly rather than handing the model a barely-relevant chunk",
+      "explanation": "Without a threshold, a query with no good match in the knowledge base still gets handed whatever chunks scored highest (even if weakly relevant), which can mislead the generation step into using irrelevant context."
+    }
+  ]
+}

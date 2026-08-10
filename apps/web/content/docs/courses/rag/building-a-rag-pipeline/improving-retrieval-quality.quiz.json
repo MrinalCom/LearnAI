@@ -1,0 +1,41 @@
+{
+  "title": "Improving Retrieval Quality Check",
+  "questions": [
+    {
+      "questionText": "What problem does hybrid search address?",
+      "questionType": "mcq",
+      "options": [
+        "It makes vector search run faster",
+        "Pure semantic search can under-weight exact keyword/identifier matches, so combining it with traditional keyword search catches both kinds of relevance",
+        "It removes the need for chunking",
+        "It only matters for very short documents"
+      ],
+      "correctAnswer": "Pure semantic search can under-weight exact keyword/identifier matches, so combining it with traditional keyword search catches both kinds of relevance",
+      "explanation": "A query containing a specific error code or identifier might not be semantically distinctive, so combining keyword search with vector search catches cases embeddings alone might miss."
+    },
+    {
+      "questionText": "How does re-ranking typically work in a two-stage retrieval pipeline?",
+      "questionType": "mcq",
+      "options": [
+        "It replaces vector search entirely with a single expensive pass over the whole collection",
+        "Retrieve a larger candidate set quickly with vector search, then apply a slower, more precise model to re-score just that shortlist",
+        "It randomly shuffles the retrieved results",
+        "It only re-ranks results after they've already been shown to the user"
+      ],
+      "correctAnswer": "Retrieve a larger candidate set quickly with vector search, then apply a slower, more precise model to re-score just that shortlist",
+      "explanation": "Running the expensive, more accurate scoring model only on a small shortlist (rather than the whole collection) keeps the two-stage approach both fast and precise."
+    },
+    {
+      "questionText": "What problem does Maximal Marginal Relevance (MMR) solve?",
+      "questionType": "mcq",
+      "options": [
+        "It speeds up the embedding computation",
+        "Top-k results by pure similarity can be redundant (near-duplicates); MMR balances relevance with diversity to cover more distinct information",
+        "It removes the need for a similarity threshold",
+        "It only applies to keyword search, not vector search"
+      ],
+      "correctAnswer": "Top-k results by pure similarity can be redundant (near-duplicates); MMR balances relevance with diversity to cover more distinct information",
+      "explanation": "Without a diversity mechanism, the highest-similarity chunks can all restate the same fact; MMR penalizes redundancy with already-selected results to spread coverage across more of the actual information need."
+    }
+  ]
+}
