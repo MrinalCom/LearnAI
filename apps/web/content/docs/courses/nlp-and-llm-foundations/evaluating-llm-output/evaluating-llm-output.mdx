@@ -1,0 +1,86 @@
+---
+title: Evaluating LLM Output
+description: The Classical ML course had precision, recall, and F1. What replaces them when the output is free-form text?
+order: 1
+estimatedMinutes: 18
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="nlp-and-llm-foundations" moduleSlug="evaluating-llm-output" lessonSlug="evaluating-llm-output" />
+
+## Overview
+
+The Classical ML course's evaluation metrics (precision, recall, F1,
+ROC-AUC) all assume a well-defined "correct answer" you can check a
+prediction against. Free-form LLM output rarely has one — there are many
+valid ways to phrase a good summary, and "is this response helpful and
+accurate" doesn't reduce to a simple equality check. Evaluating LLM
+applications needs different tools.
+
+## Hallucination: the central failure mode
+
+**Hallucination** — a model generating plausible-sounding but false or
+unsupported information — traces directly back to the training process
+lesson earlier in this module: a next-token predictor trained to always
+continue plausibly will do exactly that, confident-sounding text, even
+when it doesn't actually know the answer, unless something specifically
+counteracts that tendency. This is why RAG (next course) matters as much
+for *trustworthiness* as for giving models access to new information — a
+model instructed to answer only from retrieved, verifiable context has
+much less room to hallucinate than one answering from parametric memory
+alone.
+
+## LLM-as-judge: using a model to evaluate a model
+
+A common practical technique: have a (usually more capable, or simply a
+separate) LLM evaluate another model's output against criteria you specify
+— correctness, tone, whether it followed instructions, whether it's
+grounded in provided context. This scales far better than having a human
+read every output, but it isn't free of problems:
+
+- **Judge models have their own biases** — a well-documented one is
+  favoring longer responses, or responses stylistically similar to their
+  own default output, independent of actual quality.
+- **The judge needs a clear, specific rubric** — "is this response good?"
+  is as underspecified a question for a judge model as it is for a human
+  reviewer without clear criteria; "does this response accurately
+  reflect the provided context, and does it directly answer the question
+  asked?" gives the judge something concrete to check.
+- **Judge results should be spot-checked against human judgment**
+  periodically, not trusted blindly forever — the same way you'd validate
+  any evaluation methodology.
+
+## Building a real eval set
+
+The Classical ML course's train/test/cross-validation discipline has a
+direct analog here: a good LLM eval is a **fixed set of representative test
+cases** (real or realistic queries, ideally including known edge cases and
+past failure modes) that you can run any prompt or model change against
+consistently — turning "does this change feel better?" (an unreliable,
+easily-biased judgment) into "did the pass rate on my eval set go up or
+down?" (a measurable, comparable one). Without this, it's very easy to
+convince yourself a prompt change helped based on one or two cherry-picked
+examples that happened to look better.
+
+## What to actually measure
+
+Depending on the application, useful signals include:
+
+- **Faithfulness/groundedness** — for RAG specifically: does the response
+  only claim things actually supported by the retrieved context?
+- **Task completion** — for agents: did the agent actually accomplish
+  what was asked, verified against a real outcome, not just "did it sound
+  confident"?
+- **Structured output validity** — for anything using tools/schemas
+  (Agentic AI course): does the output actually parse and validate against
+  the expected schema?
+- **Human preference sampling** — periodically having real humans compare
+  outputs remains the most reliable signal, even if it doesn't scale to
+  every single change.
+
+## Check your understanding
+
+<Quiz courseSlug="nlp-and-llm-foundations" moduleSlug="evaluating-llm-output" lessonSlug="evaluating-llm-output" />

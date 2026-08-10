@@ -1,0 +1,41 @@
+{
+  "title": "Evaluating LLM Output Check",
+  "questions": [
+    {
+      "questionText": "Why don't precision/recall/F1 from the Classical ML course directly apply to evaluating most LLM output?",
+      "questionType": "mcq",
+      "options": [
+        "They apply exactly the same way, no changes needed",
+        "Free-form text usually has no single well-defined \"correct answer\" to check equality against, unlike a classification label",
+        "LLMs never produce text that can be evaluated at all",
+        "Those metrics only work for regression tasks"
+      ],
+      "correctAnswer": "Free-form text usually has no single well-defined \"correct answer\" to check equality against, unlike a classification label",
+      "explanation": "Classification metrics assume a fixed correct label to compare against; free-form generation (summaries, explanations, conversation) typically has many valid phrasings, so different evaluation approaches are needed."
+    },
+    {
+      "questionText": "What is a known risk of using LLM-as-judge for evaluation?",
+      "questionType": "mcq",
+      "options": [
+        "It's completely unbiased and needs no validation",
+        "Judge models have their own biases (e.g. favoring longer or stylistically familiar responses) and need clear rubrics plus periodic human spot-checks",
+        "It can only be used for code generation tasks",
+        "It requires no criteria or rubric to work well"
+      ],
+      "correctAnswer": "Judge models have their own biases (e.g. favoring longer or stylistically familiar responses) and need clear rubrics plus periodic human spot-checks",
+      "explanation": "LLM judges scale evaluation well but aren't a free pass — they need specific criteria to check against and should be periodically validated against actual human judgment."
+    },
+    {
+      "questionText": "Why is a fixed eval set of representative test cases more reliable than judging \"does this prompt change feel better\" informally?",
+      "questionType": "mcq",
+      "options": [
+        "It isn't more reliable, informal judgment is just as good",
+        "It turns an easily-biased subjective impression into a measurable, comparable pass rate across consistent test cases, avoiding cherry-picked examples",
+        "Eval sets remove the need for any evaluation criteria",
+        "Eval sets only work for classification models, not LLMs"
+      ],
+      "correctAnswer": "It turns an easily-biased subjective impression into a measurable, comparable pass rate across consistent test cases, avoiding cherry-picked examples",
+      "explanation": "This mirrors the Classical ML course's train/test discipline: a consistent, fixed evaluation set makes it possible to objectively compare changes instead of relying on a potentially biased spot-check of a few examples."
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "title": "Evaluating LLM Output",
+  "description": "There's no accuracy score for \"good writing\" — how do you actually measure whether an LLM application works?",
+  "order": 4,
+  "pages": ["evaluating-llm-output"]
+}
