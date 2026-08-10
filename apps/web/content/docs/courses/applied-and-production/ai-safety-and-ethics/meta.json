@@ -1,0 +1,6 @@
+{
+  "title": "AI Safety & Ethics",
+  "description": "Bias, security, and the practical responsibilities that come with deploying a model that real people rely on.",
+  "order": 3,
+  "pages": ["bias-and-fairness", "prompt-injection-and-jailbreaks", "responsible-ai-deployment"]
+}

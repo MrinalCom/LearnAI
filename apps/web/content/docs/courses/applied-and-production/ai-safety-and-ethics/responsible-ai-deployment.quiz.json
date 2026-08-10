@@ -1,0 +1,41 @@
+{
+  "title": "Responsible AI Deployment Check",
+  "questions": [
+    {
+      "questionText": "What principle determines how much human oversight an AI system's action should have, according to this lesson?",
+      "questionType": "mcq",
+      "options": [
+        "Every single action should always require human approval, with no exceptions",
+        "The level of automation should match the reversibility and blast radius of the action — read-only actions can run autonomously, consequential ones need proportional human oversight",
+        "Human oversight is only needed for actions involving money",
+        "No AI system should ever have human oversight, it defeats the purpose of automation"
+      ],
+      "correctAnswer": "The level of automation should match the reversibility and blast radius of the action — read-only actions can run autonomously, consequential ones need proportional human oversight",
+      "explanation": "This proportional approach — matching oversight to how hard an action would be to undo and how much damage it could cause — is the throughline from the Agentic AI course's human-in-the-loop lesson and this project's own operating guidelines."
+    },
+    {
+      "questionText": "Why is evaluation described as an \"ongoing practice\" rather than a one-time pre-launch check?",
+      "questionType": "mcq",
+      "options": [
+        "Because evaluation is only useful before the very first launch",
+        "Because a model/prompt that worked well when last checked isn't guaranteed to keep working as data drifts, usage shifts, or upstream dependencies change",
+        "Ongoing evaluation is unnecessary once a system passes its initial eval set",
+        "Evaluation only matters for classification models, not LLMs"
+      ],
+      "correctAnswer": "Because a model/prompt that worked well when last checked isn't guaranteed to keep working as data drifts, usage shifts, or upstream dependencies change",
+      "explanation": "This connects the MLOps monitoring lesson's point about silent degradation with the NLP/LLM course's eval-set discipline — quality can erode over time even without any code change, so evaluation needs to be continuous."
+    },
+    {
+      "questionText": "Why does the responsible-deployment checklist recommend starting from the simplest adequate approach (e.g. prompting before fine-tuning)?",
+      "questionType": "mcq",
+      "options": [
+        "Simpler approaches always produce better raw performance",
+        "Simpler systems are easier to evaluate, secure, and reason about, which matters directly for responsible deployment, not just cost",
+        "Complex approaches are illegal to deploy",
+        "There is no reason, complexity should always be preferred"
+      ],
+      "correctAnswer": "Simpler systems are easier to evaluate, secure, and reason about, which matters directly for responsible deployment, not just cost",
+      "explanation": "Beyond the cost argument from the fine-tuning lesson, simpler systems are more tractable to evaluate thoroughly and reason about for safety, which is itself a responsible-deployment consideration."
+    }
+  ]
+}

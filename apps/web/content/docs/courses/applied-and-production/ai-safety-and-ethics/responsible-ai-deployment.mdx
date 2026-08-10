@@ -1,0 +1,91 @@
+---
+title: Responsible AI Deployment
+description: Closing this platform's curriculum — bringing every safety, evaluation, and oversight thread together.
+order: 3
+estimatedMinutes: 18
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="applied-and-production" moduleSlug="ai-safety-and-ethics" lessonSlug="responsible-ai-deployment" />
+
+## Overview
+
+This is the final lesson of this platform's curriculum. Rather than
+introducing new material, it pulls together the safety-relevant threads
+that have run through every course — hallucination, bias, evaluation,
+security, oversight — into one closing framework for actually shipping an
+AI system responsibly.
+
+## Hallucination mitigation, revisited
+
+The NLP/LLM course's evaluation lesson explained *why* hallucination
+happens (a next-token predictor trained to always continue plausibly).
+The practical mitigations threaded through the courses since:
+
+- **RAG** (RAG course) — ground answers in retrieved, verifiable context
+  rather than relying on parametric memory alone.
+- **Corrective RAG** (RAG course) — explicitly check retrieved context is
+  actually sufficient before generating, rather than answering from weak
+  matches.
+- **Structured output validation** (Agentic AI course) — for anything
+  that needs to be machine-parseable, schema validation catches malformed
+  output before it propagates further.
+- **Explicit uncertainty instructions** — prompting the model to say "I
+  don't know" or "the provided context doesn't cover this" rather than
+  guessing, and evaluating whether it actually does this (LLM-as-judge,
+  NLP/LLM course).
+
+## Human oversight, revisited
+
+The Agentic AI course's human-in-the-loop lesson is the sharpest version
+of a theme present since this project's very own operating instructions
+(quoted directly in that lesson): match the level of automation to the
+reversibility and blast radius of the action. Read-only actions can run
+autonomously; anything with real consequences — sending something,
+spending something, deleting something — should have a human in the loop,
+proportional to how hard that action would be to undo.
+
+## Evaluation as an ongoing practice, not a one-time check
+
+The NLP/LLM course's eval-set discipline and this module's CI/CD lesson
+both point at the same underlying idea: a model or prompt that worked well
+when you last checked isn't guaranteed to keep working well as data drifts,
+as usage patterns shift, or as dependencies (an underlying model version)
+change upstream. Responsible deployment means evaluation is a continuous
+practice built into the system, not a one-time gate passed before initial
+launch and never revisited.
+
+## A framework for shipping responsibly
+
+Pulling this into one practical checklist, drawing on every course in this
+curriculum:
+
+1. **Start from the simplest adequate approach** — prompt engineering
+   before RAG, RAG before fine-tuning (Applied/Production course) — since
+   simpler systems are easier to evaluate, secure, and reason about.
+2. **Ground claims in verifiable sources** where the application allows it
+   (RAG course), and have the system say so explicitly when it can't.
+3. **Evaluate on a real, representative eval set** before shipping, and
+   keep re-running it as the system evolves (NLP/LLM course, this module).
+4. **Check for bias across the specific subgroups that matter** for your
+   application, not just aggregate performance (this module).
+5. **Treat all external/untrusted content as potentially adversarial**
+   (this module) and scope tool permissions to only what's genuinely
+   needed (Agentic AI course).
+6. **Put a human in the loop proportional to the stakes** of what the
+   system can actually do (Agentic AI course).
+7. **Monitor after deployment**, not just before it (this module) — data
+   drift and silent degradation are real, ongoing risks, not one-time
+   launch concerns.
+
+None of this is exotic or separate from the technical material in the rest
+of this platform — it's the same engineering discipline (evaluation,
+testing, monitoring, appropriate caution) applied specifically to the ways
+AI systems fail that traditional software mostly doesn't.
+
+## Check your understanding
+
+<Quiz courseSlug="applied-and-production" moduleSlug="ai-safety-and-ethics" lessonSlug="responsible-ai-deployment" />

@@ -1,0 +1,41 @@
+{
+  "title": "Prompt Injection & Jailbreaks Check",
+  "questions": [
+    {
+      "questionText": "What is the fundamental cause of prompt injection being possible?",
+      "questionType": "mcq",
+      "options": [
+        "A bug specific to one particular model provider",
+        "LLMs read instructions and data through the same channel (plain text), so there's no hard structural boundary preventing data from being interpreted as an instruction",
+        "It only happens when using outdated models",
+        "It's caused by using too high a temperature setting"
+      ],
+      "correctAnswer": "LLMs read instructions and data through the same channel (plain text), so there's no hard structural boundary preventing data from being interpreted as an instruction",
+      "explanation": "Unlike traditional software where code and data can be structurally separated (e.g. parameterized SQL queries), an LLM processes both instructions and external content as the same kind of text, with no equivalently clean separation available."
+    },
+    {
+      "questionText": "How does prompt injection differ from jailbreaking?",
+      "questionType": "mcq",
+      "options": [
+        "They are exactly the same technique",
+        "Prompt injection hijacks behavior via untrusted external content inserted into a prompt; jailbreaking crafts the prompt itself to work around the model's own trained-in safety refusals",
+        "Jailbreaking only targets image models",
+        "Prompt injection requires physical access to the server"
+      ],
+      "correctAnswer": "Prompt injection hijacks behavior via untrusted external content inserted into a prompt; jailbreaking crafts the prompt itself to work around the model's own trained-in safety refusals",
+      "explanation": "Prompt injection exploits external content (documents, tool results) being treated as instructions; jailbreaking is about the prompt itself trying to circumvent RLHF-trained refusal behavior."
+    },
+    {
+      "questionText": "Why is human-in-the-loop approval described as a practical mitigation for prompt injection risk?",
+      "questionType": "mcq",
+      "options": [
+        "It prevents prompt injection from ever occurring",
+        "Even a successfully injected instruction can't cause real damage if any action with real-world side effects requires explicit human confirmation first",
+        "It only applies to text summarization tasks",
+        "It replaces the need for least-privilege tool access"
+      ],
+      "correctAnswer": "Even a successfully injected instruction can't cause real damage if any action with real-world side effects requires explicit human confirmation first",
+      "explanation": "Since prompt injection can't be fully prevented at the model level, requiring human approval for consequential actions limits the actual damage an injected instruction could cause, even if the injection itself succeeds."
+    }
+  ]
+}

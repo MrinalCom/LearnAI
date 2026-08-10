@@ -1,0 +1,41 @@
+{
+  "title": "Bias & Fairness Check",
+  "questions": [
+    {
+      "questionText": "Why can a model reproduce bias even without anyone intentionally building a biased system?",
+      "questionType": "mcq",
+      "options": [
+        "Bias only ever comes from intentional design choices",
+        "Training data reflects real-world patterns (including historical, representation, and measurement biases), which the model faithfully learns from",
+        "Models are incapable of learning bias",
+        "Bias only affects image models, never text or tabular data"
+      ],
+      "correctAnswer": "Training data reflects real-world patterns (including historical, representation, and measurement biases), which the model faithfully learns from",
+      "explanation": "Historical, representation, and measurement biases can all be present in data reflecting real-world inequities, and a model trained on that data learns those patterns regardless of anyone's intent."
+    },
+    {
+      "questionText": "Why is there no single agreed-upon definition of \"fairness\" for a model?",
+      "questionType": "mcq",
+      "options": [
+        "There actually is one universal definition everyone uses",
+        "Multiple mathematically valid fairness definitions (demographic parity, equalized odds, individual fairness) can be mutually incompatible, so choosing which matters most is an application-specific judgment call",
+        "Fairness cannot be measured mathematically at all",
+        "Fairness only applies to classification models"
+      ],
+      "correctAnswer": "Multiple mathematically valid fairness definitions (demographic parity, equalized odds, individual fairness) can be mutually incompatible, so choosing which matters most is an application-specific judgment call",
+      "explanation": "It's mathematically proven that these definitions generally can't all be satisfied simultaneously except in special cases, making the choice of which to prioritize a genuine, context-dependent decision."
+    },
+    {
+      "questionText": "Why is evaluating a model's metrics per subgroup important, rather than just checking aggregate accuracy?",
+      "questionType": "mcq",
+      "options": [
+        "It isn't important, aggregate metrics always tell the full story",
+        "Strong overall accuracy can mask a large, hidden accuracy gap for a specific subgroup that aggregate numbers completely hide",
+        "Subgroup evaluation is only relevant for image classification",
+        "It's purely a legal requirement with no technical justification"
+      ],
+      "correctAnswer": "Strong overall accuracy can mask a large, hidden accuracy gap for a specific subgroup that aggregate numbers completely hide",
+      "explanation": "A model can perform very well on average while performing much worse for a specific subgroup — a disparity invisible unless metrics are broken out per group rather than only evaluated in aggregate."
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+---
+title: Bias & Fairness
+description: A model trained on biased data reliably reproduces (and can amplify) that bias — this isn't a hypothetical risk.
+order: 1
+estimatedMinutes: 18
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="applied-and-production" moduleSlug="ai-safety-and-ethics" lessonSlug="bias-and-fairness" />
+
+## Overview
+
+Every model on this platform, from Classical ML's logistic regression
+onward, learns patterns from training data — including whatever biases
+exist in that data. This isn't a niche edge case: a hiring model trained on
+historical hiring decisions learns whatever bias existed in *those*
+decisions; a language model trained on internet text learns whatever
+skewed representations exist across the internet. Understanding where this
+comes from and how to measure it is a practical engineering responsibility,
+not just an abstract ethical concern.
+
+## Where bias actually enters a system
+
+- **Historical bias** — training data reflects real historical patterns
+  that were themselves unfair (e.g., a hiring dataset reflecting decades
+  of biased hiring decisions faithfully teaches a model to make similarly
+  biased decisions).
+- **Representation bias** — some groups are underrepresented in training
+  data relative to the population the model will actually serve, so the
+  model has proportionally less signal to learn accurate patterns for
+  them.
+- **Measurement bias** — the labels themselves can encode bias (e.g., an
+  imperfect proxy for the real target, applied inconsistently across
+  groups).
+
+None of these require anyone to have intentionally built a biased system —
+they emerge from data reflecting the world (and its existing inequities)
+as it actually is, which is exactly why deliberate measurement and
+mitigation are necessary rather than optional.
+
+## Measuring fairness: there's no single definition
+
+Multiple, mathematically incompatible definitions of "fair" exist, which is
+part of why this is hard rather than a simple checkbox:
+
+- **Demographic parity** — the model's positive prediction rate should be
+  equal across groups.
+- **Equalized odds** — the model's true positive rate and false positive
+  rate should be equal across groups (connects directly to the Classical
+  ML course's precision/recall metrics, evaluated separately per group
+  rather than in aggregate).
+- **Individual fairness** — similar individuals should receive similar
+  predictions, regardless of group membership.
+
+It's mathematically proven that you generally *cannot* satisfy all of these
+simultaneously except in special cases — choosing which fairness
+definition matters most is a genuine judgment call specific to the
+application, not something a formula settles for you.
+
+## Practical mitigation
+
+- **Audit training data composition** before training, not after
+  deployment — check representation across the groups that matter for your
+  application.
+- **Evaluate metrics per subgroup**, not just in aggregate — a model with
+  strong overall accuracy can still have a large, hidden accuracy gap for
+  a specific subgroup that aggregate numbers completely mask.
+- **Involve people with domain and ethics expertise** in defining what
+  fairness means for your specific application — this isn't a purely
+  technical decision a model architecture choice can resolve on its own.
+
+## Check your understanding
+
+<Quiz courseSlug="applied-and-production" moduleSlug="ai-safety-and-ethics" lessonSlug="bias-and-fairness" />
