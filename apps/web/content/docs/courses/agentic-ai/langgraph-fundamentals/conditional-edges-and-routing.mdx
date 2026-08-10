@@ -1,0 +1,86 @@
+---
+title: Conditional Edges & Routing
+description: Branching a graph on the current state — the mechanism behind every non-trivial agent decision.
+order: 2
+estimatedMinutes: 15
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="agentic-ai" moduleSlug="langgraph-fundamentals" lessonSlug="conditional-edges-and-routing" />
+
+## Overview
+
+The previous lesson's graph had exactly one decision point: after the agent
+node, either call a tool or finish. Real applications usually need more —
+routing to *different* specialized paths depending on what's actually
+going on. Conditional edges are the single mechanism LangGraph gives you
+for all of this branching.
+
+## The shape of a conditional edge
+
+A conditional edge is just a function of the current state that returns the
+name of the next node:
+
+```ts
+function route(state: typeof MessagesAnnotation.State): string {
+  const lastMessage = state.messages.at(-1);
+
+  if (lastMessage?.tool_calls?.length) return "tools";
+  if (state.messages.length > 20) return "summarize"; // conversation getting long
+  return END;
+}
+
+graph.addConditionalEdges("agent", route, {
+  tools: "tools",
+  summarize: "summarize",
+  [END]: END,
+});
+```
+
+The mapping object (`{ tools: "tools", ... }`) tells LangGraph which actual
+node names correspond to which string your routing function might return —
+this indirection is what lets you reuse the same routing function across
+graphs with differently-named nodes.
+
+## A common real pattern: intent classification
+
+A frequent use of conditional edges is routing a user's message to one of
+several specialized paths based on what kind of request it is — the same
+underlying idea as this site's own tutor design (a `classifyIntent` node
+routing to Q&A vs. quiz-generation modes, described in this project's own
+architecture):
+
+```ts
+async function classifyIntent(state: State) {
+  const intent = await classifierModel.invoke(state.messages);
+  return { intent: intent.category }; // "question" | "complaint" | "purchase"
+}
+
+function routeByIntent(state: State): string {
+  return state.intent; // must match a key in the edges map below
+}
+
+graph
+  .addNode("classify", classifyIntent)
+  .addConditionalEdges("classify", routeByIntent, {
+    question: "answer_question",
+    complaint: "escalate_to_human",
+    purchase: "purchase_flow",
+  });
+```
+
+## Routing vs. looping
+
+It's worth being precise about terminology: the `tools -> agent` edge from
+the last lesson is a **loop** (a normal edge that happens to point back to
+an earlier node), while `agent -> {tools | END}` is **routing** (a
+conditional edge choosing between multiple possible next nodes). Most real
+graphs combine both — loops for "keep working on this," routing for
+"decide which kind of work to do next."
+
+## Check your understanding
+
+<Quiz courseSlug="agentic-ai" moduleSlug="langgraph-fundamentals" lessonSlug="conditional-edges-and-routing" />

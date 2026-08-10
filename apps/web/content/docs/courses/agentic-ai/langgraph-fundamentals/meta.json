@@ -1,0 +1,6 @@
+{
+  "title": "LangGraph Fundamentals",
+  "description": "Modeling an agent as an explicit graph: nodes, edges, conditional routing, and persistence.",
+  "order": 3,
+  "pages": ["langgraph-basics", "conditional-edges-and-routing", "persistence-and-streaming"]
+}

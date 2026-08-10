@@ -1,0 +1,100 @@
+---
+title: LangGraph Basics
+description: Modeling an agent as an explicit graph of nodes and edges instead of a hidden loop.
+order: 1
+estimatedMinutes: 20
+type: playground
+---
+
+import { AgentGraphVisualizer } from "@/components/viz/agent-graph-visualizer";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="agentic-ai" moduleSlug="langgraph-fundamentals" lessonSlug="langgraph-basics" />
+
+## Overview
+
+LangChain's classic `AgentExecutor` runs the ReAct loop from earlier in
+this course *inside a black box* — you configure it, but the loop itself
+isn't something you can inspect, pause, or branch off of. **LangGraph**
+takes the opposite approach: you define the agent's control flow explicitly
+as a **graph**, where every step is a named node you can see, modify, and
+route between yourself.
+
+## The core building blocks
+
+- **State** — a typed object that flows through the graph and accumulates
+  information as execution proceeds (in our example: the conversation so
+  far, and whatever tool results have come back).
+- **Nodes** — functions that receive the current state and return updates
+  to it. A node might call the LLM, run a tool, or do plain computation —
+  anything is a valid node.
+- **Edges** — connections that say which node runs next. A **normal edge**
+  always goes to the same next node; a **conditional edge** picks the next
+  node based on the current state (e.g., "if the model requested a tool
+  call, go to the tool node — otherwise, go to END").
+
+A LangGraph agent is really just the ReAct loop from before, made explicit:
+`agent` and `tools` are nodes, and a conditional edge out of `agent` decides
+whether to route to a tool or to `END`.
+
+## Try it: watch the graph execute
+
+<AgentGraphVisualizer />
+
+This walks through the same "population of France divided by 2" example
+from earlier in the course, but now shown as what it actually is under the
+hood: a graph, with the agent node and two tool nodes, and conditional
+edges deciding where control goes next based on what the agent decided at
+each step.
+
+## In real code
+
+```ts
+import { StateGraph, END, START, MessagesAnnotation } from "@langchain/langgraph";
+import { ChatAnthropic } from "@langchain/anthropic";
+import { ToolNode } from "@langchain/langgraph/prebuilt";
+
+const model = new ChatAnthropic({ model: "claude-sonnet-5" }).bindTools([
+  searchTool,
+  calculatorTool,
+]);
+
+async function agentNode(state: typeof MessagesAnnotation.State) {
+  const response = await model.invoke(state.messages);
+  return { messages: [response] }; // appended to state, not replacing it
+}
+
+function shouldContinue(state: typeof MessagesAnnotation.State) {
+  const lastMessage = state.messages.at(-1);
+  return lastMessage?.tool_calls?.length ? "tools" : END;
+}
+
+const graph = new StateGraph(MessagesAnnotation)
+  .addNode("agent", agentNode)
+  .addNode("tools", new ToolNode([searchTool, calculatorTool]))
+  .addEdge(START, "agent")
+  .addConditionalEdges("agent", shouldContinue, { tools: "tools", [END]: END })
+  .addEdge("tools", "agent")
+  .compile();
+
+const result = await graph.invoke({ messages: [{ role: "user", content: "..." }] });
+```
+
+Compare this structure directly against the visualizer above: `addNode`
+calls define the boxes, `addEdge`/`addConditionalEdges` define the arrows,
+and `shouldContinue` is exactly the decision the "agent" node was making at
+each step in the walkthrough.
+
+## Why make the loop explicit?
+
+Making the control flow an explicit, inspectable graph (rather than a
+hidden loop inside a library) is what unlocks everything in the rest of
+this module and the next: branching to more than one possible next step,
+pausing execution for a human to approve an action, persisting state across
+sessions, and composing multiple specialized agents together. None of that
+is naturally expressible when the loop itself is a black box.
+
+## Check your understanding
+
+<Quiz courseSlug="agentic-ai" moduleSlug="langgraph-fundamentals" lessonSlug="langgraph-basics" />

@@ -1,0 +1,41 @@
+{
+  "title": "LangGraph Basics Check",
+  "questions": [
+    {
+      "questionText": "What's the key structural difference between LangChain's classic AgentExecutor and LangGraph?",
+      "questionType": "mcq",
+      "options": [
+        "LangGraph doesn't support tools at all",
+        "LangGraph makes the control flow an explicit, inspectable graph of nodes and edges instead of a hidden loop",
+        "AgentExecutor is faster in every case",
+        "There is no real difference between them"
+      ],
+      "correctAnswer": "LangGraph makes the control flow an explicit, inspectable graph of nodes and edges instead of a hidden loop",
+      "explanation": "AgentExecutor runs the ReAct loop as a black box; LangGraph exposes the same loop as nodes and edges you define, inspect, and modify yourself."
+    },
+    {
+      "questionText": "What's the difference between a normal edge and a conditional edge in LangGraph?",
+      "questionType": "mcq",
+      "options": [
+        "There is no difference, they behave identically",
+        "A normal edge always goes to the same next node; a conditional edge picks the next node based on the current state",
+        "Conditional edges can only be used with tool nodes",
+        "Normal edges are only used for the START node"
+      ],
+      "correctAnswer": "A normal edge always goes to the same next node; a conditional edge picks the next node based on the current state",
+      "explanation": "Conditional edges are what let a graph branch — e.g. routing to a tool node vs. END based on whether the agent's last message included a tool call."
+    },
+    {
+      "questionText": "In the example code, what does a node function receive and return?",
+      "questionType": "mcq",
+      "options": [
+        "It receives nothing and returns a fixed string",
+        "It receives the current state and returns updates to that state",
+        "It receives the entire graph definition and returns a new graph",
+        "It receives only the user's original message, never the full state"
+      ],
+      "correctAnswer": "It receives the current state and returns updates to that state",
+      "explanation": "Every node is a function of (state) -> partial state update — the agent node, for example, receives the message history and returns the new message to append."
+    }
+  ]
+}

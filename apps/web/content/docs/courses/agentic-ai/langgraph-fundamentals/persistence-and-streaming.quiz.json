@@ -1,0 +1,41 @@
+{
+  "title": "Persistence & Streaming Check",
+  "questions": [
+    {
+      "questionText": "What does a LangGraph checkpointer actually do?",
+      "questionType": "mcq",
+      "options": [
+        "It speeds up model inference",
+        "It persists graph state after every step, keyed by a thread_id, so a conversation can be resumed later even across restarts",
+        "It validates the graph's structure at compile time",
+        "It automatically retries failed tool calls"
+      ],
+      "correctAnswer": "It persists graph state after every step, keyed by a thread_id, so a conversation can be resumed later even across restarts",
+      "explanation": "Without a checkpointer, state exists only for one invoke() call; a checkpointer saves it externally (e.g. to Postgres) so the same thread_id can pick up where it left off."
+    },
+    {
+      "questionText": "What's the difference between streamMode \"updates\" and streamMode \"messages\"?",
+      "questionType": "mcq",
+      "options": [
+        "There is no difference",
+        "\"updates\" emits one event per completed node; \"messages\" streams individual LLM tokens as they're generated",
+        "\"messages\" is only for text input, \"updates\" is only for tool calls",
+        "\"updates\" is deprecated in favor of \"messages\""
+      ],
+      "correctAnswer": "\"updates\" emits one event per completed node; \"messages\" streams individual LLM tokens as they're generated",
+      "explanation": "\"updates\" is useful for showing which node is currently running (e.g. highlighting an agent graph UI); \"messages\" is what powers token-by-token chat UI streaming."
+    },
+    {
+      "questionText": "Why might a production chat agent want both persistence and streaming at the same time?",
+      "questionType": "mcq",
+      "options": [
+        "They solve the same problem so only one is ever needed",
+        "Persistence makes conversations resumable across sessions, while streaming shows progress within a single run — most real products need both",
+        "Streaming replaces the need for a checkpointer entirely",
+        "They cannot be used together in LangGraph"
+      ],
+      "correctAnswer": "Persistence makes conversations resumable across sessions, while streaming shows progress within a single run — most real products need both",
+      "explanation": "The two features address different UX problems (resuming later vs. feeling responsive now) and compose naturally — a checkpointed graph can still stream its current run's progress."
+    }
+  ]
+}

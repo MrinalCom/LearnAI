@@ -1,0 +1,89 @@
+---
+title: Persistence & Streaming
+description: Making an agent remember across sessions, and showing its work as it happens.
+order: 3
+estimatedMinutes: 18
+type: article
+---
+
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="agentic-ai" moduleSlug="langgraph-fundamentals" lessonSlug="persistence-and-streaming" />
+
+## Overview
+
+Two practical problems come up the moment you try to ship a LangGraph agent
+as a real product: conversations need to survive a page reload (or a server
+restart), and users shouldn't stare at a blank screen while a multi-step
+agent loop runs for several seconds. LangGraph has a dedicated answer for
+each: **checkpointers** and **streaming**.
+
+## Checkpointers: state that survives
+
+By default, a graph's state exists only for the duration of one `.invoke()`
+call. A **checkpointer** persists that state after every step, keyed by a
+`thread_id` you provide — so the same conversation can be resumed later,
+even from a different process:
+
+```ts
+import { PostgresSaver } from "@langchain/langgraph-checkpoint-postgres";
+
+const checkpointer = PostgresSaver.fromConnString(process.env.DATABASE_URL!);
+const graph = builder.compile({ checkpointer });
+
+// First call: starts a new conversation thread.
+await graph.invoke(
+  { messages: [{ role: "user", content: "My name is Sam." }] },
+  { configurable: { thread_id: "conversation-42" } }
+);
+
+// Later — even after a server restart — resuming the same thread_id
+// picks up with full message history already loaded from Postgres.
+await graph.invoke(
+  { messages: [{ role: "user", content: "What's my name?" }] },
+  { configurable: { thread_id: "conversation-42" } }
+);
+```
+
+This is exactly the pattern this site's own (planned) tutor feature is
+built on: each lesson conversation gets a `thread_id`, so it persists
+per-user, per-course, per-lesson, and resumes across visits instead of
+starting fresh every time.
+
+## Streaming: showing work as it happens
+
+Waiting silently for a multi-node graph to fully finish — search, then
+calculate, then compose an answer — feels broken even when it's working
+correctly. `.stream()` emits events as execution proceeds instead of
+waiting for the final result:
+
+```ts
+const stream = await graph.stream(
+  { messages: [{ role: "user", content: "..." }] },
+  { configurable: { thread_id: "conversation-42" }, streamMode: "updates" }
+);
+
+for await (const chunk of stream) {
+  // Each chunk is keyed by the node that just ran, e.g. { agent: {...} }
+  console.log(chunk);
+}
+```
+
+`streamMode: "updates"` emits one event per node completion — useful for
+driving a UI that highlights "now running: search" the way the graph
+visualizer in the previous lesson did. `streamMode: "messages"` instead
+streams individual LLM tokens as they're generated, which is what you want
+for a chat UI where text should appear incrementally rather than all at
+once.
+
+## Why both matter together
+
+Persistence and streaming solve different problems but compose naturally:
+a checkpointed graph can still stream its *current* run's progress while
+also saving state for the *next* run. A production chat agent almost always
+wants both — resumable conversations, and visible progress within each one.
+
+## Check your understanding
+
+<Quiz courseSlug="agentic-ai" moduleSlug="langgraph-fundamentals" lessonSlug="persistence-and-streaming" />

@@ -1,0 +1,41 @@
+{
+  "title": "Conditional Edges & Routing Check",
+  "questions": [
+    {
+      "questionText": "What does a conditional edge's routing function receive and return?",
+      "questionType": "mcq",
+      "options": [
+        "It receives nothing and returns a random node",
+        "It receives the current state and returns a string naming which node to go to next",
+        "It receives the graph definition and returns a new graph",
+        "It receives only the very first user message"
+      ],
+      "correctAnswer": "It receives the current state and returns a string naming which node to go to next",
+      "explanation": "A conditional edge is a plain function of state that decides where to route based on whatever the state currently contains."
+    },
+    {
+      "questionText": "What's the difference between a \"loop\" and \"routing\" in a LangGraph graph?",
+      "questionType": "mcq",
+      "options": [
+        "They are the same thing",
+        "A loop is a normal edge pointing back to an earlier node; routing is a conditional edge choosing between multiple possible next nodes",
+        "Loops can only be used with tool nodes",
+        "Routing can only happen at the START node"
+      ],
+      "correctAnswer": "A loop is a normal edge pointing back to an earlier node; routing is a conditional edge choosing between multiple possible next nodes",
+      "explanation": "tools -> agent going back to reprocess is a loop (fixed destination); agent -> {tools | END} deciding which path to take is routing (conditional destination)."
+    },
+    {
+      "questionText": "In the conditional edges mapping object passed to addConditionalEdges, what is it used for?",
+      "questionType": "mcq",
+      "options": [
+        "It's optional decoration with no functional purpose",
+        "It maps the strings your routing function can return to the actual node names in the graph",
+        "It defines the initial state of the graph",
+        "It sets the maximum number of loop iterations"
+      ],
+      "correctAnswer": "It maps the strings your routing function can return to the actual node names in the graph",
+      "explanation": "This indirection lets a routing function's output values stay decoupled from specific node names, so the same function can be reused across differently-structured graphs."
+    }
+  ]
+}
