@@ -1,0 +1,41 @@
+{
+  "title": "The Perceptron & MLP Check",
+  "questions": [
+    {
+      "questionText": "How does a single artificial neuron relate to something from the Classical ML course?",
+      "questionType": "mcq",
+      "options": [
+        "It's unrelated to anything covered previously",
+        "A single neuron (weighted sum + sigmoid) is mathematically the same computation as logistic regression",
+        "It's the same as a decision tree split",
+        "It's equivalent to a full random forest"
+      ],
+      "correctAnswer": "A single neuron (weighted sum + sigmoid) is mathematically the same computation as logistic regression",
+      "explanation": "A neuron computes a weighted sum plus bias, then squashes it with an activation function — exactly logistic regression's z = w*x + b followed by sigmoid."
+    },
+    {
+      "questionText": "Why is a nonlinear activation function between layers essential, rather than optional?",
+      "questionType": "mcq",
+      "options": [
+        "It's purely cosmetic and doesn't affect what the network can learn",
+        "Without nonlinearity, stacking many linear layers mathematically collapses to a single linear layer, so depth alone buys no extra representational power",
+        "It only matters for the output layer, not hidden layers",
+        "It's needed only to speed up training, not to change what's learnable"
+      ],
+      "correctAnswer": "Without nonlinearity, stacking many linear layers mathematically collapses to a single linear layer, so depth alone buys no extra representational power",
+      "explanation": "A composition of purely linear transformations is still just a linear transformation — nonlinear activations are what let depth actually add representational capacity."
+    },
+    {
+      "questionText": "What computation does a \"forward pass\" refer to?",
+      "questionType": "mcq",
+      "options": [
+        "Updating the network's weights based on an error signal",
+        "Propagating an input through the network, layer by layer, to produce an output prediction",
+        "Splitting the dataset into train and test sets",
+        "Selecting which activation function to use"
+      ],
+      "correctAnswer": "Propagating an input through the network, layer by layer, to produce an output prediction",
+      "explanation": "The forward pass is purely computing the output from a given input using the network's current weights — no learning happens during it, that's the subject of the backpropagation lesson."
+    }
+  ]
+}

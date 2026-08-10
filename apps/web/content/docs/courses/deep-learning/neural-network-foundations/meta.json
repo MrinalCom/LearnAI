@@ -1,0 +1,6 @@
+{
+  "title": "Neural Network Foundations",
+  "description": "From a single neuron to a trainable multi-layer network.",
+  "order": 1,
+  "pages": ["the-perceptron-and-mlp", "activation-functions", "backpropagation"]
+}

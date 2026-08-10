@@ -1,0 +1,101 @@
+---
+title: Activation Functions
+description: Why sigmoid fell out of favor for hidden layers, and what ReLU fixed.
+order: 2
+estimatedMinutes: 15
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="deep-learning" moduleSlug="neural-network-foundations" lessonSlug="activation-functions" />
+
+## Overview
+
+The previous lesson established *why* nonlinear activations matter. This
+one covers *which* one to actually use — a choice with real practical
+consequences for how well a deep network trains.
+
+## Sigmoid: intuitive, but has a fatal flaw for deep nets
+
+```
+sigmoid(x) = 1 / (1 + e⁻ˣ)
+```
+
+Sigmoid squashes anything into `(0, 1)`, which made it the natural choice
+early on (it's directly interpretable as a probability, and it's what
+logistic regression uses). The problem: its derivative is tiny almost
+everywhere except right around `x = 0` — for large positive or negative
+`x`, the gradient is nearly zero. Backpropagation (next lesson) multiplies
+gradients together layer by layer, so in a deep network, chaining together
+many near-zero gradients makes the *earliest* layers' gradients vanish
+almost entirely. This is the **vanishing gradient problem**, and it made
+deep sigmoid networks extremely slow — sometimes impossible — to train.
+
+## ReLU: the modern default for hidden layers
+
+```
+ReLU(x) = max(0, x)
+```
+
+ReLU (Rectified Linear Unit) fixes this: its gradient is exactly 1 for any
+positive input, and 0 for any negative input — no shrinking toward zero for
+large positive activations. It's also dramatically cheaper to compute than
+sigmoid's exponential. The tradeoff: a neuron that ends up always receiving
+negative input gets a permanent zero gradient and stops updating at all
+(the "dying ReLU" problem), which variants like **Leaky ReLU**
+(`max(0.01x, x)`, allowing a small gradient even for negative inputs)
+address.
+
+## Where sigmoid (and its cousins) still belong
+
+Sigmoid isn't gone — it's just been pushed to where its output range
+actually matters:
+
+- **Output layer of a binary classifier** — you genuinely want a `(0, 1)`
+  probability, exactly the logistic regression use case.
+- **Softmax** (a multi-class generalization of sigmoid) — the standard
+  output-layer activation for multi-class classification.
+- **Gating mechanisms in LSTMs** — covered in the sequence models module,
+  where a `(0, 1)` output is used to control how much information to let
+  through a gate.
+
+The rule of thumb: **ReLU (or a variant) for hidden layers, sigmoid/softmax
+only at the output layer when the task calls for it.**
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def relu(x):
+    return np.maximum(0, x)
+
+def sigmoid_grad(x):
+    s = sigmoid(x)
+    return s * (1 - s)
+
+def relu_grad(x):
+    return (x > 0).astype(float)
+
+x = np.array([-10, -2, -0.5, 0, 0.5, 2, 10], dtype=float)
+
+print("x:            ", x)
+print("sigmoid(x):   ", np.round(sigmoid(x), 4))
+print("sigmoid'(x):  ", np.round(sigmoid_grad(x), 4))
+print("relu(x):      ", relu(x))
+print("relu'(x):     ", relu_grad(x))
+`}
+/>
+
+Notice how `sigmoid'(x)` collapses to nearly 0 once `|x|` gets much past 2 —
+that's the vanishing gradient in miniature. `relu'(x)` stays a clean 1 for
+every positive value, no matter how large.
+
+## Check your understanding
+
+<Quiz courseSlug="deep-learning" moduleSlug="neural-network-foundations" lessonSlug="activation-functions" />

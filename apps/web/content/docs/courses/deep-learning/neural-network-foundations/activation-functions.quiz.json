@@ -1,0 +1,41 @@
+{
+  "title": "Activation Functions Check",
+  "questions": [
+    {
+      "questionText": "What is the vanishing gradient problem, and why does sigmoid cause it in deep networks?",
+      "questionType": "mcq",
+      "options": [
+        "Sigmoid's gradient is nearly zero for large positive/negative inputs, and chaining many such near-zero gradients through backpropagation makes early layers' gradients shrink toward zero",
+        "Sigmoid outputs become negative in deep networks",
+        "It only affects the output layer, never hidden layers",
+        "It's caused by using too few training examples"
+      ],
+      "correctAnswer": "Sigmoid's gradient is nearly zero for large positive/negative inputs, and chaining many such near-zero gradients through backpropagation makes early layers' gradients shrink toward zero",
+      "explanation": "Since backprop multiplies gradients layer by layer, repeatedly multiplying by sigmoid's near-zero derivative causes gradients to vanish by the time they reach early layers of a deep network."
+    },
+    {
+      "questionText": "What is the main practical advantage of ReLU over sigmoid for hidden layers?",
+      "questionType": "mcq",
+      "options": [
+        "ReLU's gradient is exactly 1 for positive inputs (no shrinking) and it's cheaper to compute",
+        "ReLU always outputs values between 0 and 1",
+        "ReLU has no known drawbacks",
+        "ReLU is only usable in the output layer"
+      ],
+      "correctAnswer": "ReLU's gradient is exactly 1 for positive inputs (no shrinking) and it's cheaper to compute",
+      "explanation": "ReLU avoids the vanishing gradient problem for positive activations and is computationally simpler (just a max operation) than sigmoid's exponential."
+    },
+    {
+      "questionText": "Where does sigmoid (or softmax) still commonly get used in modern networks?",
+      "questionType": "mcq",
+      "options": [
+        "Nowhere — it has been fully replaced by ReLU everywhere",
+        "At the output layer for binary/multi-class classification, and in gating mechanisms like LSTMs, where a bounded (0,1) output is actually needed",
+        "Only in convolutional layers",
+        "Only during the very first training epoch"
+      ],
+      "correctAnswer": "At the output layer for binary/multi-class classification, and in gating mechanisms like LSTMs, where a bounded (0,1) output is actually needed",
+      "explanation": "Sigmoid/softmax's bounded, probability-like output is genuinely useful at output layers and in gates — the shift to ReLU is specifically about hidden layers."
+    }
+  ]
+}

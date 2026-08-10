@@ -1,0 +1,11 @@
+{
+  "title": "Deep Learning",
+  "description": "Neural networks from the single neuron up through CNNs, RNNs, and the attention mechanism that led to transformers.",
+  "order": 3,
+  "pages": [
+    "neural-network-foundations",
+    "training-deep-networks",
+    "convolutional-neural-networks",
+    "sequence-models-and-attention"
+  ]
+}

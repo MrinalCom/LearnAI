@@ -1,0 +1,41 @@
+{
+  "title": "Backpropagation Check",
+  "questions": [
+    {
+      "questionText": "What mathematical rule is backpropagation fundamentally built on?",
+      "questionType": "mcq",
+      "options": [
+        "The chain rule from calculus, applied repeatedly from the output layer backward to earlier layers",
+        "Bayes' theorem",
+        "The Pythagorean theorem",
+        "Linear algebra matrix inversion only"
+      ],
+      "correctAnswer": "The chain rule from calculus, applied repeatedly from the output layer backward to earlier layers",
+      "explanation": "Backpropagation computes each layer's gradient by multiplying the gradient from the layer after it by the local derivative at that layer — exactly the chain rule, applied systematically."
+    },
+    {
+      "questionText": "Why is backpropagation computationally efficient for deep networks, rather than requiring separate work per layer?",
+      "questionType": "mcq",
+      "options": [
+        "It isn't efficient — deep networks are simply slow to train",
+        "Each layer's gradient calculation reuses the gradient already computed for the layer after it, rather than being re-derived from scratch",
+        "It only computes gradients for the first layer",
+        "It skips computing gradients for most weights"
+      ],
+      "correctAnswer": "Each layer's gradient calculation reuses the gradient already computed for the layer after it, rather than being re-derived from scratch",
+      "explanation": "The chain rule application naturally reuses intermediate results as you move backward, which is exactly what makes a single backward pass sufficient to compute every weight's gradient."
+    },
+    {
+      "questionText": "In the XOR example, why couldn't a single-layer model (like plain logistic regression) solve it, but a network with a hidden layer could?",
+      "questionType": "mcq",
+      "options": [
+        "XOR requires more training data than was provided",
+        "XOR isn't linearly separable, and a single layer can only learn a linear decision boundary — the hidden layer adds the nonlinearity needed",
+        "XOR can only be solved with convolutional layers",
+        "The learning rate was set incorrectly for the single-layer case"
+      ],
+      "correctAnswer": "XOR isn't linearly separable, and a single layer can only learn a linear decision boundary — the hidden layer adds the nonlinearity needed",
+      "explanation": "This directly connects back to the earlier lesson: a single neuron is limited to linear boundaries, and XOR is the textbook example of a pattern that requires a nonlinear boundary to separate."
+    }
+  ]
+}

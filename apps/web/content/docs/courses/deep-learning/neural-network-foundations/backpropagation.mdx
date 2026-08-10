@@ -1,0 +1,120 @@
+---
+title: Backpropagation
+description: The chain rule, applied layer by layer, to figure out how every weight in the network should change.
+order: 3
+estimatedMinutes: 20
+type: playground
+---
+
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="deep-learning" moduleSlug="neural-network-foundations" lessonSlug="backpropagation" />
+
+## Overview
+
+The forward pass computes a prediction. Training needs the reverse: given
+how wrong that prediction was, figure out how to adjust *every* weight in
+the network — including ones several layers removed from the output — to
+make it less wrong next time. **Backpropagation** is the algorithm that
+computes this efficiently, and it's nothing more than the chain rule from
+calculus, applied systematically layer by layer.
+
+## The chain rule, the short version
+
+If you know how the loss changes with respect to the output, and how the
+output changes with respect to some earlier value, you can compute how the
+loss changes with respect to that earlier value by multiplying those two
+rates together:
+
+```
+∂Loss/∂w = ∂Loss/∂output · ∂output/∂w
+```
+
+For a single-layer model like linear regression, this is a one-step
+calculation. For a network with many layers, you apply this same rule
+repeatedly, working *backward* from the output toward the input — hence
+"back"-propagation.
+
+## Forward pass, then backward pass
+
+1. **Forward pass** — compute activations layer by layer (the previous
+   lesson), ending in a prediction and a loss value.
+2. **Backward pass** — starting from the loss, compute the gradient with
+   respect to the output layer's weights first, then use the chain rule to
+   propagate that gradient backward to the previous layer's weights, and so
+   on until you reach the first layer.
+3. **Update** — once every weight has a gradient, apply one step of
+   gradient descent (from the Classical ML course): `w := w − α · ∂Loss/∂w`.
+
+Every weight in the network gets updated in a *single* backward pass — you
+don't need to separately re-derive the gradient for each layer from
+scratch, because each layer's gradient calculation reuses the one computed
+for the layer after it. This reuse is precisely what makes training deep
+networks computationally tractable at all.
+
+## In real code: backprop through a tiny network, from scratch
+
+<PyodidePlayground initialCode={`import numpy as np
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+rng = np.random.RandomState(0)
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]], dtype=float)
+y = np.array([[0], [1], [1], [0]], dtype=float)  # XOR -- not linearly separable!
+
+W1 = rng.uniform(-1, 1, (2, 4))
+b1 = np.zeros((1, 4))
+W2 = rng.uniform(-1, 1, (4, 1))
+b2 = np.zeros((1, 1))
+lr = 0.5
+
+for epoch in range(3000):
+    # Forward pass
+    hidden = sigmoid(X @ W1 + b1)
+    output = sigmoid(hidden @ W2 + b2)
+
+    # Backward pass (chain rule, output layer first)
+    error = output - y
+    d_output = error * output * (1 - output)
+    d_W2 = hidden.T @ d_output
+    d_b2 = d_output.sum(axis=0, keepdims=True)
+
+    # ...propagate the gradient back to the hidden layer
+    d_hidden = (d_output @ W2.T) * hidden * (1 - hidden)
+    d_W1 = X.T @ d_hidden
+    d_b1 = d_hidden.sum(axis=0, keepdims=True)
+
+    # Gradient descent update
+    W2 -= lr * d_W2; b2 -= lr * d_b2
+    W1 -= lr * d_W1; b1 -= lr * d_b1
+
+    if epoch % 1000 == 0:
+        loss = np.mean((output - y) ** 2)
+        print(f"epoch {epoch}: loss={loss:.4f}")
+
+print("\\nFinal predictions on XOR:")
+print(np.round(sigmoid(sigmoid(X @ W1 + b1) @ W2 + b2), 3))
+print("True labels:", y.ravel())
+`}
+/>
+
+This trains a tiny network to solve **XOR** — a classic example that a
+single-layer model (like plain logistic regression) provably cannot learn,
+because XOR isn't linearly separable. Watch the loss drop across epochs and
+the final predictions converge toward the true 0/1 labels — the hidden
+layer is what makes this solvable at all.
+
+## Why frameworks exist
+
+Every deep learning framework — PyTorch, TensorFlow — automates exactly
+this: you define the forward pass, and **automatic differentiation**
+computes the backward pass for you, correctly, no matter how deep or
+complex the network. Understanding the manual version above is what makes
+the framework's automation legible rather than magic.
+
+## Check your understanding
+
+<Quiz courseSlug="deep-learning" moduleSlug="neural-network-foundations" lessonSlug="backpropagation" />

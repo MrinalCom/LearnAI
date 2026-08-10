@@ -1,0 +1,88 @@
+---
+title: The Perceptron & Multi-Layer Networks
+description: A neuron is just a weighted sum and a squashing function — the same building block, stacked and layered.
+order: 1
+estimatedMinutes: 20
+type: playground
+---
+
+import { NeuralNetworkVisualizer } from "@/components/viz/neural-network-visualizer";
+import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Quiz } from "@/components/quiz/quiz";
+import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
+
+<LessonProgressToggle courseSlug="deep-learning" moduleSlug="neural-network-foundations" lessonSlug="the-perceptron-and-mlp" />
+
+## Overview
+
+If logistic regression from the Classical ML course felt familiar, that's
+because a single artificial neuron *is* logistic regression: a weighted sum
+of inputs, plus a bias, passed through a squashing function.
+
+```
+z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b
+a = activation(z)
+```
+
+A **neural network** is what you get from stacking many of these neurons
+into **layers**, and stacking multiple layers one after another — a
+**multi-layer perceptron (MLP)**. Each layer's neurons all receive the
+*same* inputs (the previous layer's outputs) but learn *different* weights,
+so different neurons can pick up on different patterns in that input.
+
+## Why one neuron isn't enough
+
+A single neuron (like logistic regression) can only learn a **linear**
+decision boundary — you saw this limitation directly in the Classical ML
+course. Layering neurons together, *with a nonlinear activation function in
+between layers*, is what lets a network learn boundaries of arbitrary
+complexity. Skip the nonlinearity and stack ten linear layers, and the math
+collapses back down to being equivalent to a single linear layer — depth
+without nonlinearity buys you nothing, which is why activation functions
+(next lesson) are non-negotiable.
+
+## Try it: watch a forward pass
+
+<NeuralNetworkVisualizer />
+
+This is a fixed, *untrained* 3-4-2 network (3 inputs, one hidden layer of 4
+neurons, 2 outputs) — the weights were never optimized for any real task,
+so don't read meaning into which output currently "wins." What matters is
+the mechanism: drag the sliders and watch how a change to one input ripples
+forward through every downstream neuron, exactly the **forward pass**
+every network runs to produce a prediction.
+
+## In real code
+
+<PyodidePlayground initialCode={`import numpy as np
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+# A tiny 2-4-1 network, forward pass only (no training yet -- that's next lesson).
+rng = np.random.RandomState(0)
+W1 = rng.uniform(-1, 1, size=(2, 4))   # input -> hidden
+b1 = np.zeros(4)
+W2 = rng.uniform(-1, 1, size=(4, 1))   # hidden -> output
+b2 = np.zeros(1)
+
+def forward(x):
+    hidden = sigmoid(x @ W1 + b1)
+    output = sigmoid(hidden @ W2 + b2)
+    return hidden, output
+
+for x in [[0.0, 0.0], [1.0, 1.0], [1.0, 0.0]]:
+    hidden, output = forward(np.array(x))
+    print(f"input={x} -> hidden={np.round(hidden, 2)} -> output={output[0]:.3f}")
+`}
+/>
+
+This is literally the same computation the visualizer above renders — just
+in real numpy instead of SVG. Every deep learning framework (PyTorch,
+TensorFlow) does exactly this at its core; what they add on top is
+automatic differentiation (for training, next lesson) and heavy
+optimization for running this at massive scale.
+
+## Check your understanding
+
+<Quiz courseSlug="deep-learning" moduleSlug="neural-network-foundations" lessonSlug="the-perceptron-and-mlp" />
