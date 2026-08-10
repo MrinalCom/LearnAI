@@ -12,6 +12,9 @@ export function TopNav() {
           <Link href="/docs" className="text-sm text-fd-muted-foreground hover:text-fd-foreground">
             Courses
           </Link>
+          <Link href="/playground" className="text-sm text-fd-muted-foreground hover:text-fd-foreground">
+            Playground
+          </Link>
           <NavAuthLinks />
         </nav>
       </div>

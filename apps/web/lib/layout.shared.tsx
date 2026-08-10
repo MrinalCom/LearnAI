@@ -8,6 +8,11 @@ export function baseOptions(): BaseLayoutProps {
     },
     links: [
       {
+        type: "main",
+        text: "Playground",
+        url: "/playground",
+      },
+      {
         type: "custom",
         children: <NavAuthLinks />,
       },
