@@ -3,6 +3,7 @@ import { Hero } from "@/components/marketing/hero";
 import { StatsBar } from "@/components/marketing/stats-bar";
 import { Features } from "@/components/marketing/features";
 import { CourseGrid } from "@/components/marketing/course-grid";
+import { Footer } from "@/components/marketing/footer";
 
 export default function HomePage() {
   return (
@@ -12,6 +13,7 @@ export default function HomePage() {
       <StatsBar />
       <Features />
       <CourseGrid />
+      <Footer />
     </>
   );
 }

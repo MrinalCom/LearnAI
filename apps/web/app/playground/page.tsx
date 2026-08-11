@@ -7,6 +7,7 @@ import { NeuralNetworkVisualizer } from "@/components/viz/neural-network-visuali
 import { AgentGraphVisualizer } from "@/components/viz/agent-graph-visualizer";
 import { EmbeddingSpaceVisualizer } from "@/components/viz/embedding-space-visualizer";
 import { PyodidePlayground } from "@/components/playground/pyodide-playground";
+import { Footer } from "@/components/marketing/footer";
 
 const SANDBOX_CODE = `import numpy as np
 
@@ -97,6 +98,7 @@ export default function PlaygroundPage() {
           <PyodidePlayground initialCode={SANDBOX_CODE} />
         </PlaygroundSection>
       </main>
+      <Footer />
     </>
   );
 }
