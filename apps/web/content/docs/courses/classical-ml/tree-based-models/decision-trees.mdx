@@ -6,6 +6,7 @@ estimatedMinutes: 20
 type: playground
 ---
 
+import { DecisionTreeVisualizer } from "@/components/viz/decision-tree-visualizer";
 import { PyodidePlayground } from "@/components/playground/pyodide-playground";
 import { Quiz } from "@/components/quiz/quiz";
 import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
@@ -44,6 +45,17 @@ A perfectly pure group (all one class) has Gini = 0; a 50/50 split of two
 classes has the maximum Gini = 0.5. The tree greedily picks whichever split
 reduces Gini impurity the most, then repeats recursively on each resulting
 group.
+
+## Try it
+
+<DecisionTreeVisualizer />
+
+Click &quot;Split&quot; repeatedly and watch the tree greedily carve up the
+canvas — always cutting whichever region currently has the most impurity
+left to resolve. Notice the boundaries are always straight, axis-aligned
+lines (never diagonal), no matter how many splits you add — that's the
+direct visual consequence of each split testing only one feature at a
+time.
 
 ## The overfitting problem
 

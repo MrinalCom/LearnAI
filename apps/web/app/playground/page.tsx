@@ -4,6 +4,7 @@ import { TopNav } from "@/components/marketing/top-nav";
 import { KnnVisualizer } from "@/components/viz/knn-visualizer";
 import { KMeansVisualizer } from "@/components/viz/kmeans-visualizer";
 import { GradientDescentVisualizer } from "@/components/viz/gradient-descent-visualizer";
+import { DecisionTreeVisualizer } from "@/components/viz/decision-tree-visualizer";
 import { NeuralNetworkVisualizer } from "@/components/viz/neural-network-visualizer";
 import { AgentGraphVisualizer } from "@/components/viz/agent-graph-visualizer";
 import { EmbeddingSpaceVisualizer } from "@/components/viz/embedding-space-visualizer";
@@ -77,6 +78,14 @@ export default function PlaygroundPage() {
           href="/docs/courses/classical-ml/instance-based-and-linear-models/linear-regression"
         >
           <GradientDescentVisualizer />
+        </PlaygroundSection>
+
+        <PlaygroundSection
+          title="Decision Tree Splits"
+          from="Classical ML"
+          href="/docs/courses/classical-ml/tree-based-models/decision-trees"
+        >
+          <DecisionTreeVisualizer />
         </PlaygroundSection>
 
         <PlaygroundSection
