@@ -6,6 +6,7 @@ estimatedMinutes: 20
 type: playground
 ---
 
+import { GradientDescentVisualizer } from "@/components/viz/gradient-descent-visualizer";
 import { PyodidePlayground } from "@/components/playground/pyodide-playground";
 import { Quiz } from "@/components/quiz/quiz";
 import { LessonProgressToggle } from "@/components/progress/lesson-progress-toggle";
@@ -52,6 +53,15 @@ scales to problems with no closed-form solution:
 3. Step the weights in the *opposite* direction, scaled by a **learning
    rate** `α`: `w := w − α · ∂MSE/∂w`.
 4. Repeat until the cost stops decreasing meaningfully.
+
+## Try it
+
+<GradientDescentVisualizer />
+
+This is gradient descent in its simplest possible form — one weight,
+one bowl-shaped cost curve. Every optimizer in the Deep Learning course
+(SGD, momentum, Adam) is a refinement of exactly this loop, applied to
+millions of weights and a far bumpier cost surface at once.
 
 The learning rate matters a lot: too small and training crawls; too large
 and it can overshoot the minimum and diverge entirely. This exact loop —
