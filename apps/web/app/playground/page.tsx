@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { TopNav } from "@/components/marketing/top-nav";
 import { KnnVisualizer } from "@/components/viz/knn-visualizer";
 import { KMeansVisualizer } from "@/components/viz/kmeans-visualizer";
+import { GradientDescentVisualizer } from "@/components/viz/gradient-descent-visualizer";
 import { NeuralNetworkVisualizer } from "@/components/viz/neural-network-visualizer";
 import { AgentGraphVisualizer } from "@/components/viz/agent-graph-visualizer";
 import { EmbeddingSpaceVisualizer } from "@/components/viz/embedding-space-visualizer";
@@ -68,6 +69,14 @@ export default function PlaygroundPage() {
           href="/docs/courses/classical-ml/clustering-and-dimensionality-reduction/k-means"
         >
           <KMeansVisualizer />
+        </PlaygroundSection>
+
+        <PlaygroundSection
+          title="Gradient Descent"
+          from="Classical ML"
+          href="/docs/courses/classical-ml/instance-based-and-linear-models/linear-regression"
+        >
+          <GradientDescentVisualizer />
         </PlaygroundSection>
 
         <PlaygroundSection
