@@ -1,0 +1,4 @@
+{
+  "buildCommand": "cd ../.. && pnpm --filter @learning/shared build && pnpm --filter @learning/api build",
+  "rewrites": [{ "source": "/(.*)", "destination": "/api" }]
+}
