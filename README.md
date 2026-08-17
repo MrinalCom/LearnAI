@@ -10,12 +10,10 @@ separate Express + Postgres API for auth, course metadata, progress tracking, an
 
 Both are deployed on Vercel, each as its own project, sharing this pnpm workspace as their
 build root. The API is backed by a live Neon Postgres instance (provisioned via the Vercel
-Marketplace integration), migrated and reachable.
-
-**Known gap:** the web app doesn't currently call the API anywhere in its source — it renders
-docs/course content statically from local MDX via Fumadocs, and the auth/progress/quiz API is
-deployed and working standalone but not yet wired into any UI. Connecting them is a frontend
-feature-building task, not a deployment one.
+Marketplace integration), migrated and reachable. `NEXT_PUBLIC_API_URL` is wired and baked
+into the deployed web app's bundle (auth/dashboard pages already call the API via
+`lib/api.ts`), verified with a real registration request against the live database. The
+docs/course content itself is still static local MDX via Fumadocs, unrelated to this API.
 
 ## Structure
 
